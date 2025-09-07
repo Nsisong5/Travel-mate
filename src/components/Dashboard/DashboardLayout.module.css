@@ -123,6 +123,7 @@
   }
 }
 
+
 /* Image placeholder style */
 .imagePlaceholder {
   width: 36px;
@@ -132,4 +133,88 @@
   box-shadow: inset 0 0 8px rgba(0,0,0,0.06);
   user-select: none;
   flex-shrink: 0;
+}
+
+
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  position: relative;
+  justify-content: space-between; /* distribute left, center, right */
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  /* remove margin-right to avoid pushing off container */
+}
+
+/* Hamburger remains unchanged, on left */
+
+/* Plan a Trip Button */
+.planTripBtn {
+  background: var(--primary);
+  color: var(--panel);
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 0.65rem 1.6rem;
+  border: none;
+  border-radius: 1.8rem;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  outline-offset: 2px;
+  transition: background 0.22s, transform 0.18s;
+}
+.planTripBtn:hover,
+.planTripBtn:focus-visible {
+  background: var(--primary-700);
+  transform: scale(1.05);
+  outline: 2px solid var(--ring);
+}
+
+/* Avatar button */
+.headerAvatarBtn {
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--panel);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  position: relative;
+  outline-offset: 2px;
+  transition: box-shadow 0.2s;
+}
+.headerAvatarBtn:focus-visible {
+  outline: 2px solid var(--ring);
+}
+
+.headerAvatarImg {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--card-grad-end);
+  display: block;
+}
+
+.headerAvatarFallback {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: var(--panel);
+  font-weight: 700;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

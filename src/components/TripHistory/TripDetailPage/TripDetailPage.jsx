@@ -16,8 +16,11 @@ const typeIcon = {
 export default function TripDetailPage() {
   const { tripId } = useParams();
   const navigate = useNavigate();
-  const trip = mockTrips.find(t => t.id === tripId);
-
+  const trips = localStorage.getItem("trips")
+  
+  const trip = trips.find(t => t.id === tripId);
+  
+  console.log("trips: ",trips)
   if (!trip) {
     return (
       <DashboardLayout>
@@ -26,6 +29,8 @@ export default function TripDetailPage() {
     );
   }
 
+  
+  
   return (
     <DashboardLayout>
       <div className={styles.wrapper}>
@@ -37,7 +42,7 @@ export default function TripDetailPage() {
           <div className={styles.info}>
             <h2 className={styles.route}>{trip.origin} → {trip.destination}</h2>
             <div className={styles.meta}>
-              <span className={styles.metaLabel}>Date: <b>{trip.date}</b></span>
+              <span className={styles.metaLabel}>Date: <b>{trip.start_date}</b></span>
               <span className={styles.metaLabel}>Duration: <b>{trip.duration}</b></span>
               <span className={`${styles.status} ${styles[trip.status.toLowerCase()]}`}>
                 {trip.status}

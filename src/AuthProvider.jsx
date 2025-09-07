@@ -5,11 +5,11 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem("access_token") || null);
-  const [isLoading, setIsLoading] = useState(true); // Track loading state
-  const [isInitialized, setIsInitialized] = useState(false); // Track if auth check is complete
+  const [token, setToken] = useState(null); // Don't initialize from localStorage here
+  const [isLoading, setIsLoading] = useState(true);
+  const [isInitialized, setIsInitialized] = useState(false);
   
-  console.log("AuthProvider mounted - Initial token:", token);
+  console.log("AuthProvider mounted - Current token:", token);
   console.log("Current user state:", user);
   console.log("Loading state:", isLoading);
   console.log("Initialized state:", isInitialized);
@@ -20,13 +20,12 @@ export const AuthProvider = ({ children }) => {
     
     const initializeAuth = async () => {
       const savedToken = localStorage.getItem("access_token");
-      console.log("💾 Saved token from localStorage:", savedToken);
+      console.log("💾 Saved token from localStorage:", savedToken ? `${savedToken.substring(0, 20)}...` : 'null');
       
       if (savedToken) {
-        console.log("✅ Token found, setting token state and verifying with backend");
-        setToken(savedToken);
+        console.log("✅ Token found, verifying with backend");
         try {
-          console.log("🔍 Making request to /user/profile with token:", savedToken);
+          console.log("🔍 Making request to /user/profile");
           
           // Verify token by fetching user profile
           const res = await api.get("/user/profile", {
@@ -35,11 +34,13 @@ export const AuthProvider = ({ children }) => {
           
           console.log("✅ Profile request successful:", res.data);
           setUser(res.data);
+          setToken(savedToken); // Set token AFTER successful verification
         } catch (error) {
           console.error("❌ Profile request failed:", error);
           console.error("Error details:", error.response?.data || error.message);
           
           // Token is invalid, clean up
+          console.log("🧹 Cleaning up invalid token");
           localStorage.removeItem("access_token");
           setToken(null);
           setUser(null);
@@ -55,33 +56,6 @@ export const AuthProvider = ({ children }) => {
 
     initializeAuth();
   }, []); // Run only once on component mount
-
-  // Handle token changes (login/logout) - but skip during initialization
-  useEffect(() => {
-    console.log("🔄 Token change effect triggered - Token:", token, "Initialized:", isInitialized);
-    
-    if (!isInitialized) {
-      console.log("⏳ Skipping token effect - still initializing");
-      return; // Skip if still initializing
-    }
-    
-    if (token) {
-      console.log("🔍 Token changed, fetching user profile");
-      // Set the authorization header for this request
-      api
-        .get("/user/profile", {
-          headers: { Authorization: `Bearer ${token}` },
-        })
-        .then((res) => {
-          console.log("✅ Token change profile request successful:", res.data);
-          setUser(res.data);
-        })
-        .catch((error) => {
-          console.error("❌ Token change profile request failed:", error);
-          logout(); // if token invalid, log out
-        });
-    }
-  }, [token, isInitialized]);
 
   const login = async (credentials) => {
     try {
@@ -129,7 +103,7 @@ export const AuthProvider = ({ children }) => {
   const updateUser = async (userData) => {
     try {
       // userData can include any fields to update: { full_name, email, password, etc. }
-      const res = await api.put("/user/profile", userData, {
+      const res = await api.patch("/user/profile", userData, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -173,7 +147,19 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, register, updateUser, changePassword, deleteAccount, logout, isLoading, isInitialized }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      setUser, // Add setUser to the context value
+      token, 
+      login, 
+      register, 
+      updateUser, 
+      changePassword, 
+      deleteAccount, 
+      logout, 
+      isLoading, 
+      isInitialized 
+    }}>
       {children}
     </AuthContext.Provider>
   );

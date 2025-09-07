@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useTheme } from "../../ThemeContext";
 import { fadeInUp, staggerUp } from "./variants";
@@ -12,7 +12,10 @@ import AIRecommendations from "./AIRecommendations/AIRecommendations";
 import TripProgress from "./TripProgress/TripProgress";
 import RecentTripsTable from "./RecentTripsTable/RecentTripsTable";
 import TopDestinationsChart from "./TopDestinationsChart/TopDestinationsChart";
-import DashboardLayout from "./DashboardLayout" 
+import DashboardLayout from "./DashboardLayout";
+import { AuthContext } from "../../AuthProvider";
+import { useTripServices } from "../../services/TripServices/TripServices";
+import { useNavigate } from "react-router-dom"
 
 const MOCK_RECENT_TRIPS = [
   { date: "2025-07-30", destination: "Paris", duration: "5 days", cost: "$1500", status: "Completed" },
@@ -39,6 +42,36 @@ const MOCK_TOP_DESTINATIONS = [
 ];
 
 export default function DBLayout() {
+  const { user } = useContext(AuthContext);
+  const { getUserTrips } = useTripServices();
+  const navigate = useNavigate();
+  
+  // State for planned trips only
+  const [upcomingTrips, setUpcomingTrips] = useState([]);
+  const [loadingTrips, setLoadingTrips] = useState(true);
+
+  // Load planned trips when component mounts
+  useEffect(() => {
+    if (user) {
+      loadPlannedTrips();
+    }
+  }, [user]);
+ 
+    const loadPlannedTrips = async () => {
+    setLoadingTrips(true);
+    
+    try {
+      console.log("Loading planned trips for user:", user?.email);
+      const trips = await getUserTrips();
+      setUpcomingTrips(trips);
+      console.log("Planned trips:", trips.length);
+    } catch (error) {
+      console.error('Failed to load trips:', error);
+    } finally {
+      setLoadingTrips(false);
+    }
+  };
+
   return (
       <DashboardLayout>
         <motion.section
@@ -50,8 +83,9 @@ export default function DBLayout() {
           <OverviewCard
             icon={<div className={styles.imagePlaceholder} aria-label="Upcoming trips image placeholder" />}
             title="Upcoming Trips"
-            value="4 Trips Planned"
+            value={loadingTrips ? "Loading..." : upcomingTrips.length}
             index={0}
+            onClick={()=>navigate("/trips/filter")}
           />
           <OverviewCard
             icon={<MapPin size={28} color="var(--primary)" />}

@@ -1,0 +1,12 @@
+@import "../../Dashboard/theme-vars.css";
+
+.descriptionSection {
+  background: var(--panel);
+  border-radius: 1rem;
+  padding: 1rem 1.2rem;
+  box-shadow: var(--shadow);
+  color: var(--text);
+  font-size: 1rem;
+  line-height: 1.5;
+  user-select: text;
+}

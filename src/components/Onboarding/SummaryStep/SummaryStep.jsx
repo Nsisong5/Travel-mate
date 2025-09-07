@@ -3,18 +3,27 @@ import { motion } from "framer-motion";
 import { useOutletContext, useNavigate } from "react-router-dom";
 import styles from "./SummaryStep.module.css";
 import { fadeInUp, staggerContainer } from "../motion";
+import { useTripServices } from "../../../services/TripServices/TripServices"
+
 
 export default function SummaryStep() {
   const { state, allowSkip } = useOutletContext();
   const navigate = useNavigate();
-
-  const handleConfirm = () => {
+  const { createTrip } = useTripServices()
+  
+  const handleConfirm = async() => {
     if (allowSkip) {
       navigate("/auth/signup");
     } else {
-      // TODO: replace with FastAPI call
-      console.log("Trip Confirmed:", state);
+        try {
+      console.log("state:",state)
+      const result = await createTrip(state);
+      console.log("Trip created successfully:", result);
       navigate("/dashboard");
+      } catch (error) {
+      console.error("Trip creation failed:", error);
+    }
+      console.log("Trip Confirmed:", state);
     }
   };
 

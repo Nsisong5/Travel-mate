@@ -1,0 +1,173 @@
+/* src/components/LoadingScreen/LoadingScreen.module.css */
+/* Brand-oriented loading screen with responsive design and theme consistency */
+@import "../components/Dashboard/theme-vars.css";
+
+.container {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg, #f5f9ff); /* Fallback to light blue if theme unavailable */
+  overflow: hidden;
+}
+
+/* Animated background overlay for subtle dimming effect */
+.backgroundOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg, 
+    var(--card-grad-start, #eef4ff) 0%, 
+    var(--card-grad-end, #e1ecff) 100%
+  );
+  /* Fallback gradient if CSS variables unavailable */
+  background: linear-gradient(135deg, #eef4ff 0%, #e1ecff 100%);
+}
+
+/* Main content container */
+.content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  text-align: center;
+  padding: 2rem;
+  max-width: 90vw;
+}
+
+/* TravelMate brand text styling */
+.brandText {
+  font-size: clamp(2.5rem, 8vw, 4rem); /* Responsive font size */
+  font-weight: 700;
+  color: var(--primary, #2563eb); /* Use theme primary color with fallback */
+  margin: 0;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  text-shadow: 0 2px 8px rgba(37, 99, 235, 0.15);
+  
+  /* Fallback styling if CSS variables not available */
+  color: #2563eb;
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* "Mate" accent styling */
+.brandAccent {
+  color: var(--primary-700, #1d4ed8);
+  /* Fallback */
+  color: #1d4ed8;
+}
+
+/* Loading message text */
+.loadingMessage {
+  font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+  color: var(--muted, #64748b);
+  margin: 0;
+  font-weight: 500;
+  opacity: 0.8;
+  
+  /* Fallback */
+  color: #64748b;
+}
+
+/* Animated dots container */
+.dotsContainer {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+/* Individual animated dots */
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--primary, #2563eb);
+  /* Fallback */
+  background: #2563eb;
+  opacity: 0.6;
+}
+
+/* Dark theme support */
+body[data-theme="dark"] .container {
+  background: var(--bg, #0b1220);
+}
+
+body[data-theme="dark"] .backgroundOverlay {
+  background: linear-gradient(
+    135deg, 
+    var(--card-grad-start, #0f1a30) 0%, 
+    var(--card-grad-end, #0c1627) 100%
+  );
+}
+
+body[data-theme="dark"] .brandText {
+  color: var(--primary, #60a5fa);
+  text-shadow: 0 2px 12px rgba(96, 165, 250, 0.25);
+  
+  /* Enhanced gradient for dark theme */
+  background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+body[data-theme="dark"] .brandAccent {
+  color: var(--primary-700, #3b82f6);
+}
+
+body[data-theme="dark"] .loadingMessage {
+  color: var(--muted, #94a3b8);
+}
+
+body[data-theme="dark"] .dot {
+  background: var(--primary, #60a5fa);
+}
+
+/* Mobile optimizations */
+@media (max-width: 480px) {
+  .content {
+    gap: 1rem;
+    padding: 1.5rem;
+  }
+  
+  .loadingMessage {
+    font-size: 0.9rem;
+  }
+}
+
+/* Reduced motion support for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .brandText,
+  .backgroundOverlay,
+  .dot {
+    animation: none !important;
+  }
+  
+  /* Provide static fallback for users who prefer reduced motion */
+  .brandText {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .brandText {
+    text-shadow: none;
+    color: var(--text, #0f172a) !important;
+    background: none !important;
+    -webkit-text-fill-color: var(--text, #0f172a) !important;
+  }
+  
+  .loadingMessage {
+    color: var(--text, #0f172a) !important;
+    opacity: 1 !important;
+  }
+}

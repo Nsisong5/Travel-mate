@@ -1,0 +1,118 @@
+/* src/components/TripProgress/QuickStats.module.css */
+/* Quick stats chips component styles */
+
+@import "../../theme-vars.css";
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0;
+}
+
+.statsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.statChip {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+  cursor: default;
+  background: var(--card-grad-start);
+}
+
+.statChip:hover {
+  box-shadow: var(--shadow);
+}
+
+.statIcon {
+  flex-shrink: 0;
+  opacity: 0.9;
+}
+
+.statContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  flex: 1;
+}
+
+.statLabel {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  line-height: 1;
+}
+
+.statValue {
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+/* Focus styles for accessibility */
+.statChip:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* Responsive design */
+@media (min-width: 480px) {
+  .statsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+  }
+
+  .statChip {
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    min-height: 80px;
+    justify-content: center;
+  }
+
+  .statContent {
+    gap: 0.25rem;
+  }
+
+  .statIcon {
+    align-self: flex-start;
+  }
+}
+
+@media (min-width: 768px) {
+  .statsGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 900px) {
+  .statsGrid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .statChip {
+    flex-direction: row;
+    align-items: center;
+    min-height: auto;
+    padding: 0.875rem 1rem;
+  }
+}

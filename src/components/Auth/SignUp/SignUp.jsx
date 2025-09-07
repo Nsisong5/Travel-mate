@@ -1,11 +1,10 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Mail, Lock, Eye, EyeOff, User } from "lucide-react";
 import styles from "./SignUp.module.css";
-import { useNavigate } from "react-router-dom"
-import { AuthContext } from "../../../AuthProvider"
-
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../../AuthProvider";
 
 const containerVariants = {
   initial: { opacity: 0 },
@@ -28,10 +27,32 @@ export default function SignUp() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { register } = useContext(AuthContext)
+  const { register } = useContext(AuthContext);
   const navigate = useNavigate();
-  
-  
+
+  // Real-time validation on any input change
+  useEffect(() => {
+    const newErrors = {};
+    if (!fullName.trim()) newErrors.fullName = "Full Name is required";
+    if (!email.trim()) newErrors.email = "Email is required";
+    else if (!emailRegex.test(email)) newErrors.email = "Invalid email format";
+    if (!password) newErrors.password = "Password is required";
+    else if (password.length < 6) newErrors.password = "Password must be at least 6 characters";
+    if (!confirmPassword) newErrors.confirmPassword = "Please confirm your password";
+    else if (password !== confirmPassword) newErrors.confirmPassword = "Passwords do not match";
+    setErrors(newErrors);
+  }, [fullName, email, password, confirmPassword]);
+
+  const isFormValid =
+    fullName.trim() &&
+    email.trim() &&
+    emailRegex.test(email) &&
+    password &&
+    password.length >= 6 &&
+    confirmPassword &&
+    password === confirmPassword &&
+    Object.keys(errors).length === 0;
+
   const validateForm = () => {
     const newErrors = {};
     if (!fullName.trim()) newErrors.fullName = "Full Name is required";
@@ -45,19 +66,19 @@ export default function SignUp() {
     return Object.keys(newErrors).length === 0;
   };
 
- const handleSubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     if (!validateForm()) return;
     setIsSubmitting(true);
-    setTimeout(async() => {
-      try{
-        const res = await register({full_name:fullName,email, password})
-        navigate("/dashboard")
-      }catch(error){
-       console.log(error)
+    setTimeout(async () => {
+      try {
+        await register({ full_name: fullName, email, password });
+        navigate("/dashboard");
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsSubmitting(false);
       }
-      
-      finally{setIsSubmitting(false);}
     }, 800);
   };
 
@@ -204,7 +225,7 @@ export default function SignUp() {
           <button
             type="submit"
             className={styles.submitBtn}
-            disabled={isSubmitting || Object.keys(errors).length > 0}
+            disabled={isSubmitting || !isFormValid}
             aria-busy={isSubmitting}
           >
             {isSubmitting && <span className={styles.spinner} aria-hidden="true"></span>}
@@ -241,7 +262,6 @@ export default function SignUp() {
           </button>
         </div>
 
-        {/* Footer */}
         <footer className={styles.footer}>
           <span className={styles.footerText}>Already have an account? </span>
           <Link to="/Login" className={styles.link}>

@@ -4,6 +4,7 @@
   --status-completed: #22c55e;
   --status-canceled: #ef4444;
   --status-ongoing: #2563eb;
+  --status-planned: orange;
 }
 
 .card {
@@ -66,4 +67,10 @@
 .ongoing {
   background: rgba(37,99,235,.10);
   color: var(--status-ongoing);
+}
+
+
+.planned {
+  background: rgba(37,99,235,.10);
+  color: var(--status-planned);
 }

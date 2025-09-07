@@ -8,7 +8,7 @@ export default function TripInfoSection({ trip }) {
       <div className={styles.row}>
         <span className={styles.icon}><Calendar size={19} /></span>
         <span className={styles.label}>Date</span>
-        <span className={styles.value}>{trip.date}</span>
+        <span className={styles.value}>{trip.start_date}</span>
       </div>
       <div className={styles.row}>
         <span className={styles.icon}><Clock size={19} /></span>
@@ -23,7 +23,7 @@ export default function TripInfoSection({ trip }) {
       <div className={styles.row}>
         <span className={styles.icon}><DollarSign size={19} /></span>
         <span className={styles.label}>Cost</span>
-        <span className={styles.value}>{trip.cost}</span>
+        <span className={styles.value}>{trip.cost || "0"}</span>
       </div>
     </section>
   );

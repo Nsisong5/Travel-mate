@@ -1,0 +1,27 @@
+@import "../../Dashboard/theme-vars.css";
+
+.ratingsSection {
+  margin: 1rem 0;
+  user-select: none;
+}
+
+.stars {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.ratingText {
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--text);
+  margin-left: 0.5rem;
+  user-select: text;
+}
+
+.popularityText {
+  margin-top: 0.3rem;
+  font-size: 0.9rem;
+  color: var(--muted);
+  user-select: text;
+}

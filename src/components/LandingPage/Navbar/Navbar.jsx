@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import styles from "./Navbar.module.css";
 import { useTheme } from "../../../ThemeContext";
+import { AuthContext } from "../../../AuthProvider"; // Fix/adjust path as needed
 import { motion, AnimatePresence, useCycle } from "framer-motion";
 import { Menu, X, Moon, Sun } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const navLinks = [
   { label: "Home", href: "#" },
@@ -21,10 +22,51 @@ const Path = (props) => (
   />
 );
 
+// Helper to compute initials from user info
+const getInitials = (u) => {
+  const source = u?.full_name || u?.name || u?.email || "";
+  const parts = source.trim().split(/\s+/);
+  if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+  if (source.includes("@")) return source[0].toUpperCase();
+  return (source[0] || "U").toUpperCase();
+};
+
+// AvatarButton Inline Component
+function AvatarButton({ user }) {
+  const [imgErr, setImgErr] = React.useState(false);
+  const initials = getInitials(user);
+  const avatarUrl = user?.avatar_url;
+  return (
+    <Link
+      to="/dashboard"
+      className={styles.navAvatarBtn}
+      aria-label="Go to dashboard"
+      title="Open dashboard"
+      tabIndex={0}
+    >
+      {avatarUrl && !imgErr ? (
+        <img
+          src={avatarUrl}
+          alt={user?.full_name || user?.name || "User avatar"}
+          className={styles.navAvatarImg}
+          loading="lazy"
+          referrerPolicy="no-referrer"
+          onError={() => setImgErr(true)}
+        />
+      ) : (
+        <div className={styles.navAvatarFallback} aria-hidden="true">
+          {initials}
+        </div>
+      )}
+    </Link>
+  );
+}
+
 export default function Navbar() {
   const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
   const darkMode = theme === "dark";
+  const { user } = useContext(AuthContext) || { user: null };
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const sidebarRef = useRef(null);
   const [isOpen, toggleOpen] = useCycle(false, true);
@@ -117,22 +159,28 @@ export default function Navbar() {
           </li>
         </ul>
 
-        {/* ADD BUTTONS: Visible only on medium+ screens */}
+        {/* Desktop right section: show avatar if user exists, else login/signup */}
         <div className={styles.rightActions}>
-          <button
-            className={styles.btnLogin}
-            type="button"
-            onClick={() => navigate("/Login")}
-          >
-            Login
-          </button>
-          <button
-            className={styles.btnSignUp}
-            type="button"
-            onClick={() => navigate("/SignUp")}
-          >
-            Sign Up
-          </button>
+          {user ? (
+            <AvatarButton user={user} />
+          ) : (
+            <>
+              <button
+                className={styles.btnLogin}
+                type="button"
+                onClick={() => navigate("/Login")}
+              >
+                Login
+              </button>
+              <button
+                className={styles.btnSignUp}
+                type="button"
+                onClick={() => navigate("/SignUp")}
+              >
+                Sign Up
+              </button>
+            </>
+          )}
         </div>
 
         {/* Hamburger icon (mobile only) */}
@@ -229,20 +277,59 @@ export default function Navbar() {
               </div>
 
               <div className={styles.sidebarActions}>
-                <button
-                  className={styles.btnLogin}
-                  type="button"
-                  onClick={() => navigate("/Login")}
-                >
-                  Login
-                </button>
-                <button
-                  className={styles.btnSignUp}
-                  type="button"
-                  onClick={() => navigate("/SignUp")}
-                >
-                  Sign Up
-                </button>
+                {user ? (
+                  <Link
+                    to="/dashboard"
+                    className={styles.navAvatarBtn}
+                    aria-label="Go to dashboard"
+                    title="Open dashboard"
+                    tabIndex={0}
+                    onClick={() => {
+                      setSidebarOpen(false);
+                      toggleOpen(0);
+                    }}
+                  >
+                    {user.avatar_url ? (
+                      <img
+                        src={user.avatar_url}
+                        alt={user.full_name || user.name || "User avatar"}
+                        className={styles.navAvatarImg}
+                        loading="lazy"
+                        referrerPolicy="no-referrer"
+                        onError={(e) => { e.target.onerror = null; e.target.style.display = "none"; }}
+                      />
+                    ) : (
+                      <div className={styles.navAvatarFallback} aria-hidden="true">
+                        {getInitials(user)}
+                      </div>
+                    )}
+                  </Link>
+                ) : (
+                  <>
+                    <button
+                      className={styles.btnLogin}
+                      type="button"
+                      onClick={() => {
+                        navigate("/Login");
+                        setSidebarOpen(false);
+                        toggleOpen(0);
+                      }}
+                    >
+                      Login
+                    </button>
+                    <button
+                      className={styles.btnSignUp}
+                      type="button"
+                      onClick={() => {
+                        navigate("/SignUp");
+                        setSidebarOpen(false);
+                        toggleOpen(0);
+                      }}
+                    >
+                      Sign Up
+                    </button>
+                  </>
+                )}
               </div>
             </motion.aside>
           </>

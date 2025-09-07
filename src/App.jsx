@@ -3,6 +3,8 @@ import AppRouter from "./MyRouter"; // Changed from named import to default impo
 import { ThemeProvider, useTheme } from "./ThemeContext";
 import colors from "./colors";
 import { AuthProvider } from "./AuthProvider";
+import { AIRecommendationsProvider } from "./services/AIRecommendationsServices/AIRecommendations"
+import {SavedPlaceContextProvider } from "./services/SavePlacesService/SavePlacesService"
 
 function AppContainer() {
   const { theme } = useTheme();
@@ -26,9 +28,13 @@ function AppContainer() {
 function App() {
   return (
     <AuthProvider>
-      <ThemeProvider>
-        <AppContainer />
-      </ThemeProvider>
+     <AIRecommendationsProvider>
+      <SavedPlaceContextProvider>
+       <ThemeProvider>
+         <AppContainer />
+       </ThemeProvider>
+      </SavedPlaceContextProvider>
+     </AIRecommendationsProvider>
     </AuthProvider>
   );
 }

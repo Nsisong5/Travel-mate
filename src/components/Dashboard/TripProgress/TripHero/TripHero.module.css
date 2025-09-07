@@ -1,0 +1,160 @@
+/* src/components/TripProgress/TripHero.module.css */
+/* Trip hero section styles - thumbnail and destination info */
+@import "../../theme-vars.css";
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.thumbnail {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--card-grad-start);
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.image:hover {
+  transform: scale(1.02);
+}
+
+.placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  background: linear-gradient(135deg, var(--card-grad-start), var(--card-grad-end));
+  color: var(--muted);
+  gap: 0.5rem;
+}
+
+.placeholderIcon {
+  opacity: 0.6;
+}
+
+.placeholderText {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.imageCount {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  backdrop-filter: blur(4px);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.destination {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text);
+  flex: 1;
+  line-height: 1.4;
+}
+
+.dates {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.icon {
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+.detailsLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--card-grad-start);
+  color: var(--muted);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.detailsLink:hover {
+  background: var(--primary);
+  color: white;
+  transform: translateY(-1px);
+}
+
+.detailsLink:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* Tablet and desktop adjustments */
+@media (min-width: 768px) {
+  .container {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+
+  .thumbnail {
+    width: 200px;
+    height: 140px;
+    flex-shrink: 0;
+  }
+
+  .content {
+    flex: 1;
+    padding-top: 0.5rem;
+  }
+
+  .destination {
+    font-size: 1.2rem;
+  }
+}
+
+@media (min-width: 900px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .thumbnail {
+    width: 100%;
+    height: 180px;
+  }
+}

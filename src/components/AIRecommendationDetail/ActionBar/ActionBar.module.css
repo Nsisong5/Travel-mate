@@ -1,0 +1,56 @@
+@import "../../Dashboard/theme-vars.css";
+
+.actionBar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--panel);
+  box-shadow: 0 -1px 12px rgba(0,0,0,0.1);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
+  user-select: none;
+  z-index: 10000;
+}
+
+button {
+  background: none;
+  border: none;
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.7rem;
+  border-radius: 14px;
+  transition: background-color 0.25s, color 0.3s;
+  user-select: none;
+}
+
+button:hover,
+button:focus-visible {
+  background-color: var(--primary);
+  color: var(--panel);
+  outline-offset: 2px;
+  outline: 2px solid var(--ring);
+}
+
+.btnPlan {
+  background-color: var(--primary);
+  color: var(--panel);
+  padding: 0.6rem 1.5rem;
+  font-weight: 700;
+}
+
+.btnPlan:hover,
+.btnPlan:focus-visible {
+  background-color: var(--primary-700);
+  outline-offset: 2px;
+  outline: 2px solid var(--ring);
+}

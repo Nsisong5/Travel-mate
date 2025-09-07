@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { AnimatePresence } from "framer-motion";
 import { ThemeProvider } from "./ThemeContext";
-
+import ActiveTripDetailPage  from "./components/ActiveTrip/TripDetailPage"
 import {
   BrowserRouter as Router,
   Routes,
@@ -31,7 +31,7 @@ import OnboardingRouter from "./components/Onboarding/OnboardingRouter";
 import AuthGuard from "./PagesAuth/AuthGuard";
 import ProtectedRoute from "./PagesAuth/ProtectedRoute";
 import PublicRoute from "./PagesAuth/PublicRoute";
-
+import AIRecommendationDetail from "./components/AIRecommendationDetail/AIRecommendationDetail"
 import AvatarUpload from './AvatarUpload'
 
 function InnerAnimatedRoutes() {
@@ -81,6 +81,25 @@ function InnerAnimatedRoutes() {
             } 
           />
           
+         <Route 
+            path="/active" 
+            element={
+              <ProtectedRoute>
+                <ActiveTripDetailPage />
+              </ProtectedRoute>
+            } 
+          />  
+          
+          
+          <Route 
+            path="/AIRecDetail/:recId" 
+            element={
+              <ProtectedRoute>
+                <AIRecommendationDetail />
+              </ProtectedRoute>
+            } 
+          />
+          
           <Route 
             path="/settings" 
             element={
@@ -98,6 +117,16 @@ function InnerAnimatedRoutes() {
               </ProtectedRoute>
             } 
           />
+         
+          <Route 
+            path="/upcoming/:tripFilter" 
+            element={
+              <ProtectedRoute>
+                <TripHistoryPage />
+              </ProtectedRoute>
+            } 
+          /> 
+          
           
           <Route 
             path="/trips/:tripId" 

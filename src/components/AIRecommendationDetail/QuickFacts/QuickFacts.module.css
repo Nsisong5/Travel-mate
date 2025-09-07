@@ -1,0 +1,32 @@
+@import "../../Dashboard/theme-vars.css";
+
+.quickFacts {
+  margin-bottom: 1.25rem;
+  user-select: none;
+}
+
+.badges {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.5rem;
+}
+
+.badge {
+  background: var(--card-grad-start);
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 0.875rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: 15px;
+  user-select: text;
+}
+
+.estimatedCost,
+.destType {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-right: 1rem;
+  color: var(--muted);
+  user-select: text;
+}

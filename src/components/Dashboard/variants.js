@@ -19,3 +19,16 @@ export const routeTransition = {
   animate: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
   exit: { opacity: 0, y: -10, transition: { duration: 0.4, ease: "easeIn" } }
 };
+
+
+
+export const progressFill = (value) => ({
+  hidden: { width: 0 },
+  show: { width: `${value}%`, transition: { type: 'spring', stiffness: 120, damping: 20 } }
+});
+
+export const slideLeft = {
+  initial: { opacity: 0, x: 50 },
+  enter: { opacity: 1, x: 0, transition: { duration: 0.4 } },
+  exit: { opacity: 0, x: -40, transition: { duration: 0.3 } }
+};

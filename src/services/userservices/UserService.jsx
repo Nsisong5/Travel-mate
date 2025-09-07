@@ -128,28 +128,23 @@ class UserService {
 
   // Upload avatar (if you have file upload endpoint)
   async uploadAvatar(file) {
-    const {Authorization} = this.getAuthHeaders()
+     if (!file) {
+      alert("Please select a file first!");
+      return;
+    }
+
     try {
       const formData = new FormData();
-      formData.append('file', file);
-      
-      console.log('📸 Uploading avatar file:', file.name);
-      
-      const response = await api.post('/user/upload-avatar', formData, {
-        headers: {         
-          "Authorization": `Bearer {Authorization.token}`,
-           'Content-Type': 'multipart/form-data'
-        }
+      formData.append("file", file);
+      formData.append("user_id", 1); // later: get from context/auth
+
+      const res = await api.post("user/upload-avatar/", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
-      
-      console.log('✅ Avatar upload successful:', response.data);
-      return response.data;
-    } catch (error) {
-      if (error.response?.status === 401) {
-        localStorage.removeItem('access_token');
-        throw new Error('Session expired. Please login again.');
-      }
-      throw new Error(error.response?.data?.detail || 'Failed to upload avatar');
+
+      setAvatarUrl(res.data.avatar_url);
+    } catch (err) {
+      console.error("Upload failed", err);
     }
   }
 

@@ -11,13 +11,14 @@ const typeIcon = {
 const statusIcon = {
   Completed: <CheckCircle size={15} />,
   Canceled: <XCircle size={15} />,
-  Ongoing: <Loader2 size={15} />
+  Ongoing: <Loader2 size={15} />,
+  Planned: <Loader2 size={15} />
 };
 
 export default function TripSummaryCard({ trip }) {
   return (
     <article className={styles.card}>
-      <div className={styles.icon}>{typeIcon[trip.type]}</div>
+      <div className={styles.icon}>{typeIcon[trip.means]}</div>
       <div className={styles.route}>
         <span className={styles.origin}>{trip.origin}</span>
         <span className={styles.arrow}>→</span>

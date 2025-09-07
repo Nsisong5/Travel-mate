@@ -2,9 +2,9 @@ import React from "react";
 import { Filter } from "lucide-react";
 import styles from "./FilterDropdown.module.css";
 
-const options = ["All", "Completed", "Canceled", "Ongoing"];
-
-export default function FilterDropdown({ value, onChange }) {
+const options = ["All", "Completed", "Canceled", "Ongoing","Planned"];
+const options2 = ["All"]
+export default function FilterDropdown({ value, onChange, plannedPage }) {
   return (
     <div className={styles.dropdownBox}>
       <Filter size={18} className={styles.icon} />
@@ -14,7 +14,12 @@ export default function FilterDropdown({ value, onChange }) {
         onChange={e => onChange(e.target.value)}
         aria-label="Filter trips"
       >
-        {options.map(opt => (
+      { 
+        plannedPage ? 
+          options2.map(opt => (
+          <option key={opt} value={opt}>{opt}</option>
+        ))      
+        :options.map(opt => (
           <option key={opt} value={opt}>{opt}</option>
         ))}
       </select>

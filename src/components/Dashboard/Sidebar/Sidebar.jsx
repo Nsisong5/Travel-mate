@@ -10,7 +10,6 @@ const menuItems = [
   { label: "Trip History", icon: <History size={20} />, key: "history" },
   { label: "AI Recommendations", icon: <Cpu size={20} />, key: "ai" },
   { label: "Saved Places", icon: <Bookmark size={20} />, key: "saved" },
-  { label: "Settings", icon: <Settings size={20} />, key: "settings" }
 ];
 
 const activeKey = "dashboard";
@@ -72,10 +71,20 @@ const Sidebar = forwardRef(function Sidebar({ open, onClose }, ref) {
             >
               <span className={styles.icon}>{icon}</span>
               <span className={styles.label}>{label}</span>
-            </Link>
-          ) : (
-            <a
-              href={`${key}`}
+             </Link>) 
+             :key === "upcoming"?(
+             <Link
+              to ="/upcoming/filter"
+              key={key}
+              className={`${styles.navItem} ${key === activeKey ? styles.active : ""}`}
+              aria-current={key === activeKey ? "page" : undefined}
+              tabIndex={0}
+              >
+              <span className={styles.icon}>{icon}</span>
+              <span className={styles.label}>{label}</span>
+            </Link>)        
+            :(<Link
+              to={`/${key}`}
               key={key}
               className={`${styles.navItem} ${key === activeKey ? styles.active : ""}`}
               aria-current={key === activeKey ? "page" : undefined}
@@ -83,7 +92,7 @@ const Sidebar = forwardRef(function Sidebar({ open, onClose }, ref) {
             >
               <span className={styles.icon}>{icon}</span>
               <span className={styles.label}>{label}</span>
-            </a>
+            </Link>
           )
         ))}
       </nav>

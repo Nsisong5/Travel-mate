@@ -1,11 +1,5 @@
 @import "../../Dashboard/theme-vars.css";
 
-:root {
-  --status-completed: #22c55e;
-  --status-canceled: #ef4444;
-  --status-ongoing: #2563eb;
-}
-
 .card {
   background: var(--panel);
   color: var(--text);
@@ -18,6 +12,7 @@
   cursor: pointer;
   border: 1.5px solid var(--card-grad-end);
   transition: box-shadow 0.18s, transform 0.18s;
+  min-height: 110px; /* Increased to accommodate buttons */
 }
 
 .card:hover,
@@ -80,8 +75,13 @@
   color: var(--status-canceled);
 }
 
-.ongoing {
+.planned {
   background: rgba(37,99,235,.09);
+  color: var(--status-planned);
+}
+
+.ongoing {
+  background: rgba(37, 99, 235, 0.09);
   color: var(--status-ongoing);
 }
 
@@ -89,12 +89,50 @@
   display: flex;
   align-items: center;
   gap: 0.7rem;
+  flex-direction: column;
+  min-width: 180px;
 }
 
 .cost {
   font-weight: 600;
   color: var(--primary);
   font-size: 1.13rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.estimateLabel {
+  font-size: 0.7rem;
+  font-weight: normal;
+  color: var(--muted);
+}
+
+.buttons {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 6px;
+  align-items: center;
+}
+
+.iconButton {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  transition: color 0.25s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iconButton:hover,
+.iconButton:focus-visible {
+  color: var(--primary);
+  outline-offset: 2px;
+  outline: 2px solid var(--ring);
 }
 
 .chevron {
