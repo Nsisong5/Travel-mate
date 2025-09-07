@@ -1,0 +1,29 @@
+@import "../../Dashboard/theme-vars.css";
+
+.logosSection {
+  background: var(--card-grad-start);
+  padding: 3rem 1rem;
+  user-select: none;
+}
+
+.logosGrid {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+  max-width: 900px;
+  margin: auto;
+}
+
+.logoImg {
+  max-height: 40px;
+  object-fit: contain;
+  filter: grayscale(1);
+  transition: filter 0.3s ease;
+}
+
+.logoImg:hover,
+.logoImg:focus {
+  filter: grayscale(0);
+  outline: none;
+}

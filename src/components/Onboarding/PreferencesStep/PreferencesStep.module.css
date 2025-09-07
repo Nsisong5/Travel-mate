@@ -1,0 +1,78 @@
+@import "../Onboarding.module.css";
+
+.preferencesPage {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  min-height: 100dvh;
+  min-height: 100vh;
+  padding: 2rem 0.5rem 1rem;
+  align-items: center;
+  user-select: none;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 900;
+  text-align: center;
+  margin-bottom: 0.7rem;
+}
+
+.selectSection {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.3rem;
+  margin: 1.2rem 0;
+}
+
+.label {
+  color: var(--muted);
+  font-weight: 600;
+  margin-bottom: 0.1rem;
+}
+
+.select {
+  width: 100%;
+  padding: 0.6rem 1rem;
+  font-size: 1rem;
+  border-radius: 12px;
+  border: 1.8px solid var(--card-grad-end);
+  background: var(--panel);
+  color: var(--text);
+  transition: border-color 0.25s, box-shadow 0.22s;
+  font-family: inherit;
+}
+
+.select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--ring);
+  outline: none;
+}
+
+.nextNav {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 2rem;
+}
+
+.nextBtn {
+  background: var(--primary);
+  color: var(--panel);
+  font-weight: 700;
+  font-size: 1.15rem;
+  padding: 0.88rem 2rem;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+  outline-offset: 2px;
+}
+
+.nextBtn:hover,
+.nextBtn:focus {
+  background: var(--primary-700);
+  outline: 2px solid var(--ring);
+}

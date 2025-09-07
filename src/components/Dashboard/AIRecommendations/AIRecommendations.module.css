@@ -1,0 +1,120 @@
+.container {
+  background: var(--panel);
+  border-radius: 1.1rem;
+  padding: 1rem 1rem 1.5rem;
+  box-shadow: var(--shadow);
+  color: var(--text);
+  transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+  user-select: none;
+  outline-offset: 2px;
+}
+
+.container:focus-within {
+  outline: 2px solid var(--ring);
+}
+
+.title {
+  font-weight: 700;
+  font-size: 1.2rem;
+  margin-bottom: 0.75rem;
+}
+
+.carouselWrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.carousel {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+  overflow: hidden;
+  scroll-snap-type: x mandatory;
+}
+
+.card {
+  flex: 1 0 180px;
+  background: linear-gradient(135deg, var(--card-grad-start), var(--card-grad-end));
+  border-radius: 1rem;
+  padding: 1rem;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.07);
+  transition: background 0.3s, box-shadow 0.3s;
+  cursor: pointer;
+  user-select: none;
+  outline-offset: 3px;
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--ring);
+}
+
+.cardTitle {
+  font-weight: 600;
+  font-size: 1.05rem;
+  margin-bottom: 0.5rem;
+  color: var(--text);
+}
+
+.cardDesc {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+/* Navigation buttons */
+.navButton {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--primary);
+  padding: 0 0.5rem;
+  display: flex;
+  align-items: center;
+  transition: color 0.3s;
+  user-select: none;
+}
+
+.navButton:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.navButton:hover:not(:disabled),
+.navButton:focus-visible:not(:disabled) {
+  color: var(--primary-700);
+}
+
+/* Dark mode overrides */
+body[data-theme="dark"] .container {
+  background: var(--panel);
+  box-shadow: 0 8px 20px var(--shadow);
+  color: var(--text);
+}
+
+body[data-theme="dark"] .card {
+  background: linear-gradient(135deg, var(--card-grad-start), var(--card-grad-end));
+  background: linear-gradient(135deg, var(--card-grad-start), var(--card-grad-end));
+  background: linear-gradient(135deg, var(--card-grad-start), var(--card-grad-end));
+  background: linear-gradient(135deg, var(--card-grad-start), var(--card-grad-end));
+  background: linear-gradient(135deg, var(--card-grad-start), var(--card-grad-end));
+  background: linear-gradient(135deg, #0f1a30, #0c1627);
+  box-shadow: 0 4px 14px var(--shadow);
+  color: var(--text);
+}
+
+body[data-theme="dark"] .cardTitle {
+  color: var(--text);
+}
+
+body[data-theme="dark"] .cardDesc {
+  color: var(--muted);
+}
+
+body[data-theme="dark"] .navButton {
+  color: var(--primary);
+}
+
+body[data-theme="dark"] .navButton:hover,
+body[data-theme="dark"] .navButton:focus-visible {
+  color: var(--primary-700);
+}

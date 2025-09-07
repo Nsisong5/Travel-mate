@@ -1,0 +1,18 @@
+@import "../Dashboard/theme-vars.css";
+
+.page {
+  background: var(--bg);
+  min-height: 100vh;
+  padding: 1.8rem 1rem 3rem;
+  max-width: 100%;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.7rem;
+  font-family: "Poppins", sans-serif;
+  color: var(--text);
+}
+
+.recsMain {
+  min-height: 420px;
+}

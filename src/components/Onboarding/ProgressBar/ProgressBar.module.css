@@ -1,0 +1,21 @@
+@import "../../Dashboard/theme-vars.css";
+
+.progressBar {
+  display: flex;
+  gap: 0.6rem;
+  padding: 1rem 0 0 0;
+  user-select: none;
+  justify-content: center;
+}
+
+.segment {
+  flex-grow: 1;
+  height: 8px;
+  background: var(--card-grad-end);
+  border-radius: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.filled {
+  background: var(--primary);
+}

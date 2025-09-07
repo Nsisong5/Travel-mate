@@ -1,0 +1,111 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1.25rem;
+  font-family: "Poppins", sans-serif;
+  background-color: --var(--dark);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  background-color: var(--bg-dark)
+}
+
+/* Dark mode container background */
+.dark .container {
+  background-color: #0f172a; /* same as landing page dark bg */
+}
+
+.logoPlaceholder {
+  width: 72px;
+  height: 72px;
+  border-radius: 9999px;
+  background-color: #3b82f6;
+  color: white;
+  font-weight: 700;
+  font-size: 36px;
+  line-height: 72px;
+  user-select: none;
+  box-shadow: 0 4px 10px rgba(59, 130, 246, 0.4);
+}
+
+.dark .logoPlaceholder {
+  background-color: #2563eb; /* darker blue accent */
+  box-shadow: 0 4px 10px rgba(59, 130, 246, 0.6);
+}
+
+.illustrationPlaceholder {
+  margin: 1rem 0;
+  width: 160px;
+  height: 160px;
+}
+
+.illustrationCircle {
+  fill: #3b82f6;
+  fill-opacity: 0.15;
+}
+
+.dark .illustrationCircle {
+  fill: #3b82f6;
+  fill-opacity: 0.25;
+}
+
+.illustrationText {
+  fill: #3b82f6;
+  font-size: 20px;
+  font-family: Poppins, sans-serif;
+  font-weight: 600;
+}
+
+.dark .illustrationText {
+  fill: #60a5fa;
+}
+
+.headline {
+  font-size: clamp(1.5rem, 3vw, 1.875rem);
+  font-weight: 700;
+  color: #1e3a8a;
+  transition: color 0.3s ease;
+}
+
+.dark .headline {
+  color: #93c5fd;
+}
+
+.subtext {
+  font-size: 1rem;
+  font-weight: 400;
+  color: #475569;
+  transition: color 0.3s ease;
+}
+
+.dark .subtext {
+  color: #cbd5e1;
+}
+
+.ctaButton {
+  margin-top: 1rem;
+  background-color: #3b82f6;
+  color: white;
+  font-weight: 600;
+  font-size: 1.125rem;
+  padding: 0.875rem 2.25rem;
+  border: none;
+  border-radius: 1rem;
+  cursor: pointer;
+  box-shadow: 0 8px 16px rgba(59, 130, 246, 0.3);
+  user-select: none;
+  transition: background-color 0.3s ease;
+}
+
+.ctaButton:hover {
+  background-color: #2563eb;
+}
+
+.dark .ctaButton {
+  background-color: #2563eb;
+  box-shadow: 0 8px 16px rgba(96, 165, 250, 0.4);
+}
+
+.dark .ctaButton:hover {
+  background-color: #1d4ed8;
+}

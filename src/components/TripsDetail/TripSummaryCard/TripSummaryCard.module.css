@@ -1,0 +1,69 @@
+@import "../../Dashboard/theme-vars.css";
+
+:root {
+  --status-completed: #22c55e;
+  --status-canceled: #ef4444;
+  --status-ongoing: #2563eb;
+}
+
+.card {
+  background: var(--panel);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 1.6rem 1.2rem;
+  margin: 0 auto;
+  max-width: 390px;
+  width: 100%;
+  border: 1.5px solid var(--card-grad-end);
+}
+
+.icon {
+  background: linear-gradient(90deg, var(--card-grad-start), var(--card-grad-end));
+  border-radius: 50%;
+  padding: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.route {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: .01em;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.5rem 0;
+}
+
+.arrow {
+  color: var(--muted);
+}
+
+.status {
+  font-size: 0.98rem;
+  font-weight: 700;
+  padding: 0.2rem 1rem;
+  border-radius: 9px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.completed {
+  background: rgba(34,197,94,.10);
+  color: var(--status-completed);
+}
+.canceled {
+  background: rgba(239,68,68,.13);
+  color: var(--status-canceled);
+}
+.ongoing {
+  background: rgba(37,99,235,.10);
+  color: var(--status-ongoing);
+}

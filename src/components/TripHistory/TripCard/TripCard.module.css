@@ -1,0 +1,107 @@
+@import "../../Dashboard/theme-vars.css";
+
+:root {
+  --status-completed: #22c55e;
+  --status-canceled: #ef4444;
+  --status-ongoing: #2563eb;
+}
+
+.card {
+  background: var(--panel);
+  color: var(--text);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  gap: 1.3rem;
+  padding: 1.2rem 1.5rem;
+  cursor: pointer;
+  border: 1.5px solid var(--card-grad-end);
+  transition: box-shadow 0.18s, transform 0.18s;
+}
+
+.card:hover,
+.card:focus {
+  box-shadow: 0 10px 30px rgba(48, 130, 255, 0.11);
+  transform: translateY(-2px) scale(1.01);
+}
+
+.iconBox {
+  flex-shrink: 0;
+  background: linear-gradient(90deg,var(--card-grad-start),var(--card-grad-end));
+  border-radius: 50%;
+  padding: 0.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.route {
+  font-size: 1.17rem;
+  font-weight: 600;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.arrow {
+  color: var(--muted);
+  font-weight: bold;
+}
+
+.meta {
+  display: flex;
+  gap: 1.2rem;
+  font-size: 1rem;
+  color: var(--muted);
+}
+
+.status {
+  font-weight: 700;
+  font-size: 0.97rem;
+  border-radius: 7px;
+  padding: 0.12rem 0.7rem;
+}
+
+.completed {
+  background: rgba(34,197,94,.07);
+  color: var(--status-completed);
+}
+
+.canceled {
+  background: rgba(239,68,68,.09);
+  color: var(--status-canceled);
+}
+
+.ongoing {
+  background: rgba(37,99,235,.09);
+  color: var(--status-ongoing);
+}
+
+.side {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.cost {
+  font-weight: 600;
+  color: var(--primary);
+  font-size: 1.13rem;
+}
+
+.chevron {
+  color: var(--muted);
+  transition: color 0.2s;
+}
+
+.card:hover .chevron {
+  color: var(--primary);
+}

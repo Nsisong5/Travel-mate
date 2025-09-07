@@ -1,0 +1,89 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  font-family: "Poppins", sans-serif;
+ 
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+  font-size: 0.9rem;
+  color: #1e3a8a;
+}
+
+.input {
+  padding: 0.75rem 1rem;
+  border: 1.5px solid #dce3f0;
+  border-radius: 1rem;
+  font-size: 1rem;
+  outline-offset: 3px;
+  transition: border-color 0.3s ease;
+  font-family: inherit;
+}
+
+.input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 6px #3b82f6aa;
+}
+
+.inputError {
+  border-color: #ef4444;
+}
+
+.errorMessage {
+  color: #ef4444;
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+  outline: none;
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.skipBtn {
+  background: transparent;
+  border: none;
+  color: #475569;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  min-width: 120px;
+}
+
+.finishBtn {
+  flex: 1;
+  background-color: #3b82f6;
+  color: white;
+  border-radius: 1rem;
+  border: none;
+  padding: 0.9rem 1.5rem;
+  font-weight: 700;
+  font-size: 1.125rem;
+  cursor: pointer;
+  box-shadow: 0 8px 16px rgba(59,130,246,0.3);
+  user-select: none;
+  transition: background-color 0.3s ease;
+}
+
+.finishBtn:hover {
+  background-color: #2563eb;
+}
+
+@media (max-width: 480px) {
+  .actions {
+    flex-direction: column;
+  }
+}

@@ -1,0 +1,98 @@
+@import "../Onboarding.module.css";
+
+.welcomePage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100dvh;
+  min-height: 100vh; /* fallback */
+  padding: 2rem 1rem;
+  gap: 2rem;
+  text-align: center;
+  user-select: none;
+}
+
+.logoCircle {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: var(--panel);
+  font-weight: 900;
+  font-size: 48px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
+}
+
+.title {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 900;
+  line-height: 1.1;
+  margin: 0;
+  color: var(--text);
+}
+
+.subtitle {
+  color: var(--muted);
+  font-size: clamp(1.1rem, 3vw, 1.4rem);
+  font-weight: 500;
+  margin: 0;
+}
+
+.buttonGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  width: 100%;
+  max-width: 300px;
+}
+
+.primaryBtn {
+  background: var(--primary);
+  border: none;
+  color: var(--panel);
+  font-weight: 700;
+  font-size: 1.15rem;
+  padding: 0.9rem 1.8rem;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+}
+
+.primaryBtn:hover,
+.primaryBtn:focus {
+  background: var(--primary-700);
+  outline: none;
+}
+
+.skipBtn {
+  background: transparent;
+  border: none;
+  color: var(--primary);
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: color 0.25s ease;
+}
+
+.skipBtn:hover,
+.skipBtn:focus {
+  color: var(--primary-700);
+  outline: none;
+}
+
+@media(min-width: 640px) {
+  .buttonGroup {
+    flex-direction: row;
+    justify-content: center;
+  }
+  .primaryBtn, .skipBtn {
+    flex: 1 1 auto;
+  }
+  .skipBtn {
+    text-align: center;
+  }
+}

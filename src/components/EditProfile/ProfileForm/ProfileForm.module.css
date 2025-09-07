@@ -1,0 +1,46 @@
+@import "../../Dashboard/theme-vars.css";
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.35rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.label {
+  font-weight: 600;
+  font-size: 1rem;
+  user-select: none;
+}
+
+.input,
+.textarea {
+  font-family: inherit;
+  font-size: 1rem;
+  padding: 0.6rem;
+  border-radius: 10px;
+  border: 1.8px solid var(--card-grad-end);
+  background: var(--panel);
+  color: var(--text);
+  transition: box-shadow 0.22s;
+}
+
+.input:focus,
+.textarea:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--ring);
+}
+
+.error {
+  border-color: var(--primary-700);
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 100px;
+}

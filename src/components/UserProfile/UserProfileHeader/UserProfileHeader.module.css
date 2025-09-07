@@ -1,0 +1,65 @@
+@import "../../Dashboard/theme-vars.css";
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--bg);
+  border-bottom: 1px solid var(--card-grad-end);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem 1rem;
+  user-select: none;
+}
+
+.backBtn {
+  position: absolute;
+  background: none;
+  left: 0;
+  top: 0;
+  border: none;
+  cursor: pointer;
+  color: var(--primary);
+  padding: 0.25rem;
+  border-radius: 7px;
+  transition: background-color 0.3s ease;
+}
+.backBtn:hover,
+.backBtn:focus {
+  background-color: var(--card-grad-start);
+  outline: none;
+}
+
+.rightIcons {
+  position: absolute;
+  right: 0;
+  top: 0;
+  display: flex;
+  gap: 1.2rem;
+}
+
+.iconBtn {
+  background: none;
+  border: none;
+  color: var(--primary);
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 7px;
+  transition: background-color 0.22s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iconBtn:hover,
+.iconBtn:focus {
+  background-color: var(--card-grad-start);
+  outline: none;
+}
+
+@media (min-width: 768px) {
+  .header {
+    padding: 1rem 2rem;
+  }
+}

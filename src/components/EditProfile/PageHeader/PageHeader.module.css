@@ -1,0 +1,18 @@
+@import "../../Dashboard/theme-vars.css";
+
+.header {
+  text-align: center;
+  user-select: none;
+}
+
+.title {
+  font-weight: 700;
+  font-size: 2rem;
+  margin-bottom: 0.3rem;
+}
+
+.subtext {
+  font-weight: 500;
+  font-size: 1rem;
+  color: var(--muted);
+}

@@ -1,0 +1,62 @@
+@import "../../Dashboard/theme-vars.css";
+
+.stepNav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  user-select: none;
+  gap: 0.6rem;
+}
+
+button {
+  font-weight: 600;
+  font-size: 1rem;
+  border-radius: 12px;
+  padding: 0.6rem 1rem;
+  cursor: pointer;
+  user-select: none;
+  border: none;
+  background: var(--primary);
+  color: var(--panel);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: background-color 0.3s ease;
+}
+
+button:disabled {
+  background: var(--card-grad-end);
+  cursor: not-allowed;
+  color: var(--muted);
+}
+
+button:hover:not(:disabled),
+button:focus-visible:not(:disabled) {
+  background-color: var(--primary-700);
+  outline: none;
+}
+
+.btnBack {
+  flex: 1 1 auto;
+  justify-content: flex-start;
+}
+
+.btnSkip {
+  flex: 0 0 auto;
+  background: transparent;
+  color: var(--primary);
+  border: 1.5px solid var(--primary);
+}
+
+.btnSkip:hover,
+.btnSkip:focus-visible {
+  background: var(--primary);
+  color: var(--panel);
+  outline: none;
+}
+
+.btnNext {
+  flex: 1 1 auto;
+  justify-content: flex-end;
+}

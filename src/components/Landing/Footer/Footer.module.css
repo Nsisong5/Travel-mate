@@ -1,0 +1,31 @@
+@import "../../Dashboard/theme-vars.css";
+
+.footer {
+  background: var(--card-grad-end);
+  padding: 2rem 1rem;
+  text-align: center;
+  user-select: none;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.links {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.link {
+  color: var(--text);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.link:hover,
+.link:focus {
+  color: var(--primary);
+  outline: none;
+}

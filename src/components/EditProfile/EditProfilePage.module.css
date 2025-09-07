@@ -1,0 +1,15 @@
+@import "../Dashboard/theme-vars.css";
+
+.page {
+  max-width: 600px;
+  margin: 3rem auto 6rem;
+  background: var(--panel);
+  border-radius: 1.25rem;
+  box-shadow: var(--shadow);
+  padding: 2.5rem 2rem 3rem;
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  font-family: "Poppins", sans-serif;
+}

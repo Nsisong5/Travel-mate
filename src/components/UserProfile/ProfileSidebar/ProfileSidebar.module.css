@@ -1,0 +1,134 @@
+@import "../../Dashboard/theme-vars.css";
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background-color: #000;
+  opacity: 0.45;
+  z-index: 150;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  background: var(--panel);
+  color: var(--text);
+  box-shadow: var(--shadow);
+  padding: 1.35rem 1rem 1rem;
+  display: flex;
+  flex-direction: column;
+  z-index: 160;
+  border-radius: 14px 0 0 14px;
+  overflow-y: auto;
+  user-select: none;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.closeBtn {
+  background: none;
+  border: none;
+  color: var(--text);
+  cursor: pointer;
+  font-weight: 600;
+  border-radius: 7px;
+  padding: 0.2rem 0.45rem;
+  transition: background-color 0.2s ease;
+}
+
+.closeBtn:hover,
+.closeBtn:focus {
+  background-color: var(--card-grad-start);
+  outline: none;
+}
+
+.section {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.themeToggle {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--primary);
+  padding: 0.45rem 0;
+  font-size: 1.05rem;
+}
+
+.themeToggle svg {
+  flex-shrink: 0;
+}
+
+.currencyBtn {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.7rem;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-size: 1rem;
+  padding: 0.55rem 0;
+}
+
+.chevron {
+  transition: transform 0.3s ease;
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+.currencyList {
+  margin: 0;
+  padding: 0.3rem 0 0.4rem 0;
+  list-style: none;
+  max-height: 160px;
+  overflow-y: auto;
+  border-top: 1px solid var(--card-grad-end);
+}
+
+.currencyOption {
+  width: 100%;
+  padding: 0.4rem 1rem;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  color: var(--text);
+  font-weight: 500;
+}
+
+.currencyOption:hover,
+.currencyOption:focus {
+  background-color: var(--card-grad-start);
+  outline: none;
+}
+
+.selected {
+  background-color: var(--primary);
+  color: var(--panel);
+}
+
+.flag {
+  margin-right: 0.7rem;
+  font-size: 1.1rem;
+}

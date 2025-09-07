@@ -1,0 +1,40 @@
+@import "../../Dashboard/theme-vars.css";
+
+.features {
+  background: var(--card-grad-end);
+  display: flex;
+  gap: 1rem;
+  padding: 3rem 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.featureCard {
+  background: var(--panel);
+  box-shadow: var(--shadow);
+  border-radius: 1rem;
+  padding: 1.5rem 1rem;
+  max-width: 280px;
+  flex-grow: 1;
+  text-align: center;
+  color: var(--text);
+  cursor: default;
+  user-select: none;
+}
+
+.iconWrapper {
+  color: var(--primary);
+  margin-bottom: 1rem;
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.45rem;
+}
+
+.desc {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--muted);
+}

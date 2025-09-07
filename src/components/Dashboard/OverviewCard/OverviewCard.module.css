@@ -1,0 +1,61 @@
+@import "../theme-vars.css";
+
+.card {
+  background: linear-gradient(115deg, var(--card-grad-start), var(--card-grad-end));
+  box-shadow: var(--shadow);
+  border-radius: 1.15rem;
+  padding: 1rem 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: var(--text);
+  cursor: pointer;
+  will-change: transform;
+  transform: translateZ(0);
+  transition: background 0.33s, box-shadow 0.3s, color 0.3s;
+  outline-offset: 2px;
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--ring);
+}
+
+.card * {
+  backface-visibility: hidden;
+}
+
+.icon {
+  font-size: 2rem;
+  color: var(--primary);
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.title {
+  font-size: 0.92rem;
+  font-weight: 500;
+  letter-spacing: 0.008em;
+  margin: 0 0 0.13rem 0;
+}
+
+.value {
+  font-size: 1.17rem;
+  font-weight: 700;
+}
+
+/* Dark mode */
+body[data-theme="dark"] .card {
+  background: linear-gradient(115deg, var(--card-grad-start), var(--card-grad-end));
+  box-shadow: var(--shadow);
+  color: var(--text);
+}
+
+body[data-theme="dark"] .icon {
+  color: var(--primary);
+}

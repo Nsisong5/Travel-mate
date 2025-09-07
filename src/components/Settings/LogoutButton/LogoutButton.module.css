@@ -1,0 +1,38 @@
+@import "../../Dashboard/theme-vars.css";
+
+:root {
+  --logout-border: #ef4444;
+  --logout-hover-bg: #ef4444;
+  --logout-text: #ef4444;
+  --logout-hover-text: #fff;
+}
+body[data-theme="dark"] {
+  --logout-border: #f87171;
+  --logout-hover-bg: #f87171;
+  --logout-text: #f87171;
+  --logout-hover-text: #000;
+}
+
+.logoutBtn {
+  width: 100%;
+  background: transparent;
+  border: 2.5px solid var(--logout-border);
+  border-radius: 12px;
+  padding: 1rem 0;
+  font-weight: 700;
+  color: var(--logout-text);
+  font-size: 1.15rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  cursor: pointer;
+  transition: background-color 0.28s ease, color 0.28s ease;
+  user-select: none;
+}
+
+.logoutBtn:hover,
+.logoutBtn:focus {
+  background-color: var(--logout-hover-bg);
+  color: var(--logout-hover-text);
+  outline: none;
+}

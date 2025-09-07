@@ -1,0 +1,17 @@
+@import "../Dashboard/theme-vars.css";
+
+.page {
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding-bottom: 2.5rem;
+}
+
+.main {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 0 1.2rem 2.5rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}

@@ -1,0 +1,27 @@
+@import "../../Dashboard/theme-vars.css";
+
+.footer {
+  text-align: center;
+  margin-top: 2rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--muted);
+  user-select: none;
+}
+
+.askBtn {
+  background: none;
+  border: none;
+  color: var(--primary);
+  cursor: pointer;
+  font-weight: 700;
+  margin-left: 8px;
+  text-decoration: underline;
+  user-select: none;
+}
+
+.askBtn:hover,
+.askBtn:focus {
+  color: var(--primary-700);
+  outline: none;
+}

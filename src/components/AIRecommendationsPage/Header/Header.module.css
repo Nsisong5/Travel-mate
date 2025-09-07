@@ -1,0 +1,42 @@
+@import "../../Dashboard/theme-vars.css";
+
+.header {
+  position: relative;
+  background: linear-gradient(90deg, var(--card-grad-start), var(--card-grad-end));
+  padding: 1rem 1.5rem 2rem 1.5rem;
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0 0 0.4rem 0;
+  color: var(--text);
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.refreshBtn {
+  position: absolute;
+  right: 1.1rem;
+  top: 1.2rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--primary);
+  border-radius: 6px;
+  padding: 0.3rem;
+  transition: background 0.22s ease;
+}
+
+.refreshBtn:hover,
+.refreshBtn:focus {
+  background: var(--card-grad-end);
+  outline: none;
+}

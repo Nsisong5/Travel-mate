@@ -1,0 +1,69 @@
+@import "../../Dashboard/theme-vars.css";
+
+.hero {
+  position: relative;
+  background: var(--card-grad-start);
+  background-image: url('https://via.placeholder.com/1920x700');
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  color: var(--panel);
+  text-align: center;
+  padding: 6rem 2rem 8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.title {
+  font-size: clamp(1.8rem, 6vw, 3rem);
+  font-weight: 900;
+  line-height: 1.1;
+}
+
+.subtitle {
+  font-size: clamp(1rem, 3vw, 1.25rem);
+  font-weight: 500;
+  color: var(--panel);
+}
+
+.btnGroup {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.primaryBtn {
+  background-color: var(--primary);
+  color: var(--panel);
+  border: none;
+  padding: 0.9rem 2.4rem;
+  border-radius: 16px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+}
+
+.primaryBtn:hover {
+  background-color: var(--primary-700);
+}
+
+.secondaryBtn {
+  padding: 0.9rem 2.4rem;
+  border: 2px solid var(--panel);
+  background: transparent;
+  color: var(--panel);
+  border-radius: 16px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+.secondaryBtn:hover {
+  background-color: var(--panel);
+  color: var(--primary);
+}

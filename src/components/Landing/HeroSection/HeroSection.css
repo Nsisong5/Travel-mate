@@ -1,0 +1,104 @@
+@import "../../Dashboard/theme-vars.css";
+
+.hero {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 500px;
+  background-image: url("/heroImg.PNG");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: var(--panel);
+  padding: 2rem 1rem;
+  box-sizing: border-box;
+  overflow: hidden;
+  font-family: "Poppins", sans-serif;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0,0,0,0.4);
+  z-index: 0;
+}
+
+.content {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 600px;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.headline {
+  font-size: clamp(1.8rem, 6vw, 3rem);
+  font-weight: 900;
+  line-height: 1.1;
+  text-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+.buttons {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+.btn {
+  border-radius: 16px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  padding: 0.9rem 2.4rem;
+  cursor: pointer;
+  transition: background-color 0.25s ease, color 0.25s ease;
+  user-select: none;
+  border: none;
+}
+
+.btn.primary {
+  background-color: var(--primary);
+  color: var(--panel);
+}
+
+.btn.primary:hover,
+.btn.primary:focus {
+  background-color: var(--primary-700);
+  outline: none;
+}
+
+.btn.secondary {
+  background-color: transparent;
+  color: var(--panel);
+  border: 2px solid var(--panel);
+}
+
+.btn.secondary:hover,
+.btn.secondary:focus {
+  background-color: var(--panel);
+  color: var(--primary);
+  outline: none;
+}
+
+@media (min-width: 600px) {
+  .buttons {
+    flex-direction: row;
+    justify-content: center;
+  }
+  .btn {
+    flex: 1 0 auto;
+  }
+  .btn.primary {
+    margin-right: 1rem;
+  }
+}

@@ -1,0 +1,46 @@
+@import "../theme-vars.css";
+
+.mapCard {
+  background: linear-gradient(115deg, var(--card-grad-start), var(--card-grad-end));
+  box-shadow: var(--shadow);
+  border-radius: 1.15rem;
+  padding: 1rem;
+  color: var(--text);
+  outline-offset: 2px;
+  user-select: none;
+  transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.mapCard:focus-visible {
+  outline: 2px solid var(--ring);
+}
+
+.title {
+  font-size: 1.14rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.mapSvg {
+  border-radius: 0.75rem;
+  width: 100%;
+  display: block;
+}
+
+.note {
+  font-size: 0.84rem;
+  color: var(--muted);
+  margin-top: 0.43rem;
+}
+
+/* Dark mode */
+body[data-theme="dark"] .mapCard {
+  background: linear-gradient(115deg, var(--card-grad-start), var(--card-grad-end));
+  box-shadow: var(--shadow);
+  color: var(--text);
+}
+body[data-theme="dark"] .note {
+  color: var(--muted);
+}

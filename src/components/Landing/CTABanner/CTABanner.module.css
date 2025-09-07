@@ -1,0 +1,44 @@
+@import "../../Dashboard/theme-vars.css";
+
+.ctaBanner {
+  background: var(--primary);
+  padding: 3rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  color: var(--panel);
+  text-align: center;
+  user-select: none;
+}
+
+.heading {
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  font-weight: 700;
+}
+
+.ctaButton {
+  background: var(--panel);
+  color: var(--primary);
+  border: none;
+  padding: 0.85rem 2.4rem;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  transition: background-color 0.3s ease;
+  user-select: none;
+}
+
+.ctaButton:hover,
+.ctaButton:focus {
+  background-color: var(--card-grad-end);
+  outline: none;
+}
+
+.ctaButton svg {
+  flex-shrink: 0;
+}

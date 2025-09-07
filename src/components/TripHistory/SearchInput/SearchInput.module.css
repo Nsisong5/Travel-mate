@@ -1,0 +1,35 @@
+@import "../../Dashboard/theme-vars.css";
+
+.searchBox {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: var(--panel);
+  border-radius: 10px;
+  border: 1.5px solid var(--card-grad-end);
+  box-shadow: var(--shadow);
+  width: 100%;
+  max-width: 340px;
+}
+
+.icon {
+  position: absolute;
+  left: 0.8rem;
+  color: var(--muted);
+  z-index: 2;
+}
+
+.input {
+  padding: 0.7rem 1rem 0.7rem 2.7rem;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  background: transparent;
+  color: var(--text);
+  border-radius: 10px;
+  width: 100%;
+}
+
+.input:focus {
+  box-shadow: 0 0 0 2.5px var(--ring);
+}

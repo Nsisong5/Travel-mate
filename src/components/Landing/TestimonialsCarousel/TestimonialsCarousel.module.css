@@ -1,0 +1,90 @@
+@import "../../Dashboard/theme-vars.css";
+
+.testimonials {
+  background: var(--card-grad-start);
+  padding: 4rem 1rem 5rem;
+  color: var(--text);
+  user-select: none;
+}
+
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.navBtn {
+  background: var(--primary);
+  color: var(--panel);
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-size: 22px;
+  font-weight: 700;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.25s ease;
+}
+
+.navBtn:hover,
+.navBtn:focus {
+  background-color: var(--primary-700);
+  outline: none;
+}
+
+.slider {
+  display: flex;
+  gap: 1rem;
+  overflow: hidden;
+  flex-grow: 1;
+}
+
+.card {
+  background: var(--panel);
+  box-shadow: var(--shadow);
+  border-radius: 1rem;
+  padding: 1.8rem 1.5rem;
+  flex: 0 0 calc(33.3333% - 0.66rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  cursor: default;
+  outline-offset: 4px;
+  outline: none;
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--ring);
+}
+
+.text {
+  font-size: 1rem;
+  font-weight: 600;
+  font-style: italic;
+  margin-bottom: 1rem;
+  color: var(--text);
+}
+
+.author {
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 0.2rem;
+}
+
+.location {
+  font-weight: 500;
+  font-size: 0.87rem;
+  color: var(--muted);
+}
+
+/* Responsive */
+
+@media (max-width: 768px) {
+  .card {
+    flex: 0 0 100%;
+  }
+}

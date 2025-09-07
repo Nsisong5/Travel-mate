@@ -1,0 +1,37 @@
+@import "../../Dashboard/theme-vars.css";
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  color: var(--muted);
+  font-size: 1.2rem;
+  user-select: none;
+  text-align: center;
+}
+
+.emptyIcon {
+  margin-bottom: 1rem;
+  color: var(--primary);
+}
+
+.exploreBtn {
+  margin-top: 1.25rem;
+  background: var(--primary);
+  color: var(--panel);
+  font-weight: 700;
+  border: none;
+  padding: 0.75rem 1.8rem;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  user-select: none;
+}
+
+.exploreBtn:hover,
+.exploreBtn:focus {
+  background-color: var(--primary-700);
+  outline: none;
+}

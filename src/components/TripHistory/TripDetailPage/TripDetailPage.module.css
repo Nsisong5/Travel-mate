@@ -1,0 +1,123 @@
+@import "../../Dashboard/theme-vars.css";
+
+:root {
+  --status-completed: #22c55e;
+  --status-canceled: #ef4444;
+  --status-ongoing: #2563eb;
+}
+
+.wrapper {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 1.5rem 0;
+}
+
+.backBtn {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  color: var(--primary);
+  cursor: pointer;
+  margin-bottom: 1.3rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 8px;
+}
+
+.backBtn:hover, .backBtn:focus {
+  background: var(--primary);
+  color: var(--panel);
+  outline: none;
+}
+
+.card {
+  background: var(--panel);
+  color: var(--text);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  gap: 2.2rem;
+  padding: 2.5rem 2rem;
+  border: 1.5px solid var(--card-grad-end);
+}
+
+.iconBox {
+  background: linear-gradient(90deg,var(--card-grad-start),var(--card-grad-end));
+  border-radius: 50%;
+  padding: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.05rem;
+}
+
+.route {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+}
+
+.meta {
+  display: flex;
+  gap: 1.7rem;
+  font-size: 1.08rem;
+  color: var(--muted);
+  align-items: center;
+}
+
+.metaLabel {
+  margin-right: 0.35rem;
+}
+
+.status {
+  font-weight: bold;
+  font-size: 1rem;
+  border-radius: 8px;
+  padding: 0.13rem 0.77rem;
+}
+
+.completed {
+  background: rgba(34,197,94,.07);
+  color: var(--status-completed);
+}
+
+.canceled {
+  background: rgba(239,68,68,.09);
+  color: var(--status-canceled);
+}
+
+.ongoing {
+  background: rgba(37,99,235,.09);
+  color: var(--status-ongoing);
+}
+
+.costBox {
+  display: flex;
+  gap: 1.1rem;
+  align-items: baseline;
+}
+
+.costLabel {
+  font-size: 1rem;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.cost {
+  font-size: 1.22rem;
+  font-weight: 800;
+  color: var(--primary);
+}
+.notFound {
+  padding: 2rem;
+  font-size: 1.15rem;
+  color: var(--muted);
+  text-align: center;
+}

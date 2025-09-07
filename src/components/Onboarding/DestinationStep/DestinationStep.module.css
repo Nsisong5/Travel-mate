@@ -1,0 +1,64 @@
+@import "../Onboarding.module.css";
+
+.destinationPage {
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+  min-height: 100dvh;
+  min-height: 100vh;
+  padding: 2rem 0.5rem 1rem;
+  align-items: center;
+  justify-content: flex-start;
+  user-select: none;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 900;
+  margin-bottom: 0.1rem;
+  text-align: center;
+}
+
+.subtext {
+  color: var(--muted);
+  font-size: 1.09rem;
+  text-align: center;
+}
+
+.inputSection {
+  width: 100%;
+  max-width: 480px;
+  margin-bottom: 1rem;
+}
+
+.nextNav {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 2.25rem;
+}
+
+.nextBtn {
+  background: var(--primary);
+  color: var(--panel);
+  font-weight: 700;
+  font-size: 1.15rem;
+  padding: 0.88rem 2rem;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+  outline-offset: 2px;
+}
+
+.nextBtn:disabled {
+  background: var(--card-grad-end);
+  color: var(--muted);
+  cursor: not-allowed;
+}
+
+.nextBtn:hover:not(:disabled),
+.nextBtn:focus:not(:disabled) {
+  background: var(--primary-700);
+  outline: 2px solid var(--ring);
+}

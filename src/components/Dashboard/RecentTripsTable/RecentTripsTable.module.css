@@ -1,0 +1,78 @@
+.tableSection {
+  background: var(--panel);
+  border-radius: 1rem;
+  padding: 1rem;
+  box-shadow: var(--shadow);
+  color: var(--text);
+  transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+  user-select: none;
+  outline-offset: 2px;
+}
+
+.tableSection:focus-visible {
+  outline: 2px solid var(--ring);
+}
+
+.title {
+  font-weight: 700;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.recentTripsTable {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.95rem;
+  color: var(--text);
+}
+
+.recentTripsTable th,
+.recentTripsTable td {
+  padding: 0.75rem 0.8rem;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.recentTripsTable thead th {
+  font-weight: 600;
+  color: var(--primary);
+  background: transparent;
+}
+
+.recentTripsTable tbody tr {
+  border-radius: 0.3rem;
+  transition: background 0.2s;
+  cursor: pointer;
+}
+
+.recentTripsTable tbody tr:hover,
+.recentTripsTable tbody tr:focus-visible {
+  background: var(--ring);
+  outline: none;
+}
+
+.recentTripsTable td {
+  border-bottom: 1px solid var(--ring);
+}
+
+/* Dark mode */
+body[data-theme="dark"] .tableSection {
+  background: var(--panel);
+  box-shadow: 0 4px 15px var(--shadow);
+  color: var(--text);
+}
+
+body[data-theme="dark"] .recentTripsTable thead th {
+  color: var(--primary);
+}
+
+body[data-theme="dark"] .recentTripsTable tbody tr:hover,
+body[data-theme="dark"] .recentTripsTable tbody tr:focus-visible {
+  background: var(--ring);
+}
+
+body[data-theme="dark"] .recentTripsTable td {
+  border-bottom: 1px solid var(--ring);
+  color: var(--text);
+}

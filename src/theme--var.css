@@ -1,0 +1,46 @@
+/* Global theme tokens available to all components. Import this once near the app root. */
+
+/* Light theme (default) */
+:root,
+body[data-theme="light"] {
+  --bg: #f5f9ff;                 /* soft bluish white */
+  --panel: #ffffff;              /* card/panel background */
+  --text: #1e3a8a;               /* navy text */
+  --muted: #475569;              /* slate-muted */
+  --primary: #2563eb;            /* blue 600 */
+  --primary-700: #1d4ed8;        /* blue 700 */
+  --ring: #60a5fa;               /* focus ring */
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+
+  /* Optional mapping to existing landing tokens, if present */
+  --color-bg-light: var(--bg);
+  --color-text-light: var(--text);
+  --color-primary: var(--primary);
+  --color-primary-active: var(--primary-700);
+}
+
+/* Dark theme */
+body[data-theme="dark"] {
+  --bg: #0f172a;                 /* deep slate/ink */
+  --panel: #111827;              /* panel dark */
+  --text: #e5e7eb;               /* light text */
+  --muted: #94a3b8;              /* muted text */
+  --primary: #3b82f6;            /* brighter blue in dark */
+  --primary-700: #2563eb;
+  --ring: #60a5fa;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+
+  /* Map for legacy landing selectors using `.dark` */
+  --color-bg-dark: #1c1e21;
+  --color-text-dark: #e1e1e1;
+}
+
+/* Helpful base defaults (non-invasive) */
+body {
+  background: var(--bg);
+  color: var(--text);
+}
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}

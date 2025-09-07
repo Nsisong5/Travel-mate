@@ -1,0 +1,46 @@
+@import "../../Dashboard/theme-vars.css";
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1.5px solid var(--card-grad-end);
+  padding: 1rem 1rem 0.6rem 1rem;
+  min-height: 52px;
+}
+
+.backBtn {
+  background: none;
+  border: none;
+  color: var(--primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.43rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.backBtn:hover,
+.backBtn:focus {
+  background-color: var(--panel);
+  outline: none;
+}
+
+.title {
+  font-family: "Poppins", sans-serif;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--text);
+  user-select: none;
+  margin: 0;
+}
+
+.placeholder {
+  width: 36px; /* matches backBtn min-width for balanced centering */
+}

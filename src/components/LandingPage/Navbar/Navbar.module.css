@@ -1,0 +1,300 @@
+@import "../../Dashboard/theme-vars.css";
+ /* @import "../../../theme--var.css";*/
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: clamp(3.5rem, 4vw, 4.5rem);
+  background: var(--bg);
+  color: var(--text);
+  box-shadow: var(--shadow);
+  backdrop-filter: saturate(180%) blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.25rem;
+  font-family: "Poppins", sans-serif;
+  z-index: 1100;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.dark {
+  background: var(--bg);
+  color: var(--text);
+  box-shadow: var(--shadow);
+}
+
+.logo {
+  font-weight: 700;
+  font-size: clamp(1.25rem, 2vw, 1.5rem);
+  user-select: none;
+  white-space: nowrap;
+}
+
+.logoBlue {
+  color: var(--primary);
+}
+
+.navLinks {
+  list-style: none;
+  display: flex;
+  gap: clamp(1rem, 2vw, 1.75rem);
+  align-items: center;
+}
+
+.link {
+  position: relative;
+  font-weight: 600;
+  font-size: clamp(1rem, 1.75vw, 1.125rem);
+  color: var(--text);
+  text-decoration: none;
+  padding: 0.3rem 0.4rem;
+  border-radius: 6px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.link:hover,
+.link:focus-visible {
+  color: white;
+  background-color: var(--primary);
+  outline-offset: 2px;
+  outline: 2px solid var(--primary-700);
+}
+
+.link.active,
+.link[aria-current="page"] {
+  color: white;
+  background-color: var(--primary-700);
+  outline-offset: 2px;
+  outline: 2px solid var(--primary);
+}
+
+/* Theme toggle button */
+.themeToggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  padding: 0.25rem;
+  border-radius: 6px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.themeToggle:hover,
+.themeToggle:focus-visible {
+  background-color: var(--primary-700);
+  color: white;
+  outline-offset: 2px;
+  outline: 2px solid var(--ring);
+}
+
+/* Hamburger menu - mobile only */
+.hamburger {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text);
+  padding: 0.35rem;
+  border-radius: 6px;
+  transition: background-color 0.3s;
+}
+
+.hamburger:hover,
+.hamburger:focus-visible {
+  background-color: var(--primary);
+  color: white;
+  outline-offset: 2px;
+  outline: 2px solid var(--primary-700);
+}
+
+/* Overlay for sidebar */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background-color: var(--primary);
+  opacity: 0.3;
+  z-index: 1090;
+}
+
+/* Sidebar drawer */
+.sidebar {
+  position: fixed;
+  top: clamp(3.5rem, 4vw, 4.5rem);
+  right: 1rem;
+  background: var(--bg);
+  color: var(--text);
+  min-width: min(280px, 80vw);
+  max-width: 320px;
+  padding: 1.5rem 1.5rem 2.5rem;
+  border-radius: 16px 0 0 16px;
+  box-shadow: var(--shadow);
+  z-index: 1100;
+  display: flex;
+  flex-direction: column;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.sidebarNavLinks {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 auto 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.sidebarLink {
+  color: var(--text);
+  font-size: clamp(1.1rem, 1.75vw, 1.25rem);
+  font-weight: 600;
+  text-decoration: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.sidebarLink:hover,
+.sidebarLink:focus-visible {
+  background-color: var(--primary);
+  color: white;
+  outline-offset: 2px;
+  outline: 2px solid var(--ring);
+  cursor: pointer;
+}
+
+/* Sidebar bottom login/signup buttons */
+.sidebarActions {
+  margin-top: auto;
+  display: flex;
+  gap: 1rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--ring);
+}
+
+.btnLogin,
+.btnSignUp {
+  flex: 1 1 50%;
+  padding: 0.6rem 0.75rem;
+  font-size: clamp(1rem, 1.5vw, 1.125rem);
+  font-weight: 600;
+  border-radius: 8px;
+  border: 2px solid var(--primary);
+  cursor: pointer;
+  transition:
+    background-color 0.3s,
+    color 0.3s,
+    box-shadow 0.25s;
+}
+
+.btnLogin {
+  background: transparent;
+  color: var(--primary);
+}
+
+.btnLogin:hover,
+.btnLogin:focus-visible {
+  background: var(--primary);
+  color: white;
+  box-shadow: 0 0 8px var(--primary);
+  outline-offset: 2px;
+  outline: 2px solid var(--primary-700);
+}
+
+.btnSignUp {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.btnSignUp:hover,
+.btnSignUp:focus-visible {
+  background: var(--primary-700);
+  box-shadow: 0 0 12px var(--primary-700);
+  outline-offset: 2px;
+  outline: 2px solid var(--primary);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .navLinks {
+    display: none;
+  }
+  .hamburger {
+    display: block;
+  }
+}
+
+@media (min-width: 769px) {
+  .hamburger {
+    display: none;
+  }
+  .sidebar,
+  .overlay {
+    display: none !important;
+  }
+}
+
+
+
+/* new styles*/
+
+.rightActions {
+  display: none;
+  align-items: center;
+  gap: 1rem;
+}
+
+@media (min-width: 769px) {
+  .rightActions {
+    display: flex;
+    margin-left: auto;
+  }
+}
+
+/* Re-use global sidebarActions button styles for consistency */
+.btnLogin,
+.btnSignUp {
+  flex: none;
+  padding: 0.6rem 1.15rem;
+  font-size: clamp(1rem, 1.5vw, 1.125rem);
+  font-weight: 600;
+  border-radius: 8px;
+  border: 2px solid var(--primary);
+  cursor: pointer;
+  transition:
+    background-color 0.3s,
+    color 0.3s,
+    box-shadow 0.25s;
+}
+
+.btnLogin {
+  background: transparent;
+  color: var(--primary);
+}
+
+.btnLogin:hover,
+.btnLogin:focus-visible {
+  background: var(--primary);
+  color: white;
+  box-shadow: 0 0 8px var(--primary);
+  outline-offset: 2px;
+  outline: 2px solid var(--primary-700);
+}
+
+.btnSignUp {
+  background: var(--primary);
+  color: white;
+}
+
+.btnSignUp:hover,
+.btnSignUp:focus-visible {
+  background: var(--primary-700);
+  box-shadow: 0 0 12px var(--primary-700);
+  outline-offset: 2px;
+  outline: 2px solid var(--primary);
+}

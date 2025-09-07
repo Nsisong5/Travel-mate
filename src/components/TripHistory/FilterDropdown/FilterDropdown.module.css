@@ -1,0 +1,35 @@
+@import "../../Dashboard/theme-vars.css";
+
+.dropdownBox {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: var(--panel);
+  border-radius: 10px;
+  border: 1.5px solid var(--card-grad-end);
+  box-shadow: var(--shadow);
+  width: 100%;
+  max-width: 180px;
+}
+
+.icon {
+  position: absolute;
+  left: 0.7rem;
+  color: var(--muted);
+  z-index: 2;
+}
+
+.select {
+  width: 100%;
+  font-size: 1rem;
+  padding: 0.7rem 1.1rem 0.7rem 2.6rem;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.select:focus {
+  box-shadow: 0 0 0 2.5px var(--ring);
+}

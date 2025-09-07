@@ -1,0 +1,74 @@
+@import "../Onboarding.module.css";
+
+.summaryPage {
+  display: flex;
+  flex-direction: column;
+  gap: 1.7rem;
+  min-height: 100dvh;
+  min-height: 100vh;
+  padding: 2rem 0.5rem 1rem;
+  align-items: center;
+  user-select: none;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 900;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.summaryCard {
+  background: var(--panel);
+  box-shadow: var(--shadow);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 370px;
+  margin: 0 auto;
+  padding: 1.45rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.07rem;
+}
+
+.label {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.value {
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.confirmNav {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 1.8rem;
+}
+
+.confirmBtn {
+  background: var(--primary);
+  color: var(--panel);
+  font-weight: 700;
+  font-size: 1.15rem;
+  padding: 0.88rem 2rem;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+  outline-offset: 2px;
+}
+
+.confirmBtn:hover,
+.confirmBtn:focus {
+  background: var(--primary-700);
+  outline: 2px solid var(--ring);
+}
