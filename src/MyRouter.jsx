@@ -11,13 +11,7 @@ import {
   useNavigate,
 } from "react-router-dom";
 
-import LandingPage from "./components/LandingPage/LandingPage";
-import OnboardingLayout from "./components/OnboardingLayout/OnboardingLayout";
-import WelcomeStep from "./components/OnboardingLayout/WelcomeStep/WelcomeStep";
-import PersonalizationStep from "./components/OnboardingLayout/PersonalizationStep/PersonalizationStep";
-import AccountStep from "./components/OnboardingLayout/AccountStep/AccountStep";
 import DBLayout from "./components/Dashboard/DBLayout";
-import SettingsPage from "./components/Settings/SettingsPage";
 import TripHistoryPage from "./components/TripHistory/TripHistoryPage";
 import TripDetailPage from "./components/TripsDetail/TripDetailPage";
 import UserProfileDetail from './components/UserProfile/UserProfileDetail';

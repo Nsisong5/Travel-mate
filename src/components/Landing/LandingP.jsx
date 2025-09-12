@@ -17,13 +17,7 @@ export default function LandingP() {
 
   return (
     <div className={styles.landingWrapper} data-theme={theme}>
-          
-      <Helmet> 
-       <meta  
-        name="viewport"
-        content="width=1024, initial-scale=1.0"/>
-      </Helmet>
-     
+    
       <header className={styles.header}>
         <Navbar />
       </header>
