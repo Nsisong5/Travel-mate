@@ -49,11 +49,7 @@ export default function DashboardLayout({ children }) {
 
   return (
     <div data-theme={theme} className={styles.page}>
-     <Helmet> 
-       <meta  
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"/>
-      </Helmet>
+
       
       <AnimatePresence>
         {(sidebarOpen || window.innerWidth >= 1024) && (
