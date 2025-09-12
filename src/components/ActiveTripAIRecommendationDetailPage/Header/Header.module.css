@@ -1,0 +1,65 @@
+
+@import "../../Dashboard/theme-vars.css";
+
+.container {
+  background: var(--panel);
+  border-bottom: 1px solid rgba(100, 116, 139, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(6px);
+}
+
+.content {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.backButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: var(--card-grad-start);
+  border-radius: 8px;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.backButton:hover {
+  background: var(--primary);
+  color: white;
+  transform: translateY(-1px);
+}
+
+.backButton:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0;
+  line-height: 1.3;
+}
+
+/* Tablet and desktop */
+@media (min-width: 768px) {
+  .content {
+    padding: 1.5rem 2rem;
+  }
+
+  .title {
+    font-size: 1.25rem;
+  }
+}

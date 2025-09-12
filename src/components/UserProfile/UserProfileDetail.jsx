@@ -9,14 +9,6 @@ import { AuthContext } from "../../AuthProvider"
 import { computeUserStats, getRecentActivities } from "../../utils/userStatsUtils";
 import { useTripServices } from "../../services/TripServices/TripServices"
 
-const recentTrips = [
-  { id: 1, city: "Paris 2025" },
-  { id: 2, city: "London 2025" },
-  { id: 3, city: "Rome 2024" },
-];
-
-
-
 
 
 export default function UserProfileDetail() {
@@ -29,7 +21,6 @@ export default function UserProfileDetail() {
   const stats = computeUserStats(trips);
   const [loading, setLoading ] = useState(false);
   const recentTrips = getRecentActivities(trips)
-  
   console.log("tips: ",trips)
   console.log("stats: ",stats)
   useEffect(()=>{
@@ -124,7 +115,7 @@ export default function UserProfileDetail() {
             </motion.button>
           ))}
         </div>
-        <button className={styles.viewAllBtn} aria-label="View all trips">View All Trips</button>
+        <button className={styles.viewAllBtn} aria-label="View all trips" onClick={()=>(navigate("/history"))}>View All Trips</button>
       </section>
 
       <nav className={styles.actionButtons} aria-label="User actions">

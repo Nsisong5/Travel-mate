@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect, useContext } from "react";
+import { Helmet } from "react-helmet"
 import { AnimatePresence, motion } from "framer-motion";
 import { useTheme } from "../../ThemeContext";
 import { fadeInUp, staggerUp } from "./variants";
-import styles from "./DashboardLayout.module.css";
+import styles from "./DBLayout.module.css";
 import "./theme-vars.css";
 import { MapPin, Building, CreditCard } from "lucide-react";
 import Sidebar from "./Sidebar/Sidebar";
@@ -13,10 +14,12 @@ import TripProgress from "./TripProgress/TripProgress";
 import RecentTripsTable from "./RecentTripsTable/RecentTripsTable";
 import TopDestinationsChart from "./TopDestinationsChart/TopDestinationsChart";
 import DashboardLayout from "./DashboardLayout";
+import TopDestinationsCard from "./TopDestinationsCard/TopDestinationsCard"
 import { AuthContext } from "../../AuthProvider";
 import { useTripServices } from "../../services/TripServices/TripServices";
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 
+// Mock data for components - TODO: Replace with actual API calls
 const MOCK_RECENT_TRIPS = [
   { date: "2025-07-30", destination: "Paris", duration: "5 days", cost: "$1500", status: "Completed" },
   { date: "2025-08-12", destination: "New York", duration: "7 days", cost: "$2100", status: "Upcoming" },
@@ -43,26 +46,28 @@ const MOCK_TOP_DESTINATIONS = [
 
 export default function DBLayout() {
   const { user } = useContext(AuthContext);
-  const { getUserTrips } = useTripServices();
+  const { getUserTrips } = useTripServices(); // Backend API integration
+  const { theme } = useTheme();
   const navigate = useNavigate();
   
   // State for planned trips only
   const [upcomingTrips, setUpcomingTrips] = useState([]);
   const [loadingTrips, setLoadingTrips] = useState(true);
 
-  // Load planned trips when component mounts
+  // Backend API integration: Load planned trips when component mounts
   useEffect(() => {
     if (user) {
       loadPlannedTrips();
     }
   }, [user]);
  
-    const loadPlannedTrips = async () => {
+  // Backend API call: Load user's planned trips
+  const loadPlannedTrips = async () => {
     setLoadingTrips(true);
     
     try {
       console.log("Loading planned trips for user:", user?.email);
-      const trips = await getUserTrips();
+      const trips = await getUserTrips(); // API call to backend
       setUpcomingTrips(trips);
       console.log("Planned trips:", trips.length);
     } catch (error) {
@@ -73,7 +78,17 @@ export default function DBLayout() {
   };
 
   return (
-      <DashboardLayout>
+    <DashboardLayout>
+     <Helmet> 
+       <meta  
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"/>
+     </Helmet>
+     
+      {/* Main dashboard container with theme-aware styling */}
+     <div className={styles.dashboardContainer} data-theme={theme}>
+        
+        {/* Overview Cards Section - Mobile-first responsive grid */}
         <motion.section
           className={styles.overviewGrid}
           variants={staggerUp}
@@ -85,7 +100,8 @@ export default function DBLayout() {
             title="Upcoming Trips"
             value={loadingTrips ? "Loading..." : upcomingTrips.length}
             index={0}
-            onClick={()=>navigate("/trips/filter")}
+            url="/upcoming/filter"
+            
           />
           <OverviewCard
             icon={<MapPin size={28} color="var(--primary)" />}
@@ -103,28 +119,45 @@ export default function DBLayout() {
             icon={<CreditCard size={28} color="var(--primary)" />}
             title="Budget Remaining"
             value="$2,450 Left"
+            url="/y_budget"
             index={3}
           />
         </motion.section>
+
+        {/* Middle Section - Map, AI Recommendations, Trip Progress */}
         <motion.section
           className={styles.middleSection}
           variants={staggerUp}
           initial="hidden"
           animate="show"
         >
-          <MapWidget />
-          <AIRecommendations recommendations={MOCK_AI_RECOMMENDATIONS} />
-          <TripProgress progress={65} />
+          <div className={styles.widgetCard}>
+            <MapWidget />
+          </div>
+          <div className={styles.widgetCard}>
+            <AIRecommendations recommendations={MOCK_AI_RECOMMENDATIONS} />
+          </div>
+          <div className={styles.widgetCard}>
+            <TripProgress progress={65} />
+          </div>
         </motion.section>
+
+        {/* Bottom Section - Recent Trips Table and Top Destinations Chart */}
         <motion.section
           className={styles.bottomSection}
           variants={staggerUp}
           initial="hidden"
           animate="show"
         >
-          <RecentTripsTable trips={MOCK_RECENT_TRIPS} />
-          <TopDestinationsChart data={MOCK_TOP_DESTINATIONS} />
+          <div className={styles.tableCard}>
+            <RecentTripsTable trips={MOCK_RECENT_TRIPS} />
+          </div>
+          <div className={styles.chartCard}>
+            <TopDestinationsCard data={MOCK_TOP_DESTINATIONS} />
+          </div>
         </motion.section>
-      </DashboardLayout>
+
+      </div>
+    </DashboardLayout>
   );
 }

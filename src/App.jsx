@@ -5,7 +5,7 @@ import colors from "./colors";
 import { AuthProvider } from "./AuthProvider";
 import { AIRecommendationsProvider } from "./services/AIRecommendationsServices/AIRecommendations"
 import {SavedPlaceContextProvider } from "./services/SavePlacesService/SavePlacesService"
-
+import { BudgetContextProvider } from "./services/BudgetServices/BudgetContextProvider"
 function AppContainer() {
   const { theme } = useTheme();
   const themeVars = {
@@ -27,15 +27,17 @@ function AppContainer() {
 
 function App() {
   return (
-    <AuthProvider>
+   <AuthProvider>
+    <BudgetContextProvider>
      <AIRecommendationsProvider>
       <SavedPlaceContextProvider>
        <ThemeProvider>
          <AppContainer />
-       </ThemeProvider>
-      </SavedPlaceContextProvider>
-     </AIRecommendationsProvider>
-    </AuthProvider>
+        </ThemeProvider>
+       </SavedPlaceContextProvider>
+      </AIRecommendationsProvider>
+     </BudgetContextProvider>
+   </AuthProvider>
   );
 }
 

@@ -1,24 +1,52 @@
 import React, { useState } from "react";
-import { Car, Bus, Plane, ChevronRight, Trash2, Eye } from "lucide-react";
+import { ArrowRight, Trash2, Eye, Calendar } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import ConfirmationPopup from "../../../utils/ConfirmationPopup";
 import styles from "./TripCard.module.css";
 
-const typeIcon = {
-  car: <Car size={26} />,
-  bus: <Bus size={26} />,
-  plane: <Plane size={26} />
+// Helper function to format currency with color coding
+const getCostColor = (cost) => {
+  if (cost < 1000) return 'budget-friendly';
+  if (cost < 3000) return 'mid-range';
+  return 'luxury';
 };
 
-export default function TripCard({ trip, onClick, deleteTrip,trips, setTrips}) {
+// Helper function to format date
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric'
+  });
+};
+
+// Animation variants
+const cardVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { 
+    opacity: 1, 
+    y: 0,
+    transition: { duration: 0.4, ease: "easeOut" }
+  },
+  exit: { 
+    opacity: 0, 
+    y: -20,
+    transition: { duration: 0.3 }
+  }
+};
+
+export default function TripCard({ trip, onClick, deleteTrip, trips, setTrips }) {
   const [showConfirm, setShowConfirm] = useState(false);
   const [error, setError] = useState(null);
 
+  // Preserve existing delete functionality
   const handleDelete = async () => {
     try {
       await deleteTrip(trip.id);
-      setTrips(prevTrips => prevTrips.filter(currentTrip=>
-      currentTrip.id != trip.id))
+      setTrips(prevTrips => prevTrips.filter(currentTrip => 
+        currentTrip.id !== trip.id
+      ));
       setShowConfirm(false);
     } catch (err) {
       setError("Failed to delete trip. Please try again.");
@@ -26,49 +54,106 @@ export default function TripCard({ trip, onClick, deleteTrip,trips, setTrips}) {
     }
   };
 
+  const handleCardClick = (e) => {
+    // Prevent card click when clicking on action buttons
+    if (e.target.closest(`.${styles.actionButton}`)) {
+      return;
+    }
+    onClick();
+  };
+
+  const costColor = getCostColor(trip.cost);
+
   return (
     <>
-      <div className={styles.card} tabIndex={0} role="region" aria-label={`Trip from ${trip.origin} to ${trip.destination} status ${trip.status}`}>
-        <div className={styles.iconBox}>{typeIcon[trip.type] || <Plane size={26} />}</div>
-        <div className={styles.info}>
+      <motion.div 
+        className={styles.card}
+        variants={cardVariants}
+        initial="hidden"
+        animate="visible"
+        exit="exit"
+        whileHover={{ 
+          y: -4,
+          boxShadow: "0 12px 40px rgba(0, 0, 0, 0.15)",
+          transition: { duration: 0.2 }
+        }}
+        onClick={handleCardClick}
+        tabIndex={0}
+        role="button"
+        aria-label={`Trip from ${trip.origin} to ${trip.destination}, status: ${trip.status}`}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onClick();
+          }
+        }}
+      >
+        {/* Header Row: Route and Status */}
+        <div className={styles.headerRow}>
           <div className={styles.route}>
             <span className={styles.origin}>{trip.origin}</span>
-            <span className={styles.arrow}>→</span>
+            <ArrowRight size={18} className={styles.arrow} />
             <span className={styles.destination}>{trip.destination}</span>
           </div>
-          <div className={styles.meta}>
-            <span className={styles.date}>{trip.date}</span>
-            <span className={`${styles.status} ${styles[trip.status.toLowerCase()]}`}>
-              {trip.status}
+          
+          <div className={`${styles.statusBadge} ${styles[trip.status?.toLowerCase() || 'planned']}`}>
+            {trip.status || 'Planned'}
+          </div>
+        </div>
+
+        {/* Middle Section: Cost Information */}
+        <div className={styles.middleSection}>
+          <div className={styles.costContainer}>
+            <span className={styles.costLabel}>Estimated Cost:</span>
+            <span className={`${styles.costAmount} ${styles[costColor]}`}>
+              ${trip.cost?.toLocaleString() || '0'}
+            </span>
+            {trip.cost_estimated && (
+              <span className={styles.aiEstimateLabel}>AI Estimated</span>
+            )}
+          </div>
+        </div>
+
+        {/* Footer Row: Date and Actions */}
+        <div className={styles.footerRow}>
+          <div className={styles.dateContainer}>
+            <Calendar size={14} className={styles.calendarIcon} />
+            <span className={styles.createdDate}>
+              Created: {formatDate(trip.date || trip.created_at || new Date())}
             </span>
           </div>
-        </div>
-        <div className={styles.side}>
-          <span className={styles.cost}>
-            ${trip.cost} {trip.cost_estimated ? <small className={styles.estimateLabel}>AI estimate</small> : null}
-          </span>
-          <div className={styles.buttons}>
+          
+          <div className={styles.actionsContainer}>
             <button
+              className={`${styles.actionButton} ${styles.viewButton}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                onClick();
+              }}
               aria-label="View trip details"
-              className={styles.iconButton}
+              title="View Details"
               type="button"
-              onClick={onClick}
             >
-              <Eye size={20} />
+              <Eye size={16} />
             </button>
+            
             <button
+              className={`${styles.actionButton} ${styles.deleteButton}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowConfirm(true);
+              }}
               aria-label="Delete trip"
-              className={styles.iconButton}
+              title="Delete Trip"
               type="button"
-              onClick={() => setShowConfirm(true)}
             >
-              <Trash2 size={20} />
+              <Trash2 size={16} />
             </button>
-            <ChevronRight size={22} className={styles.chevron} aria-hidden="true" />
           </div>
         </div>
-      </div>
+      </motion.div>
 
+      {/* Preserve existing confirmation popup functionality */}
       <AnimatePresence>
         {showConfirm && (
           <ConfirmationPopup

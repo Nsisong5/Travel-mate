@@ -10,6 +10,7 @@ import QuickStats from './QuickStats/QuickStats';
 import RecommendationsCarousel from './RecommendationsCarousel/RecommendationsCarousel';
 import { fadeInUp } from './variants';
 import styles from './TripProgress.module.css';
+import { useNavigate } from "react-router-dom"
 
 // Example trip data structure for reference
 const MOCK_TRIP = {
@@ -61,7 +62,8 @@ const TripProgress = ({
 }) => {
   const [activeTrip, setActiveTrip] = useState(trip || null);
   const [loading, setLoading] = useState(false);
-
+  const navigate = useNavigate();
+  
   useEffect(() => {
     // If no trip prop provided, attempt to get active trip via callback
     if (!trip && getActiveTrip && typeof getActiveTrip === 'function') {
@@ -130,12 +132,13 @@ const TripProgress = ({
 
       <div className={styles.actions}>
         <motion.a
-          href={tripDetailRoute ? tripDetailRoute.replace(':id', currentTrip.id) : `/trips/${currentTrip.id || 'new'}`}
+          href={"/active"}
           className={`${styles.actionButton} ${styles.primary}`}
           variants={fadeInUp}
           whileHover="hover"
           whileTap="tap"
           aria-label="View full trip itinerary"
+ 
         >
           View Full Itinerary
         </motion.a>

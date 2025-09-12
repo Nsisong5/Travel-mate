@@ -1,18 +1,325 @@
 @import "../Dashboard/theme-vars.css";
 
-.page {
+/* Main page container - Mobile-first with full screen coverage */
+.pageContainer {
   background: var(--bg);
   min-height: 100vh;
-  padding: 1.8rem 1rem 3rem;
-  max-width: 100%;
-  margin: auto;
+  width: 100vw;
+  max-width: 100vw;
+  margin: 0;
+  padding: 1rem;
   display: flex;
   flex-direction: column;
-  gap: 1.7rem;
-  font-family: "Poppins", sans-serif;
+  font-family: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: var(--text);
+  position: relative;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+/* Remove content wrapper - direct styling for mobile-first */
+.contentWrapper {
+  /* Removed - causing layout issues */
+}
+
+/* Header section - full width coverage */
+.headerSection {
+  width: 100%;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  padding: 0 0 1.5rem 0;
+  margin-bottom: 1.5rem;
+}
+
+/* Filters section - full width */
+.filtersSection {
+  width: 100%;
+  background: var(--bg);
+  padding: 0 0 1rem 0;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Main content area - mobile-first */
+.mainContent {
+  flex: 1;
+  width: 100%;
+  background: var(--bg);
+  min-height: 50vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Grid container */
+.gridContainer {
+  width: 100%;
+  flex: 1;
+}
+
+/* Footer section */
+.footerSection {
+  width: 100%;
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  padding: 2rem 0 0 0;
+  margin-top: 2rem;
+}
+
+/* Responsive adjustments */
+@media (min-width: 640px) {
+  .pageContainer {
+    padding: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .pageContainer {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+}
+
+/* Error state styling */
+.errorState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 3rem 1rem;
+  min-height: 300px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin: 2rem 0;
+}
+
+.errorMessage {
+  font-size: 1.1rem;
+  color: var(--muted);
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+  max-width: 400px;
+}
+
+.retryButton {
+  background: var(--primary);
+  color: var(--onPrimary);
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline-offset: 2px;
+}
+
+.retryButton:hover {
+  background: var(--primary-700);
+  transform: translateY(-1px);
+}
+
+.retryButton:focus-visible {
+  outline: 2px solid var(--ring);
+}
+
+.retryButton:active {
+  transform: translateY(0);
+}
+
+/* Empty state styling */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 4rem 1rem;
+  min-height: 400px;
+  background: var(--surface);
+  border: 2px dashed var(--border);
+  border-radius: 12px;
+  margin: 2rem 0;
+}
+
+.emptyMessage {
+  font-size: 1.2rem;
+  color: var(--muted);
+  margin-bottom: 2rem;
+  line-height: 1.5;
+  max-width: 500px;
+}
+
+.clearFiltersButton {
+  background: transparent;
+  color: var(--primary);
+  border: 2px solid var(--primary);
+  padding: 0.75rem 1.75rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline-offset: 2px;
+}
+
+.clearFiltersButton:hover {
+  background: var(--primary);
+  color: var(--onPrimary);
+}
+
+.clearFiltersButton:focus-visible {
+  outline: 2px solid var(--ring);
+}
+
+/* Footer section */
+.footerSection {
+  width: 100%;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 2rem 0;
+  margin-top: auto;
+}
+
+@media (min-width: 640px) {
+  .footerSection {
+    padding: 2.5rem 0;
+  }
+}
+
+@media (min-width: 1024px) {
+  .footerSection {
+    padding: 3rem 0;
+  }
+}
+
+/* Dark mode specific adjustments */
+[data-theme="dark"] .pageContainer {
+  background: var(--bg);
   color: var(--text);
 }
 
-.recsMain {
-  min-height: 420px;
+[data-theme="dark"] .headerSection {
+  background: var(--bg);
+  border-bottom-color: var(--border);
+}
+
+[data-theme="dark"] .filtersSection {
+  background: var(--bg);
+  border-bottom-color: var(--border);
+}
+
+[data-theme="dark"] .mainContent {
+  background: var(--bg);
+}
+
+[data-theme="dark"] .footerSection {
+  background: var(--surface);
+  border-top-color: var(--border);
+}
+
+[data-theme="dark"] .errorState,
+[data-theme="dark"] .emptyState {
+  background: var(--surface);
+  border-color: var(--border);
+}
+
+/* Responsive improvements for very small screens */
+@media (max-width: 360px) {
+  .contentWrapper {
+    padding: 0 0.75rem;
+  }
+  
+  .headerSection {
+    padding: 0.75rem 0 1rem;
+  }
+  
+  .filtersSection {
+    padding: 0.75rem 0;
+  }
+  
+  .mainContent {
+    padding: 1rem 0;
+    min-height: 50vh;
+  }
+  
+  .errorState,
+  .emptyState {
+    padding: 2rem 0.75rem;
+    margin: 1rem 0;
+  }
+  
+  .errorMessage,
+  .emptyMessage {
+    font-size: 1rem;
+  }
+}
+
+/* Large screen optimizations */
+@media (min-width: 1440px) {
+  .contentWrapper {
+    max-width: 1400px;
+  }
+}
+
+/* Print styles */
+@media print {
+  .pageContainer {
+    background: white;
+    color: black;
+  }
+  
+  .headerSection,
+  .filtersSection {
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .footerSection {
+    border-top: 1px solid #ccc;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .headerSection,
+  .filtersSection,
+  .footerSection {
+    border-width: 2px;
+  }
+  
+  .errorState,
+  .emptyState {
+    border-width: 3px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .retryButton,
+  .clearFiltersButton {
+    transition: none;
+  }
+  
+  .retryButton:hover,
+  .clearFiltersButton:hover {
+    transform: none;
+  }
+}
+
+/* Focus management for keyboard navigation */
+.pageContainer:focus-within .contentWrapper {
+  outline: none;
+}
+
+/* Smooth scrolling for anchor links */
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }

@@ -3,11 +3,11 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Edit, Share2, StopCircle } from 'lucide-react';
+import { Edit, Share2, StopCircle, CreditCard } from 'lucide-react';
 import { fadeInUp } from '../variants';
 import styles from './ActionBar.module.css';
 
-const ActionBar = ({ onEdit, onShare, onEndTrip }) => {
+const ActionBar = ({ onEdit, onShare, onEndTrip, onBudget}) => {
   return (
     <motion.div 
       className={styles.container}
@@ -28,14 +28,14 @@ const ActionBar = ({ onEdit, onShare, onEndTrip }) => {
         </motion.button>
 
         <motion.button
-          onClick={onShare}
+          onClick={onBudget}
           className={`${styles.actionButton} ${styles.secondary}`}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           type="button"
         >
-          <Share2 size={18} />
-          <span className={styles.buttonText}>Share Trip</span>
+          <CreditCard size={18} />
+          <span className={styles.buttonText}>Budget</span>
         </motion.button>
 
         <motion.button

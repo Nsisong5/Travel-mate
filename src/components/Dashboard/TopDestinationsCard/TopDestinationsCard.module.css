@@ -1,0 +1,474 @@
+/* Card Container */
+.card {
+  background: var(--panel);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  color: var(--text);
+  transition: all 0.3s ease;
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* Filter Dropdown */
+.filterWrapper {
+  position: relative;
+}
+
+.filterButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--card-grad-start);
+  border: 1px solid rgba(100, 116, 139, 0.2);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.filterButton:hover,
+.filterButton.active {
+  background: var(--card-grad-end);
+  border-color: var(--primary);
+}
+
+.dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: var(--panel);
+  border: 1px solid rgba(100, 116, 139, 0.2);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  z-index: 10;
+  margin-top: 0.25rem;
+  min-width: 120px;
+}
+
+.dropdownOption {
+  display: block;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-size: 0.875rem;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dropdownOption:hover {
+  background: var(--card-grad-start);
+}
+
+.dropdownOption.selected {
+  background: var(--primary);
+  color: white;
+}
+
+/* Options Menu */
+.optionsWrapper {
+  position: relative;
+}
+
+.optionsButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: var(--card-grad-start);
+  border: 1px solid rgba(100, 116, 139, 0.2);
+  border-radius: 8px;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.optionsButton:hover,
+.optionsButton.active {
+  background: var(--card-grad-end);
+  border-color: var(--primary);
+}
+
+.optionsMenu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: var(--panel);
+  border: 1px solid rgba(100, 116, 139, 0.2);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  z-index: 10;
+  margin-top: 0.25rem;
+  min-width: 140px;
+}
+
+.optionsMenuItem {
+  display: block;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-size: 0.875rem;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.optionsMenuItem:hover {
+  background: var(--card-grad-start);
+}
+
+/* Table */
+.tableWrapper {
+  margin-bottom: 1.5rem;
+}
+
+.tableHeader {
+  display: grid;
+  grid-template-columns: 40px 1fr 60px 80px;
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(100, 116, 139, 0.2);
+  margin-bottom: 0.75rem;
+}
+
+.tableHeader span {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.rankColumn {
+  text-align: center;
+}
+
+.visitsColumn,
+.chartColumn {
+  text-align: right;
+}
+
+.tableBody {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.tableRow {
+  display: grid;
+  grid-template-columns: 40px 1fr 60px 80px;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.75rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.tableRow:hover {
+  background: var(--card-grad-start);
+}
+
+/* Table Cells */
+.rankCell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rankNumber {
+  width: 24px;
+  height: 24px;
+  background: var(--primary);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.countryCell {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.flag {
+  font-size: 1.125rem;
+  flex-shrink: 0;
+}
+
+.countryName {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text);
+  truncate: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.visitsCell {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.visitsNumber {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* Chart/Bar */
+.chartCell {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.barContainer {
+  width: 60px;
+  height: 6px;
+  background: rgba(100, 116, 139, 0.2);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), #60a5fa);
+  border-radius: 3px;
+  min-width: 2px;
+}
+
+/* Footer */
+.footer {
+  border-top: 1px solid rgba(100, 116, 139, 0.2);
+  padding-top: 1rem;
+}
+
+.viewAllButton {
+  width: 100%;
+  padding: 0.75rem 1.5rem;
+  background: transparent;
+  color: var(--primary);
+  border: 1px solid var(--primary);
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.viewAllButton:hover {
+  background: var(--primary);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+/* Backdrop */
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 5;
+}
+
+/* Dark Theme */
+body[data-theme="dark"] .card {
+  background: var(--panel);
+  box-shadow: var(--shadow);
+}
+
+body[data-theme="dark"] .filterButton,
+body[data-theme="dark"] .optionsButton {
+  background: var(--card-grad-start);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: var(--text);
+}
+
+body[data-theme="dark"] .filterButton:hover,
+body[data-theme="dark"] .filterButton.active,
+body[data-theme="dark"] .optionsButton:hover,
+body[data-theme="dark"] .optionsButton.active {
+  background: var(--card-grad-end);
+  border-color: var(--primary);
+}
+
+body[data-theme="dark"] .dropdown,
+body[data-theme="dark"] .optionsMenu {
+  background: var(--panel);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+body[data-theme="dark"] .dropdownOption,
+body[data-theme="dark"] .optionsMenuItem {
+  color: var(--text);
+}
+
+body[data-theme="dark"] .tableRow:hover {
+  background: var(--card-grad-start);
+}
+
+body[data-theme="dark"] .viewAllButton {
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
+body[data-theme="dark"] .viewAllButton:hover {
+  background: var(--primary);
+  color: white;
+}
+
+/* Mobile Responsive */
+@media (max-width: 640px) {
+  .card {
+    padding: 1rem;
+  }
+  
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .title {
+    font-size: 1.125rem;
+  }
+  
+  .headerActions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+  
+  .tableHeader {
+    grid-template-columns: 30px 1fr 50px 60px;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+  }
+  
+  .tableRow {
+    grid-template-columns: 30px 1fr 50px 60px;
+    gap: 0.5rem;
+    padding: 0.5rem;
+  }
+  
+  .rankNumber {
+    width: 20px;
+    height: 20px;
+    font-size: 0.6875rem;
+  }
+  
+  .countryName {
+    font-size: 0.8125rem;
+  }
+  
+  .visitsNumber {
+    font-size: 0.8125rem;
+  }
+  
+  .barContainer {
+    width: 50px;
+    height: 5px;
+  }
+  
+  .filterButton {
+    font-size: 0.8125rem;
+    padding: 0.375rem 0.5rem;
+  }
+  
+  .dropdown {
+    right: 0;
+    left: auto;
+    min-width: 100px;
+  }
+  
+  .optionsMenu {
+    right: 0;
+    left: auto;
+    min-width: 120px;
+  }
+}
+
+@media (max-width: 480px) {
+  .tableHeader {
+    grid-template-columns: 25px 1fr 45px 50px;
+  }
+  
+  .tableRow {
+    grid-template-columns: 25px 1fr 45px 50px;
+  }
+  
+  .barContainer {
+    width: 40px;
+  }
+  
+  .countryName {
+    font-size: 0.75rem;
+  }
+  
+  .visitsNumber {
+    font-size: 0.75rem;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .filterButton,
+  .optionsButton,
+  .tableRow,
+  .viewAllButton,
+  .bar {
+    transition: none;
+  }
+}
+
+/* Focus Styles */
+.filterButton:focus-visible,
+.optionsButton:focus-visible,
+.viewAllButton:focus-visible,
+.tableRow:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}

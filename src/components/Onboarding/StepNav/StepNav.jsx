@@ -5,15 +5,6 @@ import styles from "./StepNav.module.css";
 export default function StepNav({ currentStep, totalSteps, onBack, onNext, allowSkip, onSkip }) {
   return (
     <nav className={styles.stepNav} aria-label="Step navigation">
-      <button
-        className={styles.btnBack}
-        onClick={onBack}
-        disabled={currentStep === 0}
-        aria-label="Back"
-        type="button"
-      >
-        <ChevronLeft size={20} /> Back
-      </button>
 
       {allowSkip && (
         <button
@@ -26,14 +17,7 @@ export default function StepNav({ currentStep, totalSteps, onBack, onNext, allow
         </button>
       )}
 
-      <button
-        className={styles.btnNext}
-        onClick={onNext}
-        aria-label="Next"
-        type="button"
-      >
-        Next <ChevronRight size={20} />
-      </button>
+
     </nav>
   );
 }

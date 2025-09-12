@@ -25,6 +25,10 @@
   flex-direction: column;
   gap: 1.3rem;
   margin: 1.2rem 0;
+  background: var(--card-grad-start);
+  border-radius: 18px;
+  box-shadow: 0 3px 14px var(--shadow);
+  padding: 1.2rem 1.2rem 1.55rem 1.2rem;
 }
 
 .label {
@@ -51,6 +55,154 @@
   outline: none;
 }
 
+.travelersRow {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: var(--panel);
+  border-radius: 10px;
+  box-shadow: 0 1px 3px var(--shadow);
+  padding: 0.2rem 0.8rem 0.2rem 0.8rem;
+  width: 100%;
+  max-width: 240px;
+}
+
+.travelersInput {
+  width: 54px;
+  text-align: center;
+  font-size: 1.17rem;
+  font-weight: 600;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  margin: 0 0.2rem;
+  outline: none;
+}
+
+.travelersInput:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 1.5px;
+}
+
+.travBtn {
+  border: none;
+  background: none;
+  color: var(--primary);
+  font-size: 1.13rem;
+  cursor: pointer;
+  border-radius: 50%;
+  padding: 0.22rem 0.5rem;
+  transition: background .15s;
+}
+
+.travBtn:disabled {
+  color: var(--muted);
+  cursor: not-allowed;
+  background: transparent;
+}
+
+.travBtn:hover:not(:disabled),
+.travBtn:focus-visible:not(:disabled) {
+  background: var(--card-grad-end);
+  color: var(--primary-700);
+  outline: 2px solid var(--ring);
+}
+
+.travelersIcon {
+  margin-left: 0.5rem;
+  color: var(--muted);
+}
+
+/* --- Budget option section --- */
+.budgetOptionBox {
+  margin-top: 0.8rem;
+  padding: 1rem 1.2rem;
+  background: var(--panel);
+  border-radius: 16px;
+  box-shadow: 0 1.5px 6px var(--shadow);
+}
+
+.budgetPrompt {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.1rem;
+  font-size: 1.02rem;
+  color: var(--text);
+}
+
+.budgetAction,
+.budgetActionCancel {
+  background: var(--primary);
+  color: var(--panel);
+  border-radius: 10px;
+  padding: 0.5rem 1.3rem;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.97rem;
+  box-shadow: 0 1px 3px var(--shadow);
+  margin-left: 0.2rem;
+  transition: background 0.2s, outline 0.2s;
+}
+
+.budgetActionCancel {
+  background: var(--muted);
+  color: var(--panel);
+}
+
+.budgetAction:hover,
+.budgetAction:focus,
+.budgetActionCancel:hover,
+.budgetActionCancel:focus {
+  background: var(--primary-700);
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.budgetRow {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  width: 100%;
+  margin-top: 0.4rem;
+}
+
+.budgetInputWrap {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 90px;
+  max-width: 200px;
+  display: flex;
+  align-items: center;
+}
+
+.budgetInput {
+  width: auto;
+  min-width: 70px;
+  max-width: 200px;
+  flex: 1 1 auto;
+  border: 1.2px solid var(--card-grad-end);
+  border-radius: 10px;
+  padding: 0.48rem 0.9rem;
+  font-size: 1.12rem;
+  background: var(--panel);
+  color: var(--text);
+  font-family: inherit;
+  outline: none;
+  transition: font-size 0.17s, width 0.17s;
+}
+
+.budgetInput[data-shrink="true"] {
+  font-size: 0.97rem;
+}
+
+.currencySymbol {
+  color: var(--muted);
+  font-weight: 700;
+  margin-left: 0.18rem;
+}
+
 .nextNav {
   width: 100%;
   display: flex;
@@ -59,8 +211,8 @@
 }
 
 .nextBtn {
-  background: var(--primary);
-  color: var(--panel);
+  background: ;
+  color: white;
   font-weight: 700;
   font-size: 1.15rem;
   padding: 0.88rem 2rem;

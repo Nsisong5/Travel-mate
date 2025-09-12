@@ -9,11 +9,37 @@ const fadeInUp = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
 };
 
+// Button animation variants for enhanced interactions
+const buttonVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { 
+    opacity: 1, 
+    y: 0, 
+    transition: { duration: 0.5, ease: "easeOut" } 
+  },
+  hover: { 
+    scale: 1.05, 
+    transition: { duration: 0.2, ease: "easeInOut" } 
+  },
+  tap: { 
+    scale: 0.98, 
+    transition: { duration: 0.1 } 
+  }
+};
+
 export default function HeroSection() {
   const navigate = useNavigate();
 
   const handleGetStarted = () => {
     navigate('/onboarding');
+  };
+
+  const handleLearnMore = () => {
+    // Scroll to features section or navigate to about page
+    const featuresSection = document.getElementById('features');
+    if (featuresSection) {
+      featuresSection.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   return (
@@ -29,23 +55,38 @@ export default function HeroSection() {
         alt="Scenic travel destination"
         className={styles.heroImage}
       />
-      <div className={styles.buttonsContainer}>
-        <button
+      
+      {/* Refactored buttons container with improved positioning and responsiveness */}
+      <motion.div 
+        className={styles.buttonsContainer}
+        initial="hidden"
+        animate="visible"
+        transition={{ delay: 0.3, staggerChildren: 0.1 }}
+      >
+        <motion.button
           className={styles.getStartedBtn}
           onClick={handleGetStarted}
           type="button"
-          aria-label="Get Started"
+          aria-label="Get Started with TravelMate"
+          variants={buttonVariants}
+          whileHover="hover"
+          whileTap="tap"
         >
           Get Started
-        </button>
-        <button
+        </motion.button>
+        
+        <motion.button
           className={styles.learnMoreBtn}
+          onClick={handleLearnMore}
           type="button"
-          aria-label="Learn More"
+          aria-label="Learn More about TravelMate"
+          variants={buttonVariants}
+          whileHover="hover"
+          whileTap="tap"
         >
           Learn More
-        </button>
-      </div>
+        </motion.button>
+      </motion.div>
     </motion.section>
   );
 }

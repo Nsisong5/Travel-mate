@@ -127,6 +127,13 @@
   color: var(--muted);
 }
 
+.itemActions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
 .editButton {
   display: flex;
   align-items: center;
@@ -146,6 +153,11 @@
   background: var(--primary);
   color: white;
   transform: translateY(-1px);
+}
+
+.deleteButton:hover {
+  background: #ef4444;
+  color: white;
 }
 
 .editButton:focus-visible {

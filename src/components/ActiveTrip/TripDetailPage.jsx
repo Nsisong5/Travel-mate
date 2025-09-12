@@ -1,5 +1,5 @@
 // src/pages/TripDetailPage/TripDetailPage.jsx
-// Main Trip Detail Page - fetches trip data and orchestrates all sub-components
+// Updated Trip Detail Page with TravelTips and TripMemories components
 // TODO: Connect to real trip API and auth context
 
 import React, { useState, useEffect } from 'react';
@@ -10,11 +10,12 @@ import Hero from './Hero/Hero';
 import TripProgressPanel from './TripProgressPanel/TripProgressPanel';
 import ItineraryList from './ItineraryList/ItineraryList';
 import RecommendationsCarousel from './RecommendationsCarousel/RecommendationsCarousel';
-import MediaGallery from './MediaGallery/MediaGallery';
 import ActionBar from './ActionBar/ActionBar';
 import ConfirmModal from './ConfirmModal';
 import { fadeInUp, staggerContainer } from './variants';
 import styles from './TripDetailPage.module.css';
+import TravelTips from './TravelTips/TravelTips';
+import TripMemories from './TripMemories/TripMemories';
 
 // Mock trip data for development
 const MOCK_TRIP = {
@@ -55,7 +56,7 @@ const MOCK_TRIP = {
   recommendation_ids: [1, 2, 3]
 };
 
-const ActiveTripDetailPage = () => {
+const TripDetailPage = () => {
   const { tripId } = useParams();
   const navigate = useNavigate();
   const [trip, setTrip] = useState(null);
@@ -115,6 +116,10 @@ const ActiveTripDetailPage = () => {
       // TODO: Show toast notification
     }
   };
+  
+  const handleBudget = ()=>{
+     navigate("/budget")
+  }
 
   const handleEndTrip = async () => {
     try {
@@ -175,12 +180,18 @@ const ActiveTripDetailPage = () => {
           
           <div className={styles.rightColumn}>
             <RecommendationsCarousel tripId={trip.id} />
-            <MediaGallery images={trip.images} />
+            <TripMemories />
           </div>
+        </div>
+
+        {/* Travel Tips Section - positioned after main content */}
+        <div className={styles.fullWidthSection}>
+          <TravelTips destination={trip.destination} />
         </div>
       </motion.main>
 
       <ActionBar 
+        onBudget={handleBudget}
         onEdit={handleEditTrip}
         onShare={handleShareTrip}
         onEndTrip={() => setShowEndTripModal(true)}
@@ -199,4 +210,4 @@ const ActiveTripDetailPage = () => {
   );
 };
 
-export default ActiveTripDetailPage;
+export default TripDetailPage;

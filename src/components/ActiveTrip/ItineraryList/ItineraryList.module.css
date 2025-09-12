@@ -61,6 +61,80 @@
   gap: 1rem;
 }
 
+.dayContainer {
+  background: var(--card-grad-start);
+  border-radius: 12px;
+  border: 1px solid rgba(100, 116, 139, 0.1);
+  overflow: hidden;
+}
+
+.dayHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  background: var(--card-grad-end);
+  border-bottom: 1px solid rgba(100, 116, 139, 0.05);
+}
+
+.dayInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.dayNumber {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.dayTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.3;
+}
+
+.dayActions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.iconButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: var(--card-grad-start);
+  border-radius: 6px;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.iconButton:hover {
+  background: var(--primary);
+  color: white;
+  transform: translateY(-1px);
+}
+
+.deleteButton:hover {
+  background: #ef4444;
+  color: white;
+}
+
+.iconButton:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
 .emptyState {
   background: var(--panel);
   border-radius: 16px;
@@ -122,6 +196,20 @@
 @media (min-width: 768px) {
   .container {
     padding: 2rem;
+  }
+
+  .dayHeader {
+    padding: 1.25rem 1.5rem;
+  }
+
+  .dayInfo {
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .dayTitle {
+    font-size: 1.1rem;
   }
 
   .emptyState {

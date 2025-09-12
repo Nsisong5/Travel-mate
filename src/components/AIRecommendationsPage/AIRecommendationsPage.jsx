@@ -6,9 +6,8 @@ import RecommendationGrid from "./RecommendationGrid/RecommendationGrid";
 import Footer from "./Footer/Footer";
 import DashboardLayout from "../Dashboard/DashboardLayout";
 import { useAIRecommendations } from "../../services/AIRecommendationsServices/AIRecommendations";
-import { useSavedPlaceContext } from "../../services/SavePlacesService/SavePlacesService"
-import { useNavigate } from "react-router-dom"
-
+import { useSavedPlaceContext } from "../../services/SavePlacesService/SavePlacesService";
+import { useNavigate } from "react-router-dom";
 
 const RECOMMENDATION_TYPES = ["All", "Destinations", "Hotels", "Activities", "Tips"];
 const SORT_OPTIONS = ["Popularity", "Rating", "Budget-friendly"];
@@ -19,9 +18,7 @@ export default function AIRecommendationsPage() {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { savePlace }  =  useSavedPlaceContext();
-  
-  
+  const { savePlace } = useSavedPlaceContext();
   
   const { 
     recommendations, 
@@ -30,12 +27,12 @@ export default function AIRecommendationsPage() {
     getUserAIRecommendations 
   } = useAIRecommendations();
 
-  // Load recommendations when component mounts
+  // Backend API integration: Load recommendations when component mounts
   useEffect(() => {
     const loadRecommendations = async () => {
       setLoading(true);
       try {
-        await getUserAIRecommendations({ limit: 50 }); // Get more recommendations for filtering
+        await getUserAIRecommendations({ limit: 50 }); // API call to get recommendations
       } catch (err) {
         console.error('Failed to load AI recommendations:', err);
       } finally {
@@ -44,23 +41,24 @@ export default function AIRecommendationsPage() {
     };
 
     loadRecommendations();
-  }, [])
+  }, []); // Fixed: Empty dependency array to run only once on mount
   
-   const handleSave = async (data)=>{
-      console.log("rec id: ",data)
-      try{   
-         const response  = await savePlace({"rec_id":data})
-         console.log(response)
-         return response 
-      }catch(err){
-      console.log("error setting saveplace:",error)
-      }
-   }
-  
+  // Backend API integration: Save place functionality
+  const handleSave = async (data) => {
+    console.log("rec id: ", data);
+    try {   
+      const response = await savePlace({"rec_id": data}); // API call to save place
+      console.log(response);
+      return response;
+    } catch (err) {
+      console.log("error setting saveplace:", err);
+    }
+  };
   
   // Use context loading state alongside local loading
   const isLoading = loading || contextLoading;
 
+  // Enhanced filtering and sorting logic with better performance
   const filteredRecs = useMemo(() => {
     let recs = recommendations;
 
@@ -69,53 +67,114 @@ export default function AIRecommendationsPage() {
       recs = recs.filter((r) => r.destination_type === filter);
     }
 
-    // Filter by search term
+    // Filter by search term with improved search logic
     if (search.trim()) {
       const searchTerm = search.toLowerCase();
       recs = recs.filter((r) => 
-        r.title.toLowerCase().includes(searchTerm) ||
-        r.name.toLowerCase().includes(searchTerm) ||
-        r.location.toLowerCase().includes(searchTerm) ||
+        r.title?.toLowerCase().includes(searchTerm) ||
+        r.name?.toLowerCase().includes(searchTerm) ||
+        r.location?.toLowerCase().includes(searchTerm) ||
         r.description?.toLowerCase().includes(searchTerm)
       );
     }
 
-    // Sort recommendations
+    // Sort recommendations with null safety
     if (sortBy === "Popularity") {
-      recs = [...recs].sort((a, b) => b.popularity - a.popularity);
+      recs = [...recs].sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
     } else if (sortBy === "Rating") {
-      recs = [...recs].sort((a, b) => b.rating - a.rating);
+      recs = [...recs].sort((a, b) => (b.rating || 0) - (a.rating || 0));
     } else if (sortBy === "Budget-friendly") {
-      recs = [...recs].sort((a, b) => b.budget_score - a.budget_score);
+      recs = [...recs].sort((a, b) => (b.budget_score || 0) - (a.budget_score || 0));
     }
 
     return recs;
   }, [recommendations, filter, search, sortBy]);
   
-  
-  const handleViewDetail = (id)=>{
-    navigate(`/AIRecDetail/${id}`)
-  }
-  
+  // Navigation handler for detailed view
+  const handleViewDetail = (id) => {
+    navigate(`/AIRecDetail/${id}`);
+  };
   
   return (
     <DashboardLayout>
-      <div className={styles.page}>
-        <Header loading={isLoading} setLoading={setLoading} />
-        <Filters
-          filter={filter} setFilter={setFilter} sortBy={sortBy} setSortBy={setSortBy}
-          search={search} setSearch={setSearch}
-          types={RECOMMENDATION_TYPES} sortOptions={SORT_OPTIONS}
-        />
-        <main aria-live="polite" className={styles.recsMain}>
+      {/* Main page container with full screen coverage and proper theme inheritance */}
+      <div className={styles.pageContainer}>
+        
+        {/* Header section */}
+        <section className={styles.headerSection}>
+          <Header loading={isLoading} setLoading={setLoading} />
+        </section>
+
+        {/* Filters section */}
+        <section className={styles.filtersSection}>
+          <Filters
+            filter={filter} 
+            setFilter={setFilter} 
+            sortBy={sortBy} 
+            setSortBy={setSortBy}
+            search={search} 
+            setSearch={setSearch}
+            types={RECOMMENDATION_TYPES} 
+            sortOptions={SORT_OPTIONS}
+          />
+        </section>
+
+        {/* Main content area */}
+        <main 
+          className={styles.mainContent} 
+          aria-live="polite"
+          aria-label="AI Recommendations"
+        >
+          {/* Error state */}
           {error && (
-            <div className="text-red-600 text-center p-4">
-              Error loading recommendations: {error}
+            <div className={styles.errorState}>
+              <p className={styles.errorMessage}>
+                Unable to load recommendations. Please try again later.
+              </p>
+              <button 
+                className={styles.retryButton}
+                onClick={() => window.location.reload()}
+              >
+                Retry
+              </button>
             </div>
           )}
-          <RecommendationGrid recommendations={filteredRecs} loading={isLoading} onSave={handleSave} viewDetail={handleViewDetail}/>
+
+          {/* Empty state */}
+          {!error && !isLoading && filteredRecs.length === 0 && (
+            <div className={styles.emptyState}>
+              <p className={styles.emptyMessage}>
+                No recommendations found matching your criteria.
+              </p>
+              <button 
+                className={styles.clearFiltersButton}
+                onClick={() => {
+                  setFilter("All");
+                  setSearch("");
+                  setSortBy(SORT_OPTIONS[0]);
+                }}
+              >
+                Clear Filters
+              </button>
+            </div>
+          )}
+
+          {/* Recommendations grid */}
+          <div className={styles.gridContainer}>
+            <RecommendationGrid 
+              recommendations={filteredRecs} 
+              loading={isLoading} 
+              onSave={handleSave} 
+              viewDetail={handleViewDetail}
+            />
+          </div>
         </main>
-        <Footer />
+
+        {/* Footer section */}
+        <footer className={styles.footerSection}>
+          <Footer />
+        </footer>
+
       </div>
     </DashboardLayout>
   );

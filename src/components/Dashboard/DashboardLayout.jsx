@@ -1,17 +1,19 @@
+import { Helmet } from "react-helmet"
 import React, { useState, useRef, useEffect, useContext } from "react";
 import { AnimatePresence } from "framer-motion";
 import { useTheme } from "../../ThemeContext";
 import styles from "./DashboardLayout.module.css";
 import "./theme-vars.css";
 import Sidebar from "./Sidebar/Sidebar";
-import { AuthContext } from "../../AuthProvider"; // Path you handle
+import { AuthContext } from "../../AuthProvider"; // Backend API integration point
+import { useNavigate } from "react-router-dom"
 
 export default function DashboardLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const sidebarRef = useRef(null);
   const { theme } = useTheme();
-  const { user } = useContext(AuthContext) || { user: null };
-
+  const { user } = useContext(AuthContext) || { user: null }; // Backend user data integration
+  const navigate = useNavigate()
   useEffect(() => {
     document.body.classList.toggle("sidebar-open", sidebarOpen);
     if (sidebarOpen) {
@@ -32,6 +34,7 @@ export default function DashboardLayout({ children }) {
     };
   }, [sidebarOpen]);
 
+  // Backend integration: User initials generation from API data
   const getInitials = (u) => {
     const source = u?.full_name || u?.name || u?.email || "";
     const parts = source.trim().split(/\s+/);
@@ -40,11 +43,18 @@ export default function DashboardLayout({ children }) {
     return (source[0] || "U").toUpperCase();
   };
 
+  // Backend integration: Navigation handlers
   const handleGoOnboarding = () => window.location.href = "/onboarding";
   const handleGoProfile = () => window.location.href = "/settings";
 
   return (
     <div data-theme={theme} className={styles.page}>
+     <Helmet> 
+       <meta  
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"/>
+      </Helmet>
+      
       <AnimatePresence>
         {(sidebarOpen || window.innerWidth >= 1024) && (
           <Sidebar
@@ -56,8 +66,9 @@ export default function DashboardLayout({ children }) {
       </AnimatePresence>
 
       <main className={styles.content}>
+        {/* Fixed header with consistent positioning and theme-aware elements */}
         <header className={styles.header}>
-          {/* Hamburger menu left */}
+          {/* Hamburger menu - positioned consistently */}
           {window.innerWidth < 1024 && (
             <button
               className={styles.hamburger}
@@ -66,15 +77,15 @@ export default function DashboardLayout({ children }) {
               tabIndex={0}
             >
               <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true">
-                <rect y="6" width="28" height="4" rx="2" fill="var(--primary)" />
-                <rect y="16" width="28" height="4" rx="2" fill="var(--primary)" />
+                <rect y="6" width="28" height="4" rx="2" fill="currentColor" />
+                <rect y="16" width="28" height="4" rx="2" fill="currentColor" />
               </svg>
             </button>
           )}
 
-          <h1 className={styles.title}>Dashboard</h1>
+          <h1 className={styles.title} onClick={()=>(navigate(-1))}>Dashboard</h1>
 
-          {/* Right side container: avatar + plan trip button */}
+          {/* Theme-aware right side container with fixed positioning */}
           <div className={styles.headerRight}>
             {user && (
               <button
@@ -84,9 +95,9 @@ export default function DashboardLayout({ children }) {
                 title="Go to Profile"
                 tabIndex={0}
               >
-                {user.image ? (
+                {user.avatar_url ? (
                   <img
-                    src={user.image}
+                    src={user.avatar_url}
                     alt={user.full_name || user.name || "User"}
                     className={styles.headerAvatarImg}
                     onError={(e) => { e.target.style.display = "none"; }}
@@ -100,6 +111,7 @@ export default function DashboardLayout({ children }) {
               </button>
             )}
 
+            {/* Theme-aware Plan Trip button with improved visibility */}
             <button
               type="button"
               className={styles.planTripBtn}
@@ -111,7 +123,11 @@ export default function DashboardLayout({ children }) {
             </button>
           </div>
         </header>
-        {children}
+        
+        {/* Children container with theme consistency */}
+        <div className={styles.childrenContainer}>
+          {children}
+        </div>
       </main>
     </div>
   );

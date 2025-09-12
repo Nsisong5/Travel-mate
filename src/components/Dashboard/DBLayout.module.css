@@ -1,0 +1,360 @@
+@import "./theme-vars.css";
+
+/* Main dashboard container - Mobile-first with full dark mode support */
+.dashboardContainer {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100%;
+  position: relative;
+  /* Ensure all children inherit theme properly */
+  * {
+    box-sizing: border-box;
+  }
+}
+
+/* Dark mode consistency fix - forces theme across all components */
+.dashboardContainer[data-theme="dark"] {
+  background: var(--bg);
+  color: var(--text);
+}
+
+.dashboardContainer[data-theme="dark"] * {
+  color: var(--text);
+  border-color: var(--border);
+}
+
+.dashboardContainer[data-theme="light"] {
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* Overview Grid - Mobile-first responsive layout */
+.overviewGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  width: 100%;
+  padding: 0;
+}
+
+@media (min-width: 640px) {
+  .overviewGrid {
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    margin-bottom: 1.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .overviewGrid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+}
+
+/* Middle Section - Responsive widget layout */
+.middleSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .middleSection {
+    gap: 1.25rem;
+    margin-bottom: 1.75rem;
+  }
+}
+
+@media (min-width: 900px) {
+  .middleSection {
+    flex-direction: row;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .middleSection > * {
+    flex: 1;
+    min-width: 0; /* Prevent flex items from overflowing */
+  }
+}
+
+/* Widget Cards - Theme-aware styling */
+.widgetCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+  width: 100%;
+  min-height: 200px;
+}
+
+.widgetCard:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
+}
+
+@media (min-width: 640px) {
+  .widgetCard {
+    padding: 1.25rem;
+    min-height: 220px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .widgetCard {
+    padding: 1.5rem;
+    min-height: 250px;
+  }
+}
+
+/* Dark mode widget cards */
+[data-theme="dark"] .widgetCard {
+  background: var(--surface);
+  border-color: var(--border);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] .widgetCard:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Bottom Section - Table and Chart layout */
+.bottomSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .bottomSection {
+    gap: 1.25rem;
+  }
+}
+
+@media (min-width: 900px) {
+  .bottomSection {
+    flex-direction: row;
+    gap: 1.5rem;
+  }
+  
+  .bottomSection > *:first-child {
+    flex: 2;
+    min-width: 0;
+  }
+  
+  .bottomSection > *:last-child {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+/* Table Card - Specific styling for recent trips table */
+.tableCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+  width: 100%;
+  min-height: 300px;
+  overflow: hidden;
+}
+
+.tableCard:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
+}
+
+@media (min-width: 640px) {
+  .tableCard {
+    padding: 1.25rem;
+    min-height: 350px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .tableCard {
+    padding: 1.5rem;
+    min-height: 400px;
+  }
+}
+
+/* Chart Card - Specific styling for destinations chart */
+.chartCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+  width: 100%;
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+}
+
+.chartCard:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
+}
+
+@media (min-width: 640px) {
+  .chartCard {
+    padding: 1.25rem;
+    min-height: 350px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .chartCard {
+    padding: 1.5rem;
+    min-height: 400px;
+  }
+}
+
+/* Dark mode cards */
+[data-theme="dark"] .tableCard,
+[data-theme="dark"] .chartCard {
+  background: var(--surface);
+  border-color: var(--border);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] .tableCard:hover,
+[data-theme="dark"] .chartCard:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Image placeholder - Theme-aware */
+.imagePlaceholder {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+[data-theme="dark"] .imagePlaceholder {
+  background: var(--surface);
+  border-color: var(--border);
+}
+
+/* Mobile responsiveness for very small screens */
+@media (max-width: 360px) {
+  .dashboardContainer {
+    padding: 0;
+  }
+  
+  .overviewGrid {
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+  
+  .middleSection {
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+  
+  .bottomSection {
+    gap: 0.75rem;
+  }
+  
+  .widgetCard,
+  .tableCard,
+  .chartCard {
+    padding: 0.75rem;
+    min-height: 180px;
+    border-radius: 8px;
+  }
+}
+
+/* Tablet specific adjustments */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .middleSection {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+  }
+  
+  .middleSection > *:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Large screen optimizations */
+@media (min-width: 1200px) {
+  .dashboardContainer {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .overviewGrid {
+    gap: 2rem;
+  }
+  
+  .middleSection {
+    gap: 2rem;
+  }
+  
+  .bottomSection {
+    gap: 2rem;
+  }
+}
+
+/* Print styles */
+@media print {
+  .dashboardContainer {
+    background: white;
+    color: black;
+  }
+  
+  .widgetCard,
+  .tableCard,
+  .chartCard {
+    box-shadow: none;
+    border: 1px solid #ccc;
+    break-inside: avoid;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .widgetCard,
+  .tableCard,
+  .chartCard {
+    border-width: 2px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .widgetCard,
+  .tableCard,
+  .chartCard {
+    transition: none;
+  }
+  
+  .widgetCard:hover,
+  .tableCard:hover,
+  .chartCard:hover {
+    transform: none;
+  }
+}

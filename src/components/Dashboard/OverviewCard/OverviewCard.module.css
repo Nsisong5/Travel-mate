@@ -1,61 +1,397 @@
+/* Base Card Styles */
 @import "../theme-vars.css";
 
 .card {
-  background: linear-gradient(115deg, var(--card-grad-start), var(--card-grad-end));
+  position: relative;
+  background: linear-gradient(135deg, var(--card-grad-start), var(--card-grad-end));
+  border-radius: 1.5rem;
+  padding: 1.75rem 1.5rem;
   box-shadow: var(--shadow);
-  border-radius: 1.15rem;
-  padding: 1rem 1.2rem;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  color: var(--text);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   cursor: pointer;
-  will-change: transform;
-  transform: translateZ(0);
-  transition: background 0.33s, box-shadow 0.3s, color 0.3s;
-  outline-offset: 2px;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform, box-shadow;
+  backdrop-filter: blur(10px);
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary), #60a5fa, #3b82f6);
+  border-radius: 1.5rem 1.5rem 0 0;
+  opacity: 0.8;
+}
+
+.card:hover {
+  box-shadow: 
+    var(--shadow),
+    0 20px 40px rgba(37, 99, 235, 0.15),
+    0 0 0 1px rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .card:focus-visible {
-  outline: 2px solid var(--ring);
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
 }
 
-.card * {
-  backface-visibility: hidden;
-}
-
-.icon {
-  font-size: 2rem;
-  color: var(--primary);
-  flex-shrink: 0;
-  user-select: none;
-}
-
-.content {
+/* Card Content Layout */
+.cardContent {
+  position: relative;
+  z-index: 2;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  width: 100%;
+}
+
+.iconContainer {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
   justify-content: center;
 }
 
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  background: rgba(37, 99, 235, 0.1);
+  border-radius: 14px;
+  color: var(--primary);
+  font-size: 1.75rem;
+  border: 1px solid rgba(37, 99, 235, 0.2);
+  transition: all 0.2s ease;
+}
+
+.textContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
 .title {
-  font-size: 0.92rem;
-  font-weight: 500;
-  letter-spacing: 0.008em;
-  margin: 0 0 0.13rem 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--muted);
+  margin: 0;
+  letter-spacing: 0.025em;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+
+.valueContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .value {
-  font-size: 1.17rem;
+  font-size: 1.5rem;
   font-weight: 700;
+  color: var(--text);
+  margin: 0;
+  line-height: 1.1;
 }
 
-/* Dark mode */
+/* Coming Soon Styles */
+.comingSoon {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(100, 116, 139, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(100, 116, 139, 0.2);
+}
+
+.comingSoonIcon {
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.comingSoonText {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--muted);
+  font-style: italic;
+}
+
+/* Action Icon for Budget Cards */
+.actionIcon {
+  color: var(--primary);
+  opacity: 0.7;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.card:hover .actionIcon {
+  opacity: 1;
+  color: var(--primary-700);
+}
+
+/* Special Styling for Budget Cards */
+.budgetCard {
+  background: linear-gradient(135deg, 
+    rgba(37, 99, 235, 0.05), 
+    var(--card-grad-start), 
+    var(--card-grad-end)
+  );
+  border: 1px solid rgba(37, 99, 235, 0.15);
+}
+
+.budgetCard::before {
+  background: linear-gradient(90deg, var(--primary), #60a5fa, #34d399);
+  opacity: 1;
+}
+
+.budgetCard:hover {
+  box-shadow: 
+    var(--shadow),
+    0 20px 40px rgba(37, 99, 235, 0.2),
+    0 0 0 1px rgba(37, 99, 235, 0.3);
+  border-color: rgba(37, 99, 235, 0.25);
+}
+
+/* Coming Soon Card Styling */
+.comingSoonCard {
+  opacity: 0.85;
+}
+
+.comingSoonCard .icon {
+  background: rgba(100, 116, 139, 0.1);
+  border-color: rgba(100, 116, 139, 0.2);
+  color: var(--muted);
+}
+
+/* Interactive Indicator */
+.interactiveIndicator {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 6px;
+  height: 6px;
+  background: var(--primary);
+  border-radius: 50%;
+  opacity: 0.6;
+  transition: all 0.2s ease;
+}
+
+.card:hover .interactiveIndicator {
+  opacity: 1;
+  transform: scale(1.2);
+  box-shadow: 0 0 6px var(--primary);
+}
+
+/* Glow Effect */
+.glowEffect {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    circle at center,
+    rgba(37, 99, 235, 0.1) 0%,
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: 1.5rem;
+  pointer-events: none;
+}
+
+.card:hover .glowEffect {
+  opacity: 1;
+}
+
+/* Dark Theme Styles */
 body[data-theme="dark"] .card {
-  background: linear-gradient(115deg, var(--card-grad-start), var(--card-grad-end));
+  background: linear-gradient(135deg, var(--card-grad-start), var(--card-grad-end));
+  border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: var(--shadow);
-  color: var(--text);
+}
+
+body[data-theme="dark"] .card:hover {
+  box-shadow: 
+    var(--shadow),
+    0 20px 40px rgba(96, 165, 250, 0.15),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.15);
 }
 
 body[data-theme="dark"] .icon {
+  background: rgba(96, 165, 250, 0.15);
+  border-color: rgba(96, 165, 250, 0.25);
   color: var(--primary);
+}
+
+body[data-theme="dark"] .comingSoon {
+  background: rgba(148, 163, 184, 0.1);
+  border-color: rgba(148, 163, 184, 0.2);
+}
+
+body[data-theme="dark"] .budgetCard {
+  background: linear-gradient(135deg, 
+    rgba(96, 165, 250, 0.08), 
+    var(--card-grad-start), 
+    var(--card-grad-end)
+  );
+  border: 1px solid rgba(96, 165, 250, 0.15);
+}
+
+body[data-theme="dark"] .budgetCard:hover {
+  box-shadow: 
+    var(--shadow),
+    0 20px 40px rgba(96, 165, 250, 0.2),
+    0 0 0 1px rgba(96, 165, 250, 0.25);
+  border-color: rgba(96, 165, 250, 0.3);
+}
+
+body[data-theme="dark"] .comingSoonCard .icon {
+  background: rgba(148, 163, 184, 0.1);
+  border-color: rgba(148, 163, 184, 0.2);
+  color: var(--muted);
+}
+
+body[data-theme="dark"] .glowEffect {
+  background: radial-gradient(
+    circle at center,
+    rgba(96, 165, 250, 0.1) 0%,
+    transparent 70%
+  );
+}
+
+/* Mobile-First Responsive Design */
+@media (max-width: 640px) {
+  .card {
+    padding: 1.5rem 1.25rem;
+    border-radius: 1.25rem;
+    margin-bottom: 1rem;
+  }
+  
+  .cardContent {
+    gap: 1rem;
+  }
+  
+  .icon {
+    width: 48px;
+    height: 48px;
+    font-size: 1.5rem;
+  }
+  
+  .value {
+    font-size: 1.25rem;
+  }
+  
+  .title {
+    font-size: 0.8125rem;
+  }
+  
+  .interactiveIndicator {
+    top: 0.875rem;
+    right: 0.875rem;
+    width: 5px;
+    height: 5px;
+  }
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: 1.25rem 1rem;
+    border-radius: 1rem;
+  }
+  
+  .cardContent {
+    gap: 0.875rem;
+  }
+  
+  .icon {
+    width: 44px;
+    height: 44px;
+    font-size: 1.375rem;
+    border-radius: 12px;
+  }
+  
+  .value {
+    font-size: 1.125rem;
+  }
+  
+  .actionIcon {
+    transform: scale(0.9);
+  }
+}
+
+/* Tablet and Desktop Grid Layout */
+@media (min-width: 641px) {
+  .card {
+    height: 140px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .cardContent {
+    height: 100%;
+    align-items: center;
+  }
+}
+
+@media (min-width: 1024px) {
+  .card {
+    height: 150px;
+    padding: 2rem 1.75rem;
+  }
+  
+  .icon {
+    width: 56px;
+    height: 56px;
+    font-size: 2rem;
+    border-radius: 16px;
+  }
+  
+  .value {
+    font-size: 1.625rem;
+  }
+  
+  .title {
+    font-size: 0.9375rem;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .card {
+    border-width: 2px;
+  }
+  
+  .icon {
+    border-width: 2px;
+  }
+  
+  .comingSoon {
+    border-width: 2px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .icon,
+  .actionIcon,
+  .glowEffect,
+  .interactiveIndicator {
+    transition: none;
+  }
+  
+  .card:hover {
+    transform: none;
+  }
 }

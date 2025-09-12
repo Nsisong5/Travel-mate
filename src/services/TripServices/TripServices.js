@@ -42,35 +42,11 @@ export const useTripServices = () => {
    * @returns {Promise} - Created trip data
    */
   const createTrip = async (tripData) => {
+    tripData["cost_estimated"] = true
+    tripData.origin = tripData.origin || "Not set!"
+    console.log("tripData",tripData)
     try {
-      console.log("Creating trip with data:", tripData);
-      console.log("Current user:", user?.email);
-
-      // Validate required fields
-      const requiredFields = ['destination', 'startDate', 'endDate', 'style'];
-      const missingFields = requiredFields.filter(field => !tripData[field]);
-      
-      if (missingFields.length > 0) {
-        throw new Error(`Missing required fields: ${missingFields.join(', ')}`);
-      }
-
-      // Format the data to match backend schema exactly
-      const formattedData = {
-        destination: tripData.destination,
-        start_date: tripData.startDate,  // Frontend sends startDate, backend expects start_date
-        end_date: tripData.endDate,      // Frontend sends endDate, backend expects end_date
-        status: tripData.status || "completed",
-        budget_range: tripData.budget || "medium",
-        style: tripData.style,
-        origin: tripData.origin || "Nigeria",
-        means: tripData.means || "car",
-        cost_estimated: tripData.cost_estimated || true
-      };
-
-      console.log("Formatted data being sent to backend:", formattedData);
-
-      // Make API request with authentication headers
-      const response = await api.post('/trips', formattedData, {
+        const response = await api.post('/trips', tripData, {
         headers: getAuthHeaders()
       });
 

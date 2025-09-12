@@ -1,78 +1,467 @@
+/* Card Container */
+@import "../theme-vars.css"
+
+
 .tableSection {
   background: var(--panel);
   border-radius: 1rem;
-  padding: 1rem;
+  padding: 1.5rem;
   box-shadow: var(--shadow);
   color: var(--text);
-  transition: background 0.3s, color 0.3s, box-shadow 0.3s;
-  user-select: none;
-  outline-offset: 2px;
+  transition: all 0.3s ease;
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-.tableSection:focus-visible {
-  outline: 2px solid var(--ring);
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
 }
 
 .title {
+  font-size: 1.25rem;
   font-weight: 700;
-  font-size: 1.2rem;
+  color: var(--text);
+  margin: 0;
+}
+
+.count {
+  font-size: 0.875rem;
+  color: var(--muted);
+  background: var(--card-grad-start);
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-weight: 500;
+}
+
+/* Loading State */
+.loadingState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  color: var(--muted);
+}
+
+.loadingSpinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(37, 99, 235, 0.1);
+  border-top-color: var(--primary);
+  border-radius: 50%;
   margin-bottom: 1rem;
 }
 
-.recentTripsTable {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-  font-size: 0.95rem;
+/* Error State */
+.errorState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  text-align: center;
+}
+
+.retryButton {
+  padding: 0.75rem 1.5rem;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: all 0.2s ease;
+}
+
+.retryButton:hover {
+  background: var(--primary-700);
+  transform: translateY(-1px);
+}
+
+/* Empty State */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  text-align: center;
+}
+
+.emptyIcon {
+  color: var(--muted);
+  margin-bottom: 1rem;
+}
+
+.emptyState h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0 0 0.5rem 0;
+}
+
+.emptyState p {
+  color: var(--muted);
+  margin: 0 0 1.5rem 0;
+}
+
+.planTripButton {
+  padding: 0.75rem 1.5rem;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.planTripButton:hover {
+  background: var(--primary-700);
+  transform: translateY(-1px);
+}
+
+/* Desktop Table */
+.desktopTable {
+  display: block;
+}
+
+.tableHeader {
+  display: grid;
+  grid-template-columns: 100px 1fr 80px 100px 100px 80px;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid rgba(100, 116, 139, 0.2);
+  margin-bottom: 0.5rem;
+}
+
+.tableHeader span {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tableBody {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.tableRow {
+  display: grid;
+  grid-template-columns: 100px 1fr 80px 100px 100px 80px;
+  gap: 1rem;
+  align-items: center;
+  padding: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tableRow:hover {
+  background: var(--card-grad-start);
+}
+
+/* Table Cells */
+.dateCell,
+.destinationCell,
+.durationCell,
+.costCell,
+.statusCell,
+.actionsCell {
+  font-size: 0.875rem;
   color: var(--text);
 }
 
-.recentTripsTable th,
-.recentTripsTable td {
-  padding: 0.75rem 0.8rem;
-  text-align: left;
-  white-space: nowrap;
-}
-
-.recentTripsTable thead th {
+.destinationName {
   font-weight: 600;
-  color: var(--primary);
-  background: transparent;
+  color: var(--text);
 }
 
-.recentTripsTable tbody tr {
-  border-radius: 0.3rem;
-  transition: background 0.2s;
+/* Status Badges */
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.statusCompleted {
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+}
+
+.statusOngoing {
+  background: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
+}
+
+.statusPlanned {
+  background: rgba(245, 158, 11, 0.1);
+  color: #f59e0b;
+}
+
+.statusCancelled {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+.statusDefault {
+  background: rgba(100, 116, 139, 0.1);
+  color: var(--muted);
+}
+
+/* Action Button */
+.actionButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: var(--card-grad-start);
+  border: 1px solid rgba(100, 116, 139, 0.2);
+  border-radius: 8px;
+  color: var(--text);
   cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-.recentTripsTable tbody tr:hover,
-.recentTripsTable tbody tr:focus-visible {
-  background: var(--ring);
-  outline: none;
+.actionButton:hover {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
 }
 
-.recentTripsTable td {
-  border-bottom: 1px solid var(--ring);
+.actionsCell {
+  display: flex;
+  justify-content: center;
 }
 
-/* Dark mode */
+/* Mobile Cards - Hidden on desktop */
+.mobileCards {
+  display: none;
+}
+
+.mobileCard {
+  background: var(--card-grad-start);
+  border: 1px solid rgba(100, 116, 139, 0.1);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mobileCard:hover {
+  background: var(--card-grad-end);
+  border-color: var(--primary);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.cardDestination {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.cardDetails {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.cardDetail {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--text);
+}
+
+.cardActions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.viewButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.viewButton:hover {
+  background: var(--primary-700);
+}
+
+/* Dark Theme */
 body[data-theme="dark"] .tableSection {
   background: var(--panel);
-  box-shadow: 0 4px 15px var(--shadow);
   color: var(--text);
 }
 
-body[data-theme="dark"] .recentTripsTable thead th {
-  color: var(--primary);
+body[data-theme="dark"] .count {
+  background: var(--card-grad-start);
+  color: var(--muted);
 }
 
-body[data-theme="dark"] .recentTripsTable tbody tr:hover,
-body[data-theme="dark"] .recentTripsTable tbody tr:focus-visible {
-  background: var(--ring);
+body[data-theme="dark"] .tableRow:hover,
+body[data-theme="dark"] .mobileCard:hover {
+  background: var(--card-grad-start);
 }
 
-body[data-theme="dark"] .recentTripsTable td {
-  border-bottom: 1px solid var(--ring);
+body[data-theme="dark"] .actionButton {
+  background: var(--card-grad-start);
+  border-color: rgba(255, 255, 255, 0.1);
   color: var(--text);
+}
+
+body[data-theme="dark"] .actionButton:hover {
+  background: var(--primary);
+  color: white;
+}
+
+body[data-theme="dark"] .statusCompleted {
+  background: rgba(16, 185, 129, 0.15);
+}
+
+body[data-theme="dark"] .statusOngoing {
+  background: rgba(59, 130, 246, 0.15);
+}
+
+body[data-theme="dark"] .statusPlanned {
+  background: rgba(245, 158, 11, 0.15);
+}
+
+body[data-theme="dark"] .statusCancelled {
+  background: rgba(239, 68, 68, 0.15);
+}
+
+body[data-theme="dark"] .mobileCard {
+  background: var(--card-grad-start);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .tableSection {
+    padding: 1rem;
+  }
+  
+  .header {
+    margin-bottom: 1rem;
+  }
+  
+  .title {
+    font-size: 1.125rem;
+  }
+  
+  .desktopTable {
+    display: none;
+  }
+  
+  .mobileCards {
+    display: block;
+  }
+  
+  .cardDetails {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+  
+  .cardDetail:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 640px) {
+  .cardDetails {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  
+  .cardDetail:last-child {
+    grid-column: auto;
+  }
+  
+  .cardHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+}
+
+/* Medium screens - Adjust table columns */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .tableHeader,
+  .tableRow {
+    grid-template-columns: 90px 1fr 70px 90px 90px 70px;
+    gap: 0.75rem;
+  }
+  
+  .tableHeader span {
+    font-size: 0.6875rem;
+  }
+  
+  .dateCell,
+  .destinationCell,
+  .durationCell,
+  .costCell,
+  .statusCell,
+  .actionsCell {
+    font-size: 0.8125rem;
+  }
+}
+
+/* Focus styles */
+.tableRow:focus-visible,
+.mobileCard:focus-visible,
+.actionButton:focus-visible,
+.viewButton:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .tableRow,
+  .mobileCard,
+  .actionButton,
+  .viewButton,
+  .retryButton,
+  .planTripButton {
+    transition: none;
+  }
 }

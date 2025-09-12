@@ -1,9 +1,13 @@
 // services/userService.js
 import api from '../api/axios';
+import { AuthContext } from "../../AuthProvider"
+import { useContext } from "react"
 
-class UserService {
+
+class UserService{
+ 
   // Get current user token from localStorage
-  getAuthHeaders() {
+  getAuthHeaders(){
     const token = localStorage.getItem('access_token');
     if (!token) {
       throw new Error('No authentication token found. Please login again.');
@@ -39,14 +43,14 @@ class UserService {
   // Update user profile
   async updateProfile(userData) {
     try {
-      const token = localStorage.getItem('access_token');
+      const myToken = localStorage.getItem('access_token');
       if (!token) {
         throw new Error('No authentication token found. Please login again.');
       }
 
       const response = await api.patch('/user/profile', userData, {
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${myToken}`
         }
       });
       return response.data;
@@ -128,18 +132,17 @@ class UserService {
 
   // Upload avatar (if you have file upload endpoint)
   async uploadAvatar(file) {
-     if (!file) {
-      alert("Please select a file first!");
-      return;
-    }
-
+    const token = localStorage.getItem('access_token');   
     try {
       const formData = new FormData();
       formData.append("file", file);
       formData.append("user_id", 1); // later: get from context/auth
 
       const res = await api.post("user/upload-avatar/", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+        headers: { 
+        'Authorization': `Bearer ${token}`,
+        "Content-Type": "multipart/form-data" 
+        },
       });
 
       setAvatarUrl(res.data.avatar_url);

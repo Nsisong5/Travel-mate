@@ -1,0 +1,63 @@
+/* src/pages/AIRecommendationDetailPage/RecommendationDescription/RecommendationDescription.module.css */
+@import "../../Dashboard/theme-vars.css";
+
+.container {
+  background: var(--panel);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(100, 116, 139, 0.1);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.iconContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--primary);
+  color: white;
+}
+
+.title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0;
+}
+
+.content {
+  padding: 0;
+}
+
+.description {
+  font-size: 1rem;
+  color: var(--text);
+  line-height: 1.6;
+  margin: 0;
+  font-weight: 400;
+}
+
+/* Tablet and desktop */
+@media (min-width: 768px) {
+  .container {
+    padding: 2rem;
+  }
+
+  .description {
+    font-size: 1.1rem;
+    line-height: 1.7;
+  }
+
+  .title {
+    font-size: 1.2rem;
+  }
+}
