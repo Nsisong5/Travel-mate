@@ -16,7 +16,7 @@ import { fadeInUp, staggerContainer } from './variants';
 import styles from './TripDetailPage.module.css';
 import TravelTips from './TravelTips/TravelTips';
 import TripMemories from './TripMemories/TripMemories';
-
+import { useTripServices }  from "../../services/TripServices/TripServices" 
 // Mock trip data for development
 const MOCK_TRIP = {
   id: 123,
@@ -63,7 +63,8 @@ const TripDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showEndTripModal, setShowEndTripModal] = useState(false);
-
+  const {getTrip} = useTripServices();
+  
   // TODO: Get theme from ThemeContext
   // const { theme } = useTheme();
 
@@ -76,15 +77,11 @@ const TripDetailPage = () => {
     setError(null);
 
     try {
-      // TODO: Replace with actual API call
-      // const response = await api.get(`/trips/${tripId}`, {
-      //   headers: { Authorization: `Bearer ${authToken}` }
-      // });
-      // Expected response: { id, title, start_date, end_date, cover_image, images, itinerary, budget, cost_estimated, progress_percent, days_left }
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 800));
-      setTrip(MOCK_TRIP);
+    
+      const response = await getTrip(tripId);
+      console.log("user current trip fetch: ",response)
+      response && setTrip(response);
+      setTrip(MOCK_TRIP)
     } catch (err) {
       console.error('Failed to fetch trip details:', err);
       setError('Failed to load trip details');

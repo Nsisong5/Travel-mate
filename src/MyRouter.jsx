@@ -145,7 +145,7 @@ function InnerAnimatedRoutes() {
           />
           
          <Route 
-            path="/active" 
+            path="/active/:tripId" 
             element={
               <ProtectedRoute>
                 <ActiveTripDetailPage />

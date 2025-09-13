@@ -4,7 +4,6 @@ import { useOutletContext, useNavigate } from "react-router-dom";
 import styles from "./PreferencesStep.module.css";
 import { fadeInUp, staggerContainer } from "../motion";
 import { Users, Plus, Minus } from "lucide-react";
-
 // Budget field dynamic width calculation helper
 function computeBudgetInputWidth(val) {
   const base = 80;
@@ -134,17 +133,11 @@ export default function PreferencesStep() {
                 <button
                   className={styles.budgetAction}
                   type="button"
-                  onClick={() => setSetBudgetNow(true)}
+                  onClick={()=>(navigate("/trip_budget"))}
                 >
                   Set Now
                 </button>
-                <button
-                  className={styles.budgetAction}
-                  type="button"
-                  onClick={handleBudgetSkip}
-                >
-                  Skip
-                </button>
+ 
               </>
             ) : (
               <div className={styles.budgetRow}>

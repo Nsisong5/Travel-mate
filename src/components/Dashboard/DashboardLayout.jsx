@@ -1,4 +1,3 @@
-import { Helmet } from "react-helmet"
 import React, { useState, useRef, useEffect, useContext } from "react";
 import { AnimatePresence } from "framer-motion";
 import { useTheme } from "../../ThemeContext";
@@ -6,14 +5,13 @@ import styles from "./DashboardLayout.module.css";
 import "./theme-vars.css";
 import Sidebar from "./Sidebar/Sidebar";
 import { AuthContext } from "../../AuthProvider"; // Backend API integration point
-import { useNavigate } from "react-router-dom"
-
+import { Helmet } from "react-helmet"
 export default function DashboardLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const sidebarRef = useRef(null);
   const { theme } = useTheme();
   const { user } = useContext(AuthContext) || { user: null }; // Backend user data integration
-  const navigate = useNavigate()
+
   useEffect(() => {
     document.body.classList.toggle("sidebar-open", sidebarOpen);
     if (sidebarOpen) {
@@ -52,9 +50,8 @@ export default function DashboardLayout({ children }) {
      <Helmet> 
        <meta  
         name="viewport"
-        content="width=device-width, initial-scale=1.0"/>
+        content="width=device-wi, initial-scale=1.0"/>
       </Helmet>
-      
       <AnimatePresence>
         {(sidebarOpen || window.innerWidth >= 1024) && (
           <Sidebar
@@ -83,7 +80,7 @@ export default function DashboardLayout({ children }) {
             </button>
           )}
 
-          <h1 className={styles.title} onClick={()=>(navigate(-1))}>Dashboard</h1>
+          <h1 className={styles.title}>Dashboard</h1>
 
           {/* Theme-aware right side container with fixed positioning */}
           <div className={styles.headerRight}>

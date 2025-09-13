@@ -78,7 +78,7 @@ export default function RecentTripsTable({ trips }) {
 
   const handleViewTrip = (tripId, event) => {
     event.stopPropagation();
-    navigate(`/trips/${tripId}`);
+    navigate(`/active/${tripId}`);
   };
 
   const containerVariants = {

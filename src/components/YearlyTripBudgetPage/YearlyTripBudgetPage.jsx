@@ -10,7 +10,6 @@ import { useNavigate } from "react-router-dom";
 import { formatBudgetAmount } from '../../utils/BudgetPage/getBudgetFeedback';
 import { useBudgetContext } from "../../services/BudgetServices/BudgetContextProvider"
 
-
 const YearlyBudgetManager = () => {
   const navigate = useNavigate();
   const [yearlyBudget, setYearlyBudget] = useState(null);
@@ -44,11 +43,7 @@ const YearlyBudgetManager = () => {
   });
   
   useEffect(()=>{
-      const lcBudget = JSON.parse(localStorage.getItem("lcBudget"))
-      if (lcBudget){
-      console.log("gotten from loca str: ",lcBudget[0])
-      setYearlyBudget(lcBudget[0])}
-      else{fetchYearlyBudget()}
+     fetchYearlyBudget()
   },[])
   
   
@@ -56,7 +51,7 @@ const YearlyBudgetManager = () => {
        try{
            const res = await getYearlyBudget();
            console.log("gotten budget from database:",res)
-           setYearlyBrudget(res) 
+           setYearlyBudget(res[0]) 
            return res
        }catch(err){
           console.log(err)
