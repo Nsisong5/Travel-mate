@@ -46,14 +46,15 @@ export const BudgetContext = createContext();
             
 
     const updateYearlyBudget = async(data)=>{
+        console.log('data to update yearly budget: ',data)
           try{
-              const response = await api.put("/yearly/budgets", data,{
+              const response = await api.patch("/yearly/budgets", data,{
                 headers: getHeaders()
               })
               localStorage.setItem("lcBudget", JSON.stringify(response.data))          
               return response.data   
           }catch(err){
-            console.log("yearly budget update failed: ",err.response?.data?.detail)    
+            console.log("yearly budget update failed: ",err.response)    
             throw Error("error during budget update:",err)
           }
     }        

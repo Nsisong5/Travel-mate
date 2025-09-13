@@ -178,7 +178,7 @@ const TopDestinationsPage = () => {
 
   const handleViewMore = (destination) => {
     // TODO: Navigate to destination details page
-    navigate(`/destinations/${destination.id}`);
+    navigate(`/destination-detail/5`);
   };
 
   const visibleDestinations = filteredDestinations.slice(0, visibleCount);

@@ -82,6 +82,7 @@ const CreateTripBudgetPage = () => {
       // setAvailableTrips(tripsWithoutBudgets);
 
       // Simulate API call
+      const response = await getTrips
       await new Promise(resolve => setTimeout(resolve, 600));
       const tripsWithoutBudgets = MOCK_TRIPS.filter(trip => !trip.hasBudget);
       setAvailableTrips(tripsWithoutBudgets);

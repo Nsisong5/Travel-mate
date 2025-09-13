@@ -3,7 +3,7 @@
 // TODO: Connect to real trip API and auth context
 
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Header from './Header/Header';
 import Hero from './Hero/Hero';
@@ -16,7 +16,7 @@ import { fadeInUp, staggerContainer } from './variants';
 import styles from './TripDetailPage.module.css';
 import TravelTips from './TravelTips/TravelTips';
 import TripMemories from './TripMemories/TripMemories';
-
+import { useParams } from 'react-router-dom';
 // Mock trip data for development
 const MOCK_TRIP = {
   id: 123,
@@ -57,15 +57,14 @@ const MOCK_TRIP = {
 };
 
 const TripDetailPage = () => {
-  const { tripId } = useParams();
-  const navigate = useNavigate();
-  const [trip, setTrip] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [showEndTripModal, setShowEndTripModal] = useState(false);
-
-  // TODO: Get theme from ThemeContext
-  // const { theme } = useTheme();
+    const { tripId } = useParams();
+    const navigate = useNavigate();
+    const [trip, setTrip] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [showEndTripModal, setShowEndTripModal] = useState(false);
+    const { tripId } = useParams()
+    // const { theme } = useTheme();
 
   useEffect(() => {
     fetchTripDetails();
@@ -81,7 +80,7 @@ const TripDetailPage = () => {
       //   headers: { Authorization: `Bearer ${authToken}` }
       // });
       // Expected response: { id, title, start_date, end_date, cover_image, images, itinerary, budget, cost_estimated, progress_percent, days_left }
-      
+        
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 800));
       setTrip(MOCK_TRIP);

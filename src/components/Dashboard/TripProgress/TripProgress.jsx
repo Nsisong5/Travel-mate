@@ -142,16 +142,6 @@ const TripProgress = ({
         >
           View Full Itinerary
         </motion.a>
-        <motion.a
-          href={editRoute ? editRoute.replace(':id', currentTrip.id) : `/trips/${currentTrip.id || 'new'}/edit`}
-          className={`${styles.actionButton} ${styles.secondary}`}
-          variants={fadeInUp}
-          whileHover="hover"
-          whileTap="tap"
-          aria-label="Update trip details"
-        >
-          Update Details
-        </motion.a>
       </div>
     </motion.section>
   );

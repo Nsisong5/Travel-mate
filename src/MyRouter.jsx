@@ -92,14 +92,14 @@ function InnerAnimatedRoutes() {
             } 
           /> 
                           
-          <Route 
+          <Route
             path="/destination-detail/:id" 
             element={
               <ProtectedRoute>
                 <DestinationDetailPage />
               </ProtectedRoute>
-            } 
-          />
+            }
+            />
                     
           <Route 
             path="/top-destinations" 
