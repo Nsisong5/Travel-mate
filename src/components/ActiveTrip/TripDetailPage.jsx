@@ -16,7 +16,11 @@ import { fadeInUp, staggerContainer } from './variants';
 import styles from './TripDetailPage.module.css';
 import TravelTips from './TravelTips/TravelTips';
 import TripMemories from './TripMemories/TripMemories';
+<<<<<<< HEAD
 import { useParams } from 'react-router-dom';
+=======
+import { useTripServices }  from "../../services/TripServices/TripServices" 
+>>>>>>> 2441b88f411baabed0115450b2e6bf2b661938af
 // Mock trip data for development
 const MOCK_TRIP = {
   id: 123,
@@ -57,6 +61,7 @@ const MOCK_TRIP = {
 };
 
 const TripDetailPage = () => {
+<<<<<<< HEAD
     const { tripId } = useParams();
     const navigate = useNavigate();
     const [trip, setTrip] = useState(null);
@@ -65,6 +70,18 @@ const TripDetailPage = () => {
     const [showEndTripModal, setShowEndTripModal] = useState(false);
     const { tripId } = useParams()
     // const { theme } = useTheme();
+=======
+  const { tripId } = useParams();
+  const navigate = useNavigate();
+  const [trip, setTrip] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [showEndTripModal, setShowEndTripModal] = useState(false);
+  const {getTrip} = useTripServices();
+  
+  // TODO: Get theme from ThemeContext
+  // const { theme } = useTheme();
+>>>>>>> 2441b88f411baabed0115450b2e6bf2b661938af
 
   useEffect(() => {
     fetchTripDetails();
@@ -75,6 +92,7 @@ const TripDetailPage = () => {
     setError(null);
 
     try {
+<<<<<<< HEAD
       // TODO: Replace with actual API call
       // const response = await api.get(`/trips/${tripId}`, {
       //   headers: { Authorization: `Bearer ${authToken}` }
@@ -84,6 +102,13 @@ const TripDetailPage = () => {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 800));
       setTrip(MOCK_TRIP);
+=======
+    
+      const response = await getTrip(tripId);
+      console.log("user current trip fetch: ",response)
+      response && setTrip(response);
+      setTrip(MOCK_TRIP)
+>>>>>>> 2441b88f411baabed0115450b2e6bf2b661938af
     } catch (err) {
       console.error('Failed to fetch trip details:', err);
       setError('Failed to load trip details');

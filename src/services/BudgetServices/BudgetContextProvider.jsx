@@ -59,11 +59,39 @@ export const BudgetContext = createContext();
           }
     }        
              
+   
             
+  const createBudget = async (budgetData) => {
+  try {
+    const response = await api.post(`/user/budgets`, budgetData, {
+      headers: getHeaders(),
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error creating budget:", error);
+    throw error;
+  }
+ };                
+      
+ const updateBudget = async (budgetId, updateData) => {
+  try {
+    const response = await api.patch(`/user/budgets/${budgetId}`, updateData, {
+      headers: getHeaders(),
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error updating budget:", error);
+    throw error;
+  }
+ };
+                                       
+                                                                                                         
   const contextValue = {
     createYearlyBudget,
     getYearlyBudget,
-    updateYearlyBudget
+    updateYearlyBudget,
+    createBudget,
+    updateBudget
   };
 
   return (

@@ -6,11 +6,13 @@
 // - API Calls: 
 //   - GET /user/trips/upcoming -> { trips: [MOCK_TRIPS] }
 //   - POST /user/budgets -> { trip_id, amount, allocatedBreakdown }
+//   - GET /user/yearly-budget -> { amount, spent, remaining } // TODO: Add this endpoint
 // - Route integration: Add <Route path="/budget/create" element={<CreateTripBudgetPage />} />
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useTripServices } from "../../services/TripServices/TripServices"
 import { 
   ChevronLeft, 
   ChevronDown, 
@@ -19,7 +21,8 @@ import {
   DollarSign,
   Calendar,
   MapPin,
-  Sparkles
+  Sparkles,
+  AlertTriangle // ADDED: Icon for yearly budget warning
 } from 'lucide-react';
 import * as Icons from 'lucide-react';
 import { 
@@ -62,18 +65,29 @@ const CreateTripBudgetPage = () => {
   const [showTripDropdown, setShowTripDropdown] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
+  const { getUserTrips } = useTripServices()
   
   // Data state
   const [availableTrips, setAvailableTrips] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // ADDED: Yearly budget state with mock data
+  const [yearlyBudget, setYearlyBudget] = useState({
+    amount: 15000, // Mock yearly budget of $15,000
+    spent: 8500,   // Mock amount already spent on other trips
+    remaining: 6500 // Mock remaining amount (amount - spent)
+  });
+
   useEffect(() => {
     fetchAvailableTrips();
+    // ADDED: In the future, also fetch yearly budget data here
+    // fetchYearlyBudget();
   }, []);
 
   const fetchAvailableTrips = async () => {
     setLoading(true);
     try {
+<<<<<<< HEAD
       // TODO: Replace with real API call
       // const response = await api.get('/user/trips/upcoming', {
       //   headers: { Authorization: `Bearer ${token}` }
@@ -85,6 +99,10 @@ const CreateTripBudgetPage = () => {
       const response = await getTrips
       await new Promise(resolve => setTimeout(resolve, 600));
       const tripsWithoutBudgets = MOCK_TRIPS.filter(trip => !trip.hasBudget);
+=======
+      const trips = await getUserTrips();
+      const tripsWithoutBudgets = trips.filter(trip => !trip.hasBudget);
+>>>>>>> 2441b88f411baabed0115450b2e6bf2b661938af
       setAvailableTrips(tripsWithoutBudgets);
     } catch (error) {
       console.error('Failed to fetch trips:', error);
@@ -93,6 +111,19 @@ const CreateTripBudgetPage = () => {
       setLoading(false);
     }
   };
+
+  // ADDED: Future function to fetch yearly budget from API
+  // const fetchYearlyBudget = async () => {
+  //   try {
+  //     const response = await api.get('/user/yearly-budget', {
+  //       headers: { Authorization: `Bearer ${token}` }
+  //     });
+  //     setYearlyBudget(response.data);
+  //   } catch (error) {
+  //     console.error('Failed to fetch yearly budget:', error);
+  //     setErrors({ yearlyBudget: 'Failed to load yearly budget' });
+  //   }
+  // };
 
   // Initialize categories with default selection
   useEffect(() => {
@@ -121,6 +152,28 @@ const CreateTripBudgetPage = () => {
       }
     }
   }, [mainBudget, selectedCategories]);
+
+  // ADDED: Check if trip budget exceeds yearly budget remaining amount
+  const isBudgetExceedingYearly = () => {
+    const budgetAmount = parseNumericInput(mainBudget);
+    return budgetAmount > yearlyBudget.remaining;
+  };
+
+  // ADDED: Get yearly budget validation message
+  const getYearlyBudgetMessage = () => {
+    if (!mainBudget) return null;
+    
+    const budgetAmount = parseNumericInput(mainBudget);
+    if (budgetAmount <= 0) return null;
+
+    if (isBudgetExceedingYearly()) {
+      const excess = budgetAmount - yearlyBudget.remaining;
+      return `Trip budget exceeds yearly budget by ${formatCurrency(excess)}. Available: ${formatCurrency(yearlyBudget.remaining)}`;
+    }
+    
+    const remainingAfter = yearlyBudget.remaining - budgetAmount;
+    return `Yearly budget remaining after this trip: ${formatCurrency(remainingAfter)}`;
+  };
 
   const handleTripSelect = (trip) => {
     setSelectedTrip(trip);
@@ -198,6 +251,11 @@ const CreateTripBudgetPage = () => {
     const budgetAmount = parseNumericInput(mainBudget);
     if (budgetAmount <= 0) {
       newErrors.budget = 'Budget amount must be greater than 0';
+    }
+
+    // ADDED: Yearly budget validation
+    if (budgetAmount > yearlyBudget.remaining) {
+      newErrors.budget = `Budget exceeds available yearly budget (${formatCurrency(yearlyBudget.remaining)})`;
     }
 
     if (selectedCategories.size === 0) {
@@ -283,6 +341,37 @@ const CreateTripBudgetPage = () => {
 
       <div className={styles.content}>
         <form onSubmit={handleSubmit} className={styles.form}>
+          {/* ADDED: Yearly Budget Overview Section */}
+          <motion.section className={styles.section} variants={pageVariants}>
+            <h2 className={styles.sectionTitle}>
+              <Calendar size={18} />
+              Yearly Budget Overview
+            </h2>
+            
+            <div className={styles.yearlyBudgetCard}>
+              <div className={styles.yearlyBudgetRow}>
+                <span className={styles.yearlyBudgetLabel}>Total Yearly Budget:</span>
+                <span className={styles.yearlyBudgetValue}>
+                  {formatCurrency(yearlyBudget.amount)}
+                </span>
+              </div>
+              
+              <div className={styles.yearlyBudgetRow}>
+                <span className={styles.yearlyBudgetLabel}>Already Spent:</span>
+                <span className={styles.yearlyBudgetValue}>
+                  {formatCurrency(yearlyBudget.spent)}
+                </span>
+              </div>
+              
+              <div className={styles.yearlyBudgetRow}>
+                <span className={styles.yearlyBudgetLabel}>Available for Trips:</span>
+                <span className={`${styles.yearlyBudgetValue} ${styles.availableAmount}`}>
+                  {formatCurrency(yearlyBudget.remaining)}
+                </span>
+              </div>
+            </div>
+          </motion.section>
+
           {/* Trip Selection */}
           <motion.section className={styles.section} variants={pageVariants}>
             <h2 className={styles.sectionTitle}>
@@ -299,7 +388,7 @@ const CreateTripBudgetPage = () => {
                 {selectedTrip ? (
                   <>
                     <div className={styles.tripInfo}>
-                      <span className={styles.tripTitle}>{selectedTrip.title}</span>
+                      <span className={styles.tripTitle}>{selectedTrip.title || selectedTrip.country}</span>
                       <span className={styles.tripDates}>
                         {new Date(selectedTrip.start_date).toLocaleDateString()} - 
                         {new Date(selectedTrip.end_date).toLocaleDateString()}
@@ -329,7 +418,7 @@ const CreateTripBudgetPage = () => {
                       className={styles.tripOption}
                     >
                       <div className={styles.tripInfo}>
-                        <span className={styles.tripTitle}>{trip.title}</span>
+                        <span className={styles.tripTitle}>{trip.title || trip.country}</span>
                         <span className={styles.tripDates}>
                           {new Date(trip.start_date).toLocaleDateString()} - 
                           {new Date(trip.end_date).toLocaleDateString()}
@@ -361,6 +450,8 @@ const CreateTripBudgetPage = () => {
                   type="button"
                   onClick={() => handlePresetSelect(preset.amount)}
                   className={styles.presetButton}
+                  // ADDED: Disable preset buttons that exceed yearly budget
+                  disabled={preset.amount > yearlyBudget.remaining}
                 >
                   <span className={styles.presetLabel}>{preset.label}</span>
                   <span className={styles.presetAmount}>{formatCurrency(preset.amount)}</span>
@@ -383,6 +474,16 @@ const CreateTripBudgetPage = () => {
                 placeholder="Enter custom amount"
               />
             </div>
+            
+            {/* ADDED: Yearly budget validation message */}
+            {getYearlyBudgetMessage() && (
+              <div className={`${styles.yearlyBudgetMessage} ${
+                isBudgetExceedingYearly() ? styles.yearlyBudgetError : styles.yearlyBudgetInfo
+              }`}>
+                <AlertTriangle size={16} />
+                <span>{getYearlyBudgetMessage()}</span>
+              </div>
+            )}
             
             {errors.budget && (
               <span className={styles.errorText}>{errors.budget}</span>
@@ -519,8 +620,11 @@ const CreateTripBudgetPage = () => {
           <motion.div className={styles.actions} variants={pageVariants}>
             <button
               type="submit"
-              className={styles.createButton}
-              disabled={isSubmitting || !validation.isValid}
+              className={`${styles.createButton} ${
+                // ADDED: Gray out button when yearly budget is exceeded
+                isBudgetExceedingYearly() ? styles.createButtonDisabled : ''
+              }`}
+              disabled={isSubmitting || !validation.isValid || isBudgetExceedingYearly()}
             >
               {isSubmitting ? 'Creating Budget...' : 'Create Budget'}
             </button>

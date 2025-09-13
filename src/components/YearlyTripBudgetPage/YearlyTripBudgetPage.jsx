@@ -10,7 +10,6 @@ import { useNavigate } from "react-router-dom";
 import { formatBudgetAmount } from '../../utils/BudgetPage/getBudgetFeedback';
 import { useBudgetContext } from "../../services/BudgetServices/BudgetContextProvider"
 
-
 const YearlyBudgetManager = () => {
   const navigate = useNavigate();
   const [yearlyBudget, setYearlyBudget] = useState(null);
@@ -44,7 +43,11 @@ const YearlyBudgetManager = () => {
   });
   
   useEffect(()=>{
+<<<<<<< HEAD
      fetchYearlyBudget();
+=======
+     fetchYearlyBudget()
+>>>>>>> 2441b88f411baabed0115450b2e6bf2b661938af
   },[])
   
   

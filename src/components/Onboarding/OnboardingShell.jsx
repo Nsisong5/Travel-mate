@@ -6,7 +6,7 @@ import ProgressBar from "./ProgressBar/ProgressBar";
 import StepNav from "./StepNav/StepNav";
 import styles from "./Onboarding.module.css";
 import { pageVariants } from "./motion";
-
+import { Helmet } from "react-helmet"
 const STEPS = ["welcome", "destination", "dates", "preferences", "summary"];
 
 const initialState = {
@@ -50,6 +50,12 @@ export default function OnboardingShell({ allowSkip }) {
   const stepPaths = STEPS;
 
   return (
+  <>      
+   <Helmet> 
+       <meta  
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"/>
+    </Helmet>
     <motion.div
       className={styles.onboardingShell}
       data-theme={theme}
@@ -80,5 +86,6 @@ export default function OnboardingShell({ allowSkip }) {
         }}
       />
     </motion.div>
+   </>
   );
 }

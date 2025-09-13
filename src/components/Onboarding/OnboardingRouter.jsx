@@ -7,6 +7,7 @@ import DatesStep from "./DatesStep/DatesStep";
 import PreferencesStep from "./PreferencesStep/PreferencesStep";
 import SummaryStep from "./SummaryStep/SummaryStep";
 import { AuthContext } from "../../AuthProvider";
+import { Helmet } from "react-helmet"
 
 export default function OnboardingRouter({ allowSkip }) {
   // Determine if user is authenticated (adjust logic if needed)
@@ -14,7 +15,9 @@ export default function OnboardingRouter({ allowSkip }) {
   const isAuthenticated = !!user;
   
   return (
-    <Routes>
+  <>
+
+     <Routes>                   
       {/* Redirect root onboarding path to appropriate initial step */}
       <Route
         path="/"
@@ -41,5 +44,6 @@ export default function OnboardingRouter({ allowSkip }) {
         <Route path="summary" element={<SummaryStep />} />
       </Route>
     </Routes>
+   </>
   );
 }

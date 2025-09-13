@@ -125,6 +125,8 @@ export const useTripServices = () => {
       throw new Error(error.response?.data?.detail || error.message || 'Failed to fetch upcoming trips');
     }
   };
+  
+ 
 
   /**
    * Get all user's trips (both history and upcoming)
@@ -156,6 +158,38 @@ export const useTripServices = () => {
     }
   }; 
    
+
+   
+   
+    const getTrip = async (id) => {
+    
+    try {
+      console.log("Fetching current trip for user:", user?.email);
+
+      const response = await api.get(`/trips/${id}`, {
+        headers: getAuthHeaders()
+      });
+
+      console.log("Upcoming current trip fetch successfully:", response.data);
+      localStorage.setItem("current_trip", response.data)
+      return response.data;
+      
+    } catch (error) {
+      console.error("Error fetching current trip:", error);
+      
+      if (error.response?.status === 401) {
+        localStorage.removeItem('access_token');
+        throw new Error('Session expired. Please login again.');
+      }
+      
+      throw new Error(error.response?.data?.detail || error.message || 'Failed to fetch upcoming trips');
+    }
+  }; 
+   
+   
+         
+         
+               
    
   const getAllTrips = async () => {
     try {
@@ -232,6 +266,12 @@ export const useTripServices = () => {
     getUserTrips,
     // Trip analytics
     getTripStats,
+    getTrip     // TODO: Replace with actual API call
+      //   headers: { Authorization: `Bearer ${authToken}` }
+      // });
+      // Expected response: { id, title, start_date, end_date, cover_image, images, itinerary, budget, cost_estimated, progress_percent, days_left }
+      
+      // Simulate API call
   };
 };
 
