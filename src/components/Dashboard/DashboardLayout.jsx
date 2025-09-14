@@ -46,17 +46,12 @@ export default function DashboardLayout({ children }) {
   const handleGoProfile = () => window.location.href = "/settings";
 
   return (
-    <div data-theme={theme} className={styles.page}>
-<<<<<<< HEAD
-
-      
-=======
+    <div data-theme={theme} className={styles.page}>      
      <Helmet> 
        <meta  
         name="viewport"
-        content="width=device-wi, initial-scale=1.0"/>
+        content="width=device-width, initial-scale=1.0"/>
       </Helmet>
->>>>>>> 2441b88f411baabed0115450b2e6bf2b661938af
       <AnimatePresence>
         {(sidebarOpen || window.innerWidth >= 1024) && (
           <Sidebar

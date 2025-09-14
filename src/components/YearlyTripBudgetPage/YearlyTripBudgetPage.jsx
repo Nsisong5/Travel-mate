@@ -43,11 +43,7 @@ const YearlyBudgetManager = () => {
   });
   
   useEffect(()=>{
-<<<<<<< HEAD
-     fetchYearlyBudget();
-=======
      fetchYearlyBudget()
->>>>>>> 2441b88f411baabed0115450b2e6bf2b661938af
   },[])
   
   

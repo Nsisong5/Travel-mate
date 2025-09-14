@@ -59,8 +59,7 @@ export const BudgetContext = createContext();
           }
     }        
              
-   
-            
+
   const createBudget = async (budgetData) => {
   try {
     const response = await api.post(`/user/budgets`, budgetData, {

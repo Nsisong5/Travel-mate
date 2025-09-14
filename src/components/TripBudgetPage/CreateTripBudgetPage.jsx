@@ -9,648 +9,657 @@
 //   - GET /user/yearly-budget -> { amount, spent, remaining } // TODO: Add this endpoint
 // - Route integration: Add <Route path="/budget/create" element={<CreateTripBudgetPage />} />
 
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useContext } from 'react';
+import { data, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useTripServices } from "../../services/TripServices/TripServices"
-import { 
-  ChevronLeft, 
-  ChevronDown, 
-  Plus, 
-  Check, 
-  DollarSign,
-  Calendar,
-  MapPin,
-  Sparkles,
-  AlertTriangle // ADDED: Icon for yearly budget warning
+import { useBudgetContext } from '../../services/BudgetServices/BudgetContextProvider';
+import {
+    ChevronLeft,
+    ChevronDown,
+    Plus,
+    Check,
+    DollarSign,
+    Calendar,
+    MapPin,
+    Sparkles,
+    AlertTriangle // ADDED: Icon for yearly budget warning
 } from 'lucide-react';
 import * as Icons from 'lucide-react';
-import { 
-  MOCK_TRIPS, 
-  MOCK_CATEGORIES, 
-  BUDGET_PRESETS 
+import {
+    MOCK_TRIPS,
+    MOCK_CATEGORIES,
+    BUDGET_PRESETS
 } from '../BudgetPage/mockData';
 import {
-  formatCurrency,
-  suggestAllocation,
-  calculateBudgetSummary,
-  validateAllocations,
-  parseNumericInput
+    formatCurrency,
+    suggestAllocation,
+    calculateBudgetSummary,
+    validateAllocations,
+    parseNumericInput
 } from '../../utils/BudgetPage/budgetEngine';
 import styles from './CreateTripBudgetPage.module.css';
-
+import { AuthContext } from '../../AuthProvider';
 // Animation variants
 const pageVariants = {
-  initial: { opacity: 0, y: 20 },
-  animate: { 
-    opacity: 1, 
-    y: 0, 
-    transition: { 
-      duration: 0.5, 
-      ease: 'easeOut',
-      staggerChildren: 0.1 
-    }
-  },
-  exit: { opacity: 0, y: -20, transition: { duration: 0.3 } }
+    initial: { opacity: 0, y: 20 },
+    animate: {
+        opacity: 1,
+        y: 0,
+        transition: {
+            duration: 0.5,
+            ease: 'easeOut',
+            staggerChildren: 0.1
+        }
+    },
+    exit: { opacity: 0, y: -20, transition: { duration: 0.3 } }
 };
 
 const CreateTripBudgetPage = () => {
-  const navigate = useNavigate();
-  
-  // Form state
-  const [selectedTrip, setSelectedTrip] = useState(null);
-  const [mainBudget, setMainBudget] = useState('');
-  const [selectedCategories, setSelectedCategories] = useState(new Set());
-  const [allocations, setAllocations] = useState({});
-  const [showTripDropdown, setShowTripDropdown] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [errors, setErrors] = useState({});
-  const { getUserTrips } = useTripServices()
-  
-  // Data state
-  const [availableTrips, setAvailableTrips] = useState([]);
-  const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
 
-  // ADDED: Yearly budget state with mock data
-  const [yearlyBudget, setYearlyBudget] = useState({
-    amount: 15000, // Mock yearly budget of $15,000
-    spent: 8500,   // Mock amount already spent on other trips
-    remaining: 6500 // Mock remaining amount (amount - spent)
-  });
+    // Form state
+    const [selectedTrip, setSelectedTrip] = useState(null);
+    const [mainBudget, setMainBudget] = useState('');
+    const [selectedCategories, setSelectedCategories] = useState(new Set());
+    const [allocations, setAllocations] = useState({});
+    const [showTripDropdown, setShowTripDropdown] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [errors, setErrors] = useState({});
+    const { getUserTrips } = useTripServices()
+    const { getYearlyBudget, createBudget } = useBudgetContext();
+    // Data state
+    const [availableTrips, setAvailableTrips] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const {user } = useContext(AuthContext)
 
-  useEffect(() => {
-    fetchAvailableTrips();
-    // ADDED: In the future, also fetch yearly budget data here
-    // fetchYearlyBudget();
-  }, []);
-
-  const fetchAvailableTrips = async () => {
-    setLoading(true);
-    try {
-<<<<<<< HEAD
-      // TODO: Replace with real API call
-      // const response = await api.get('/user/trips/upcoming', {
-      //   headers: { Authorization: `Bearer ${token}` }
-      // });
-      // const tripsWithoutBudgets = response.data.trips.filter(trip => !trip.hasBudget);
-      // setAvailableTrips(tripsWithoutBudgets);
-
-      // Simulate API call
-      const response = await getTrips
-      await new Promise(resolve => setTimeout(resolve, 600));
-      const tripsWithoutBudgets = MOCK_TRIPS.filter(trip => !trip.hasBudget);
-=======
-      const trips = await getUserTrips();
-      const tripsWithoutBudgets = trips.filter(trip => !trip.hasBudget);
->>>>>>> 2441b88f411baabed0115450b2e6bf2b661938af
-      setAvailableTrips(tripsWithoutBudgets);
-    } catch (error) {
-      console.error('Failed to fetch trips:', error);
-      setErrors({ trips: 'Failed to load available trips' });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // ADDED: Future function to fetch yearly budget from API
-  // const fetchYearlyBudget = async () => {
-  //   try {
-  //     const response = await api.get('/user/yearly-budget', {
-  //       headers: { Authorization: `Bearer ${token}` }
-  //     });
-  //     setYearlyBudget(response.data);
-  //   } catch (error) {
-  //     console.error('Failed to fetch yearly budget:', error);
-  //     setErrors({ yearlyBudget: 'Failed to load yearly budget' });
-  //   }
-  // };
-
-  // Initialize categories with default selection
-  useEffect(() => {
-    // Pre-select essential categories
-    const essentialCategories = new Set(['lodging', 'food', 'transport', 'activities']);
-    setSelectedCategories(essentialCategories);
-  }, []);
-
-  // Auto-suggest allocations when budget or categories change
-  useEffect(() => {
-    if (mainBudget && selectedCategories.size > 0) {
-      const budgetAmount = parseNumericInput(mainBudget);
-      if (budgetAmount > 0) {
-        const categoriesArray = Array.from(selectedCategories).map(id => 
-          MOCK_CATEGORIES.find(cat => cat.id === id)
-        ).filter(Boolean);
-        
-        const suggested = suggestAllocation(budgetAmount, categoriesArray, 'weighted');
-        const newAllocations = {};
-        
-        suggested.forEach(cat => {
-          newAllocations[cat.id] = cat.allocated;
-        });
-        
-        setAllocations(newAllocations);
-      }
-    }
-  }, [mainBudget, selectedCategories]);
-
-  // ADDED: Check if trip budget exceeds yearly budget remaining amount
-  const isBudgetExceedingYearly = () => {
-    const budgetAmount = parseNumericInput(mainBudget);
-    return budgetAmount > yearlyBudget.remaining;
-  };
-
-  // ADDED: Get yearly budget validation message
-  const getYearlyBudgetMessage = () => {
-    if (!mainBudget) return null;
-    
-    const budgetAmount = parseNumericInput(mainBudget);
-    if (budgetAmount <= 0) return null;
-
-    if (isBudgetExceedingYearly()) {
-      const excess = budgetAmount - yearlyBudget.remaining;
-      return `Trip budget exceeds yearly budget by ${formatCurrency(excess)}. Available: ${formatCurrency(yearlyBudget.remaining)}`;
-    }
-    
-    const remainingAfter = yearlyBudget.remaining - budgetAmount;
-    return `Yearly budget remaining after this trip: ${formatCurrency(remainingAfter)}`;
-  };
-
-  const handleTripSelect = (trip) => {
-    setSelectedTrip(trip);
-    setShowTripDropdown(false);
-    clearError('trip');
-  };
-
-  const handlePresetSelect = (amount) => {
-    setMainBudget(amount.toString());
-    clearError('budget');
-  };
-
-  const handleCategoryToggle = (categoryId) => {
-    setSelectedCategories(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(categoryId)) {
-        newSet.delete(categoryId);
-        // Remove allocation for unchecked category
-        setAllocations(prevAlloc => {
-          const newAlloc = { ...prevAlloc };
-          delete newAlloc[categoryId];
-          return newAlloc;
-        });
-      } else {
-        newSet.add(categoryId);
-      }
-      return newSet;
+    // ADDED: Yearly budget state with mock data
+    const [yearlyBudget, setYearlyBudget] = useState({
+        amount: 15000, // Mock yearly budget of $15,000
+        spent: 8500,   // Mock amount already spent on other trips
+        remaining: 6500 // Mock remaining amount (amount - spent)
     });
-  };
 
-  const handleAllocationChange = (categoryId, amount) => {
-    const parsedAmount = parseNumericInput(amount, 0);
-    setAllocations(prev => ({
-      ...prev,
-      [categoryId]: parsedAmount
-    }));
-  };
+    useEffect(() => {
+        fetchAvailableTrips();
+        fetchYearlyBudget();
+        // ADDED: In the future, also fetch yearly budget data here
+        // fetchYearlyBudget();
+    }, []);
 
-  const clearError = (field) => {
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
-    }
-  };
+    const fetchAvailableTrips = async () => {
+        setLoading(true);
+        try {
+            const trips = await getUserTrips();
+            const tripsWithoutBudgets = trips.filter(trip => !trip.hasBudget);
+            setAvailableTrips(tripsWithoutBudgets);
+        } catch (error) {
+            console.error('Failed to fetch trips:', error);
+            setErrors({ trips: 'Failed to load available trips' });
+        } finally {
+            setLoading(false);
+        }
+    };
 
-  // Calculate summary for preview
-  const getCurrentAllocations = () => {
-    return Array.from(selectedCategories).map(id => {
-      const category = MOCK_CATEGORIES.find(cat => cat.id === id);
-      return {
-        ...category,
-        allocated: allocations[id] || 0,
-        spent: 0
-      };
-    });
-  };
-
-  const budgetSummary = calculateBudgetSummary(
-    { amount: parseNumericInput(mainBudget) },
-    getCurrentAllocations(),
-    []
-  );
-
-  const validation = validateAllocations(
-    parseNumericInput(mainBudget),
-    getCurrentAllocations()
-  );
-
-  const validateForm = () => {
-    const newErrors = {};
-
-    if (!selectedTrip) {
-      newErrors.trip = 'Please select a trip';
+    const handleNewBudgetCreate = async (data) => {
+        const userBudget =  await fetchYearlyBudget();
+        const newData = {}
+        newData['trip_id'] = selectedTrip.id;
+        newData['yearly_budget_id'] = userBudget[0].id;
+        newData['amount'] = parseInt(mainBudget);
+        const allocationsArray = Object.entries(allocations).map(([category, allocated]) => ({
+            category,
+            allocated,
+        }));
+        newData['allocatedBreakdown'] = allocationsArray;
+        console.log('new data: ',newData)
+        try {
+            const budget = await createBudget(newData);
+            return budget;
+        } catch (error) {
+            console.log(error.response?.data?.detail)
+        }
     }
 
-    const budgetAmount = parseNumericInput(mainBudget);
-    if (budgetAmount <= 0) {
-      newErrors.budget = 'Budget amount must be greater than 0';
+    const fetchYearlyBudget = async () => {
+        try {
+            const yBudget = await getYearlyBudget()
+            console.log('yearly budget fetch succesfully: ', yBudget[0].total)
+            const { total, used } = yBudget[0];
+            const remaining = total - used
+            setYearlyBudget({ amount: total, spent: used, remaining: remaining });
+            return yBudget
+        } catch (err) {
+            console.log('Error fetching yearly budget: ', err.response?.data?.detail)
+        }
     }
 
-    // ADDED: Yearly budget validation
-    if (budgetAmount > yearlyBudget.remaining) {
-      newErrors.budget = `Budget exceeds available yearly budget (${formatCurrency(yearlyBudget.remaining)})`;
-    }
+    // Initialize categories with default selection
+    useEffect(() => {
+        // Pre-select essential categories
+        const essentialCategories = new Set(['lodging', 'food', 'transport', 'activities']);
+        setSelectedCategories(essentialCategories);
+    }, []);
 
-    if (selectedCategories.size === 0) {
-      newErrors.categories = 'Please select at least one category';
-    }
+    // Auto-suggest allocations when budget or categories change
+    useEffect(() => {
+        if (mainBudget && selectedCategories.size > 0) {
+            const budgetAmount = parseNumericInput(mainBudget);
+            if (budgetAmount > 0) {
+                const categoriesArray = Array.from(selectedCategories).map(id =>
+                    MOCK_CATEGORIES.find(cat => cat.id === id)
+                ).filter(Boolean);
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+                const suggested = suggestAllocation(budgetAmount, categoriesArray, 'weighted');
+                const newAllocations = {};
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+                suggested.forEach(cat => {
+                    newAllocations[cat.id] = cat.allocated;
+                });
 
-    if (!validateForm() || !validation.isValid) {
-      return;
-    }
+                setAllocations(newAllocations);
+            }
+        }
+    }, [mainBudget, selectedCategories]);
 
-    setIsSubmitting(true);
+    // ADDED: Check if trip budget exceeds yearly budget remaining amount
+    const isBudgetExceedingYearly = () => {
+        const budgetAmount = parseNumericInput(mainBudget);
+        return budgetAmount > yearlyBudget.remaining;
+    };
 
-    try {
-      const payload = {
-        trip_id: selectedTrip.id,
-        amount: parseNumericInput(mainBudget),
-        allocatedBreakdown: getCurrentAllocations().map(cat => ({
-          category: cat.id,
-          allocated: cat.allocated
-        }))
-      };
+    // ADDED: Get yearly budget validation message
+    const getYearlyBudgetMessage = () => {
+        if (!mainBudget) return null;
 
-      // TODO: Replace with real API call
-      // const response = await api.post('/user/budgets', payload, {
-      //   headers: { 
-      //     Authorization: `Bearer ${token}`,
-      //     'Content-Type': 'application/json'
-      //   }
-      // });
-      // const newBudget = response.data;
+        const budgetAmount = parseNumericInput(mainBudget);
+        if (budgetAmount <= 0) return null;
 
-      // Simulate successful creation
-      await new Promise(resolve => setTimeout(resolve, 1000));
+        if (isBudgetExceedingYearly()) {
+            const excess = budgetAmount - yearlyBudget.remaining;
+            return `Trip budget exceeds yearly budget by ${ formatCurrency(excess) }. Available: ${ formatCurrency(yearlyBudget.remaining) }`;
+        }
 
-      // Navigate to budget dashboard for the created budget
-      navigate(`/budget?trip=${selectedTrip.id}`, {
-        state: { message: 'Budget created successfully!' }
-      });
+        const remainingAfter = yearlyBudget.remaining - budgetAmount;
+        return `Yearly budget remaining after this trip: ${ formatCurrency(remainingAfter) }`;
+    };
 
-    } catch (error) {
-      console.error('Failed to create budget:', error);
-      setErrors({ submit: 'Failed to create budget. Please try again.' });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+    const handleTripSelect = (trip) => {
+        setSelectedTrip(trip);
+        setShowTripDropdown(false);
+        clearError('trip');
+    };
 
-  if (loading) {
-    return (
-      <div className={styles.loadingContainer}>
-        <div className={styles.skeleton} />
-      </div>
+    const handlePresetSelect = (amount) => {
+        setMainBudget(amount.toString());
+        clearError('budget');
+    };
+
+    const handleCategoryToggle = (categoryId) => {
+        setSelectedCategories(prev => {
+            const newSet = new Set(prev);
+            if (newSet.has(categoryId)) {
+                newSet.delete(categoryId);
+                // Remove allocation for unchecked category
+                setAllocations(prevAlloc => {
+                    const newAlloc = { ...prevAlloc };
+                    delete newAlloc[categoryId];
+                    return newAlloc;
+                });
+            } else {
+                newSet.add(categoryId);
+            }
+            return newSet;
+        });
+    };
+
+    const handleAllocationChange = (categoryId, amount) => {
+        const parsedAmount = parseNumericInput(amount, 0);
+        setAllocations(prev => ({
+            ...prev,
+            [categoryId]: parsedAmount
+        }));
+    };
+
+    const clearError = (field) => {
+        if (errors[field]) {
+            setErrors(prev => ({ ...prev, [field]: '' }));
+        }
+    };
+
+    // Calculate summary for preview
+    const getCurrentAllocations = () => {
+        return Array.from(selectedCategories).map(id => {
+            const category = MOCK_CATEGORIES.find(cat => cat.id === id);
+            return {
+                ...category,
+                allocated: allocations[id] || 0,
+                spent: 0
+            };
+        });
+    };
+
+    const budgetSummary = calculateBudgetSummary(
+        { amount: parseNumericInput(mainBudget) },
+        getCurrentAllocations(),
+        []
     );
-  }
 
-  return (
-    <motion.div 
-      className={styles.container}
-      variants={pageVariants}
-      initial="initial"
-      animate="animate"
-      exit="exit"
-    >
-      {/* Header */}
-      <motion.header className={styles.header} variants={pageVariants}>
-        <button
-          onClick={() => navigate(-1)}
-          className={styles.backButton}
-          aria-label="Go back"
-          type="button"
+    const validation = validateAllocations(
+        parseNumericInput(mainBudget),
+        getCurrentAllocations()
+    );
+
+    const validateForm = () => {
+        const newErrors = {};
+
+        if (!selectedTrip) {
+            newErrors.trip = 'Please select a trip';
+        }
+
+        const budgetAmount = parseNumericInput(mainBudget);
+        if (budgetAmount <= 0) {
+            newErrors.budget = 'Budget amount must be greater than 0';
+        }
+
+        // ADDED: Yearly budget validation
+        if (budgetAmount > yearlyBudget.remaining) {
+            newErrors.budget = `Budget exceeds available yearly budget (${ formatCurrency(yearlyBudget.remaining) })`;
+        }
+
+        if (selectedCategories.size === 0) {
+            newErrors.categories = 'Please select at least one category';
+        }
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if (!validateForm() || !validation.isValid) {
+            return;
+        }
+
+        setIsSubmitting(true);
+
+
+
+        try {
+            const payload = {
+                trip_id: selectedTrip.id,
+                amount: parseNumericInput(mainBudget),
+                allocatedBreakdown: getCurrentAllocations().map(cat => ({
+                    category: cat.id,
+                    allocated: cat.allocated
+                }))
+            };
+
+            // TODO: Replace with real API call
+            // const response = await api.post('/user/budgets', payload, {
+            //   headers: { 
+            //     Authorization: `Bearer ${token}`,
+            //     'Content-Type': 'application/json'
+            //   }
+            // });
+            // const newBudget = response.data;
+
+            // Simulate successful creation
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            // Navigate to budget dashboard for the created budget
+            navigate(`/budget?trip=${ selectedTrip.id }`, {
+                state: { message: 'Budget created successfully!' }
+            });
+
+        } catch (error) {
+            console.error('Failed to create budget:', error);
+            setErrors({ submit: 'Failed to create budget. Please try again.' });
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    if (loading) {
+        return (
+            <div className={styles.loadingContainer}>
+                <div className={styles.skeleton} />
+            </div>
+        );
+    }
+
+    return (
+        <motion.div
+            className={styles.container}
+            variants={pageVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
         >
-          <ChevronLeft size={20} />
-        </button>
-        <h1 className={styles.title}>Create Trip Budget</h1>
-      </motion.header>
-
-      <div className={styles.content}>
-        <form onSubmit={handleSubmit} className={styles.form}>
-          {/* ADDED: Yearly Budget Overview Section */}
-          <motion.section className={styles.section} variants={pageVariants}>
-            <h2 className={styles.sectionTitle}>
-              <Calendar size={18} />
-              Yearly Budget Overview
-            </h2>
-            
-            <div className={styles.yearlyBudgetCard}>
-              <div className={styles.yearlyBudgetRow}>
-                <span className={styles.yearlyBudgetLabel}>Total Yearly Budget:</span>
-                <span className={styles.yearlyBudgetValue}>
-                  {formatCurrency(yearlyBudget.amount)}
-                </span>
-              </div>
-              
-              <div className={styles.yearlyBudgetRow}>
-                <span className={styles.yearlyBudgetLabel}>Already Spent:</span>
-                <span className={styles.yearlyBudgetValue}>
-                  {formatCurrency(yearlyBudget.spent)}
-                </span>
-              </div>
-              
-              <div className={styles.yearlyBudgetRow}>
-                <span className={styles.yearlyBudgetLabel}>Available for Trips:</span>
-                <span className={`${styles.yearlyBudgetValue} ${styles.availableAmount}`}>
-                  {formatCurrency(yearlyBudget.remaining)}
-                </span>
-              </div>
-            </div>
-          </motion.section>
-
-          {/* Trip Selection */}
-          <motion.section className={styles.section} variants={pageVariants}>
-            <h2 className={styles.sectionTitle}>
-              <MapPin size={18} />
-              Select Trip
-            </h2>
-            
-            <div className={styles.tripSelector}>
-              <button
-                type="button"
-                onClick={() => setShowTripDropdown(!showTripDropdown)}
-                className={`${styles.tripButton} ${errors.trip ? styles.inputError : ''}`}
-              >
-                {selectedTrip ? (
-                  <>
-                    <div className={styles.tripInfo}>
-                      <span className={styles.tripTitle}>{selectedTrip.title || selectedTrip.country}</span>
-                      <span className={styles.tripDates}>
-                        {new Date(selectedTrip.start_date).toLocaleDateString()} - 
-                        {new Date(selectedTrip.end_date).toLocaleDateString()}
-                      </span>
-                    </div>
-                    <ChevronDown size={16} />
-                  </>
-                ) : (
-                  <>
-                    <span>Select a trip</span>
-                    <ChevronDown size={16} />
-                  </>
-                )}
-              </button>
-
-              {showTripDropdown && (
-                <motion.div 
-                  className={styles.tripDropdown}
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                >
-                  {availableTrips.map(trip => (
-                    <button
-                      key={trip.id}
-                      type="button"
-                      onClick={() => handleTripSelect(trip)}
-                      className={styles.tripOption}
-                    >
-                      <div className={styles.tripInfo}>
-                        <span className={styles.tripTitle}>{trip.title || trip.country}</span>
-                        <span className={styles.tripDates}>
-                          {new Date(trip.start_date).toLocaleDateString()} - 
-                          {new Date(trip.end_date).toLocaleDateString()}
-                        </span>
-                      </div>
-                    </button>
-                  ))}
-                </motion.div>
-              )}
-            </div>
-            
-            {errors.trip && (
-              <span className={styles.errorText}>{errors.trip}</span>
-            )}
-          </motion.section>
-
-          {/* Budget Amount */}
-          <motion.section className={styles.section} variants={pageVariants}>
-            <h2 className={styles.sectionTitle}>
-              <DollarSign size={18} />
-              Budget Amount
-            </h2>
-
-            {/* Budget Presets */}
-            <div className={styles.presets}>
-              {BUDGET_PRESETS.map(preset => (
+            {/* Header */}
+            <motion.header className={styles.header} variants={pageVariants}>
                 <button
-                  key={preset.amount}
-                  type="button"
-                  onClick={() => handlePresetSelect(preset.amount)}
-                  className={styles.presetButton}
-                  // ADDED: Disable preset buttons that exceed yearly budget
-                  disabled={preset.amount > yearlyBudget.remaining}
+                    onClick={() => navigate(-1)}
+                    className={styles.backButton}
+                    aria-label="Go back"
+                    type="button"
                 >
-                  <span className={styles.presetLabel}>{preset.label}</span>
-                  <span className={styles.presetAmount}>{formatCurrency(preset.amount)}</span>
+                    <ChevronLeft size={20} />
                 </button>
-              ))}
-            </div>
+                <h1 className={styles.title}>Create Trip Budget</h1>
+            </motion.header>
 
-            {/* Manual Input */}
-            <div className={styles.budgetInput}>
-              <input
-                type="number"
-                min="0"
-                step="0.01"
-                value={mainBudget}
-                onChange={(e) => {
-                  setMainBudget(e.target.value);
-                  clearError('budget');
-                }}
-                className={`${styles.input} ${styles.currencyInput} ${errors.budget ? styles.inputError : ''}`}
-                placeholder="Enter custom amount"
-              />
-            </div>
-            
-            {/* ADDED: Yearly budget validation message */}
-            {getYearlyBudgetMessage() && (
-              <div className={`${styles.yearlyBudgetMessage} ${
-                isBudgetExceedingYearly() ? styles.yearlyBudgetError : styles.yearlyBudgetInfo
-              }`}>
-                <AlertTriangle size={16} />
-                <span>{getYearlyBudgetMessage()}</span>
-              </div>
-            )}
-            
-            {errors.budget && (
-              <span className={styles.errorText}>{errors.budget}</span>
-            )}
-          </motion.section>
+            <div className={styles.content}>
+                <form onSubmit={handleSubmit} className={styles.form}>
+                    {/* ADDED: Yearly Budget Overview Section */}
+                    <motion.section className={styles.section} variants={pageVariants}>
+                        <h2 className={styles.sectionTitle}>
+                            <Calendar size={18} />
+                            Yearly Budget Overview
+                        </h2>
 
-          {/* Category Selection */}
-          <motion.section className={styles.section} variants={pageVariants}>
-            <h2 className={styles.sectionTitle}>
-              <Sparkles size={18} />
-              Choose Categories
-            </h2>
+                        <div className={styles.yearlyBudgetCard}>
+                            <div className={styles.yearlyBudgetRow}>
+                                <span className={styles.yearlyBudgetLabel}>Total Yearly Budget:</span>
+                                <span className={styles.yearlyBudgetValue}>
+                                    {formatCurrency(yearlyBudget.amount)}
+                                </span>
+                            </div>
 
-            <div className={styles.categoriesGrid}>
-              {MOCK_CATEGORIES.map(category => {
-                const IconComponent = Icons[category.iconName] || Icons.Circle;
-                const isSelected = selectedCategories.has(category.id);
-                const allocation = allocations[category.id] || 0;
+                            <div className={styles.yearlyBudgetRow}>
+                                <span className={styles.yearlyBudgetLabel}>Already Spent:</span>
+                                <span className={styles.yearlyBudgetValue}>
+                                    {formatCurrency(yearlyBudget.spent)}
+                                </span>
+                            </div>
 
-                return (
-                  <motion.div
-                    key={category.id}
-                    className={`${styles.categoryCard} ${isSelected ? styles.categorySelected : ''}`}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <label className={styles.categoryLabel}>
-                      <input
-                        type="checkbox"
-                        checked={isSelected}
-                        onChange={() => handleCategoryToggle(category.id)}
-                        className={styles.categoryCheckbox}
-                      />
-                      
-                      <div className={styles.categoryHeader}>
-                        <div className={styles.categoryIcon}>
-                          <IconComponent size={16} />
+                            <div className={styles.yearlyBudgetRow}>
+                                <span className={styles.yearlyBudgetLabel}>Available for Trips:</span>
+                                <span className={`${ styles.yearlyBudgetValue } ${ styles.availableAmount }`}>
+                                    {formatCurrency(yearlyBudget.remaining)}
+                                </span>
+                            </div>
                         </div>
-                        <span className={styles.categoryName}>{category.name}</span>
-                        {isSelected && (
-                          <div className={styles.checkIcon}>
-                            <Check size={14} />
-                          </div>
+                    </motion.section>
+
+                    {/* Trip Selection */}
+                    <motion.section className={styles.section} variants={pageVariants}>
+                        <h2 className={styles.sectionTitle}>
+                            <MapPin size={18} />
+                            Select Trip
+                        </h2>
+
+                        <div className={styles.tripSelector}>
+                            <button
+                                type="button"
+                                onClick={() => setShowTripDropdown(!showTripDropdown)}
+                                className={`${ styles.tripButton } ${ errors.trip ? styles.inputError : '' }`}
+                            >
+                                {selectedTrip ? (
+                                    <>
+                                        <div className={styles.tripInfo}>
+                                            <span className={styles.tripTitle}>{selectedTrip.title || selectedTrip.country}</span>
+                                            <span className={styles.tripDates}>
+                                                {new Date(selectedTrip.start_date).toLocaleDateString()} -
+                                                {new Date(selectedTrip.end_date).toLocaleDateString()}
+                                            </span>
+                                        </div>
+                                        <ChevronDown size={16} />
+                                    </>
+                                ) : (
+                                    <>
+                                        <span>Select a trip</span>
+                                        <ChevronDown size={16} />
+                                    </>
+                                )}
+                            </button>
+
+                            {showTripDropdown && (
+                                <motion.div
+                                    className={styles.tripDropdown}
+                                    initial={{ opacity: 0, y: -10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                >
+                                    {availableTrips.map(trip => (
+                                        <button
+                                            key={trip.id}
+                                            type="button"
+                                            onClick={() => handleTripSelect(trip)}
+                                            className={styles.tripOption}
+                                        >
+                                            <div className={styles.tripInfo}>
+                                                <span className={styles.tripTitle}>{trip.title || trip.country}</span>
+                                                <span className={styles.tripDates}>
+                                                    {new Date(trip.start_date).toLocaleDateString()} -
+                                                    {new Date(trip.end_date).toLocaleDateString()}
+                                                </span>
+                                            </div>
+                                        </button>
+                                    ))}
+                                </motion.div>
+                            )}
+                        </div>
+
+                        {errors.trip && (
+                            <span className={styles.errorText}>{errors.trip}</span>
                         )}
-                      </div>
-                      
-                      {isSelected && (
-                        <motion.div 
-                          className={styles.allocationInput}
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: 'auto' }}
-                          exit={{ opacity: 0, height: 0 }}
+                    </motion.section>
+
+                    {/* Budget Amount */}
+                    <motion.section className={styles.section} variants={pageVariants}>
+                        <h2 className={styles.sectionTitle}>
+                            <DollarSign size={18} />
+                            Budget Amount
+                        </h2>
+
+                        {/* Budget Presets */}
+                        <div className={styles.presets}>
+                            {BUDGET_PRESETS.map(preset => (
+                                <button
+                                    key={preset.amount}
+                                    type="button"
+                                    onClick={() => handlePresetSelect(preset.amount)}
+                                    className={styles.presetButton}
+                                    // ADDED: Disable preset buttons that exceed yearly budget
+                                    disabled={preset.amount > yearlyBudget.remaining}
+                                >
+                                    <span className={styles.presetLabel}>{preset.label}</span>
+                                    <span className={styles.presetAmount}>{formatCurrency(preset.amount)}</span>
+                                </button>
+                            ))}
+                        </div>
+
+                        {/* Manual Input */}
+                        <div className={styles.budgetInput}>
+                            <input
+                                type="number"
+                                min="0"
+                                step="0.01"
+                                value={mainBudget}
+                                onChange={(e) => {
+                                    setMainBudget(e.target.value);
+                                    clearError('budget');
+                                }}
+                                className={`${ styles.input } ${ styles.currencyInput } ${ errors.budget ? styles.inputError : '' }`}
+                                placeholder="Enter custom amount"
+                            />
+                        </div>
+
+                        {/* ADDED: Yearly budget validation message */}
+                        {getYearlyBudgetMessage() && (
+                            <div className={`${ styles.yearlyBudgetMessage } ${ isBudgetExceedingYearly() ? styles.yearlyBudgetError : styles.yearlyBudgetInfo
+                                }`}>
+                                <AlertTriangle size={16} />
+                                <span>{getYearlyBudgetMessage()}</span>
+                            </div>
+                        )}
+
+                        {errors.budget && (
+                            <span className={styles.errorText}>{errors.budget}</span>
+                        )}
+                    </motion.section>
+
+                    {/* Category Selection */}
+                    <motion.section className={styles.section} variants={pageVariants}>
+                        <h2 className={styles.sectionTitle}>
+                            <Sparkles size={18} />
+                            Choose Categories
+                        </h2>
+
+                        <div className={styles.categoriesGrid}>
+                            {MOCK_CATEGORIES.map(category => {
+                                const IconComponent = Icons[category.iconName] || Icons.Circle;
+                                const isSelected = selectedCategories.has(category.id);
+                                const allocation = allocations[category.id] || 0;
+
+                                return (
+                                    <motion.div
+                                        key={category.id}
+                                        className={`${ styles.categoryCard } ${ isSelected ? styles.categorySelected : '' }`}
+                                        whileHover={{ scale: 1.02 }}
+                                        whileTap={{ scale: 0.98 }}
+                                    >
+                                        <label className={styles.categoryLabel}>
+                                            <input
+                                                type="checkbox"
+                                                checked={isSelected}
+                                                onChange={() => handleCategoryToggle(category.id)}
+                                                className={styles.categoryCheckbox}
+                                            />
+
+                                            <div className={styles.categoryHeader}>
+                                                <div className={styles.categoryIcon}>
+                                                    <IconComponent size={16} />
+                                                </div>
+                                                <span className={styles.categoryName}>{category.name}</span>
+                                                {isSelected && (
+                                                    <div className={styles.checkIcon}>
+                                                        <Check size={14} />
+                                                    </div>
+                                                )}
+                                            </div>
+
+                                            {isSelected && (
+                                                <motion.div
+                                                    className={styles.allocationInput}
+                                                    initial={{ opacity: 0, height: 0 }}
+                                                    animate={{ opacity: 1, height: 'auto' }}
+                                                    exit={{ opacity: 0, height: 0 }}
+                                                >
+                                                    <input
+                                                        type="number"
+                                                        min="0"
+                                                        step="0.01"
+                                                        value={allocation || ''}
+                                                        onChange={(e) => handleAllocationChange(category.id, e.target.value)}
+                                                        className={styles.allocationAmountInput}
+                                                        placeholder="0.00"
+                                                        onClick={(e) => e.stopPropagation()}
+                                                    />
+                                                    <span className={styles.allocationLabel}>
+                                                        {formatCurrency(allocation)}
+                                                    </span>
+                                                </motion.div>
+                                            )}
+                                        </label>
+                                    </motion.div>
+                                );
+                            })}
+                        </div>
+
+                        {errors.categories && (
+                            <span className={styles.errorText}>{errors.categories}</span>
+                        )}
+                    </motion.section>
+
+                    {/* Budget Preview */}
+                    {parseNumericInput(mainBudget) > 0 && selectedCategories.size > 0 && (
+                        <motion.section
+                            className={styles.previewSection}
+                            variants={pageVariants}
                         >
-                          <input
-                            type="number"
-                            min="0"
-                            step="0.01"
-                            value={allocation || ''}
-                            onChange={(e) => handleAllocationChange(category.id, e.target.value)}
-                            className={styles.allocationAmountInput}
-                            placeholder="0.00"
-                            onClick={(e) => e.stopPropagation()}
-                          />
-                          <span className={styles.allocationLabel}>
-                            {formatCurrency(allocation)}
-                          </span>
-                        </motion.div>
-                      )}
-                    </label>
-                  </motion.div>
-                );
-              })}
+                            <h2 className={styles.sectionTitle}>
+                                <Calendar size={18} />
+                                Budget Preview
+                            </h2>
+
+                            <div className={styles.previewCard}>
+                                <div className={styles.previewRow}>
+                                    <span className={styles.previewLabel}>Total Budget:</span>
+                                    <span className={styles.previewValue}>
+                                        {formatCurrency(budgetSummary.mainBudget)}
+                                    </span>
+                                </div>
+
+                                <div className={styles.previewRow}>
+                                    <span className={styles.previewLabel}>Total Allocated:</span>
+                                    <span className={`${ styles.previewValue } ${ budgetSummary.totalAllocated > budgetSummary.mainBudget ? styles.overBudget : ''
+                                        }`}>
+                                        {formatCurrency(budgetSummary.totalAllocated)}
+                                    </span>
+                                </div>
+
+                                <div className={styles.previewRow}>
+                                    <span className={styles.previewLabel}>Remaining:</span>
+                                    <span className={`${ styles.previewValue } ${ budgetSummary.remainingAfterAllocated < 0 ? styles.overBudget : styles.remaining
+                                        }`}>
+                                        {formatCurrency(budgetSummary.remainingAfterAllocated)}
+                                    </span>
+                                </div>
+
+                                {!validation.isValid && (
+                                    <div className={styles.validationWarning}>
+                                        <span>Please adjust allocations to match your budget.</span>
+                                    </div>
+                                )}
+                            </div>
+                        </motion.section>
+                    )}
+
+                    {/* Submit Error */}
+                    {errors.submit && (
+                        <div className={styles.submitError}>
+                            {errors.submit}
+                        </div>
+                    )}
+
+                    {/* Actions */}
+                    <motion.div className={styles.actions} variants={pageVariants}>
+                        <button
+                            type="submit"
+                            className={`${ styles.createButton } ${
+                                // ADDED: Gray out button when yearly budget is exceeded
+                                isBudgetExceedingYearly() ? styles.createButtonDisabled : ''
+                                }`}
+                            disabled={isSubmitting || !validation.isValid || isBudgetExceedingYearly()}
+                            onClick={handleNewBudgetCreate}
+                        >
+                            {isSubmitting ? 'Creating Budget...' : 'Create Budget'}
+                        </button>
+
+                        <div className={styles.secondaryActions}>
+                            <button
+                                type="button"
+                                onClick={() => navigate('/budget')}
+                                className={styles.secondaryButton}
+                            >
+                                Go to Dashboard
+                            </button>
+
+                            <button
+                                type="button"
+                                onClick={() => window.location.reload()}
+                                className={styles.secondaryButton}
+                            >
+                                Add Another Budget
+                            </button>
+                        </div>
+                    </motion.div>
+                </form>
             </div>
-            
-            {errors.categories && (
-              <span className={styles.errorText}>{errors.categories}</span>
-            )}
-          </motion.section>
-
-          {/* Budget Preview */}
-          {parseNumericInput(mainBudget) > 0 && selectedCategories.size > 0 && (
-            <motion.section 
-              className={styles.previewSection}
-              variants={pageVariants}
-            >
-              <h2 className={styles.sectionTitle}>
-                <Calendar size={18} />
-                Budget Preview
-              </h2>
-
-              <div className={styles.previewCard}>
-                <div className={styles.previewRow}>
-                  <span className={styles.previewLabel}>Total Budget:</span>
-                  <span className={styles.previewValue}>
-                    {formatCurrency(budgetSummary.mainBudget)}
-                  </span>
-                </div>
-                
-                <div className={styles.previewRow}>
-                  <span className={styles.previewLabel}>Total Allocated:</span>
-                  <span className={`${styles.previewValue} ${
-                    budgetSummary.totalAllocated > budgetSummary.mainBudget ? styles.overBudget : ''
-                  }`}>
-                    {formatCurrency(budgetSummary.totalAllocated)}
-                  </span>
-                </div>
-                
-                <div className={styles.previewRow}>
-                  <span className={styles.previewLabel}>Remaining:</span>
-                  <span className={`${styles.previewValue} ${
-                    budgetSummary.remainingAfterAllocated < 0 ? styles.overBudget : styles.remaining
-                  }`}>
-                    {formatCurrency(budgetSummary.remainingAfterAllocated)}
-                  </span>
-                </div>
-
-                {!validation.isValid && (
-                  <div className={styles.validationWarning}>
-                    <span>Please adjust allocations to match your budget.</span>
-                  </div>
-                )}
-              </div>
-            </motion.section>
-          )}
-
-          {/* Submit Error */}
-          {errors.submit && (
-            <div className={styles.submitError}>
-              {errors.submit}
-            </div>
-          )}
-
-          {/* Actions */}
-          <motion.div className={styles.actions} variants={pageVariants}>
-            <button
-              type="submit"
-              className={`${styles.createButton} ${
-                // ADDED: Gray out button when yearly budget is exceeded
-                isBudgetExceedingYearly() ? styles.createButtonDisabled : ''
-              }`}
-              disabled={isSubmitting || !validation.isValid || isBudgetExceedingYearly()}
-            >
-              {isSubmitting ? 'Creating Budget...' : 'Create Budget'}
-            </button>
-
-            <div className={styles.secondaryActions}>
-              <button
-                type="button"
-                onClick={() => navigate('/budget')}
-                className={styles.secondaryButton}
-              >
-                Go to Dashboard
-              </button>
-              
-              <button
-                type="button"
-                onClick={() => window.location.reload()}
-                className={styles.secondaryButton}
-              >
-                Add Another Budget
-              </button>
-            </div>
-          </motion.div>
-        </form>
-      </div>
-    </motion.div>
-  );
+        </motion.div>
+    );
 };
 
 export default CreateTripBudgetPage;
