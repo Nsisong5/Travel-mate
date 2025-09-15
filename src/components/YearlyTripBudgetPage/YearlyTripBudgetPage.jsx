@@ -14,7 +14,9 @@ const YearlyBudgetManager = () => {
   const navigate = useNavigate();
   const [yearlyBudget, setYearlyBudget] = useState(null);
   const handleTripCreate =()=>navigate("/trip_budget");
-  const { createYearlyBudget,getYearlyBudget, updateYearlyBudget} = useBudgetContext()
+  const { createYearlyBudget,getYearlyBudget, updateYearlyBudget,getYBudgetst,getYearlyBudgetUsedAmount} = useBudgetContext()
+  const [ usedBudget,setUsedBudegt ] = useState(0)
+  const [remaining,setRemaining] = useState(0)
   const [tripBudgets, setTripBudgets] = useState([
     {
       id: 1,
@@ -43,7 +45,10 @@ const YearlyBudgetManager = () => {
   });
   
   useEffect(()=>{
-     fetchYearlyBudget()
+     fetchYearlyBudget();
+     fetchYBudgets();
+     fetchUsedBudegtAMount();
+     getRemaining();
   },[])
   
   
@@ -58,7 +63,37 @@ const YearlyBudgetManager = () => {
        }
   }
   
-  const remaining = yearlyBudget ? yearlyBudget.total - yearlyBudget.used : 0;
+
+
+  const fetchUsedBudegtAMount = async()=>{
+       try{
+           const res = await getYearlyBudgetUsedAmount();
+           console.log("gotten budget from database:",res)
+           setUsedBudegt(res)
+       }catch(err){
+          console.log(err.response?.data?.detail)
+       }
+  }
+  
+    
+      
+  
+    const fetchYBudgets = async()=>{
+       console.log("fetchYBudget aces")
+       try{
+           const res = await getYBudgetst();
+           console.log("Year's budgets:",res)
+           setTripBudgets(res)
+           return res
+       }catch(err){
+          console.log(err)
+       }
+  }
+  
+  const getRemaining = async ()=>{
+      const rem = yearlyBudget ? yearlyBudget.total - usedBudegt : 0;
+      setRemaining(rem)
+  }
 
   const openModal = (type, trip = null) => {
     setModalState({

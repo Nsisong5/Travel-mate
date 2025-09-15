@@ -72,6 +72,11 @@ export const BudgetContext = createContext();
   }
  };                
       
+ const getUsedAmount = async (budgets)=>{
+     const amount = budgets.map(budget => budget.amount)
+     return amount 
+ }    
+      
  const updateBudget = async (budgetId, updateData) => {
   try {
     const response = await api.patch(`/user/budgets/${budgetId}`, updateData, {
@@ -83,14 +88,38 @@ export const BudgetContext = createContext();
     throw error;
   }
  };
+      
                                        
-                                                                                                         
+ const getYBudgets = async (id) => {
+  try {
+    const response = await api.get(`/user/budgets/yearly/${id}`,{
+      headers: getHeaders(),
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching budgets:", error);
+    throw error;
+  }
+ };
+                                                                            
+ const getYearlyBudgetUsedAmount = ()=>{
+     try{
+        const res = api.get(`/user/budgets/yearly/${id}`)
+        console.log("budgets gotten: ",res)
+        return getUsedAmount(res)
+     }catch(err){
+      console.log(err.response?.data?.detail)
+     }   
+ }                                                                                                                                     
+                                                                                                          
   const contextValue = {
     createYearlyBudget,
     getYearlyBudget,
     updateYearlyBudget,
     createBudget,
-    updateBudget
+    updateBudget,
+    getYBudgets,
+    getYearlyBudgetUsedAmount
   };
 
   return (
