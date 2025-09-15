@@ -72,10 +72,9 @@ export const BudgetContext = createContext();
   }
  };                
       
- const getUsedAmount = async (budgets)=>{
-     const amount = budgets.map(budget => budget.amount)
-     return amount 
- }    
+ const getUsedAmount = (budgets) => {
+  return budgets.reduce((total, budget) => total + (budget.amount || 0), 0);
+};    
       
  const updateBudget = async (budgetId, updateData) => {
   try {
@@ -102,11 +101,12 @@ export const BudgetContext = createContext();
   }
  };
                                                                             
- const getYearlyBudgetUsedAmount = ()=>{
+ const getYearlyBudgetUsedAmount = async (budgetId)=>{
+    const id = parseInt(budgetId)
      try{
-        const res = api.get(`/user/budgets/yearly/${id}`)
-        console.log("budgets gotten: ",res)
-        return getUsedAmount(res)
+        const res = await api.get(`/user/budgets/yearly/${id}`,{ headers: getHeaders()})
+        console.log("yearly used budget from context provider: ",res.data)
+        return getUsedAmount(res.data)
      }catch(err){
       console.log(err.response?.data?.detail)
      }   

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, use } from 'react';
 import { motion } from 'framer-motion';
 import { Plus, AlertCircle } from 'lucide-react';
 import EmptyBudgetState from './components/EmptyBudgetState';
@@ -43,19 +43,32 @@ const YearlyBudgetManager = () => {
     type: 'create', // 'create', 'edit-yearly', 'edit-trip'
     editingTrip: null
   });
-  
+
   useEffect(()=>{
-     fetchYearlyBudget();
-     fetchYBudgets();
-     fetchUsedBudegtAMount();
-     getRemaining();
+    const fetchAll = async()=>{
+        await fetchYearlyBudget();
+    }
+    fetchAll();
   },[])
+  
+
+  useEffect(() => {
+    const fetchAll = async () => {
+      const yearlyBudgetRes = await fetchYearlyBudget();
+      if (!yearlyBudgetRes || !yearlyBudgetRes[0]) return;
+      const yBudget = yearlyBudgetRes[0];
+      setYearlyBudget(yBudget);
+      await fetchYBudgets();
+      const totalTripsBudgets  = await fetchYearlyBudgetTripsBudgets(yBudget.id); // Pass the id directly
+      getRemaining(yBudget.total,totalTripsBudgets); // Pass the budget directly
+    };
+    fetchAll();
+  }, []);
   
   
   const fetchYearlyBudget = async()=>{
        try{
            const res = await getYearlyBudget();
-           console.log("gotten budget from database:",res)
            setYearlyBudget(res[0]) 
            return res
        }catch(err){
@@ -65,11 +78,12 @@ const YearlyBudgetManager = () => {
   
 
 
-  const fetchUsedBudegtAMount = async()=>{
+  const fetchYearlyBudgetTripsBudgets = async(id)=>{
+    if (!id) return;
        try{
-           const res = await getYearlyBudgetUsedAmount();
-           console.log("gotten budget from database:",res)
+           const res = await getYearlyBudgetUsedAmount(id);
            setUsedBudegt(res)
+           return res
        }catch(err){
           console.log(err.response?.data?.detail)
        }
@@ -79,10 +93,8 @@ const YearlyBudgetManager = () => {
       
   
     const fetchYBudgets = async()=>{
-       console.log("fetchYBudget aces")
        try{
            const res = await getYBudgetst();
-           console.log("Year's budgets:",res)
            setTripBudgets(res)
            return res
        }catch(err){
@@ -90,10 +102,12 @@ const YearlyBudgetManager = () => {
        }
   }
   
-  const getRemaining = async ()=>{
-      const rem = yearlyBudget ? yearlyBudget.total - usedBudegt : 0;
-      setRemaining(rem)
+  const getRemaining = async (budget,used)=>{
+        const rem = budget ? budget - used : budget;        
+        setRemaining(rem);
+        setUsedBudegt(used);
   }
+
 
   const openModal = (type, trip = null) => {
     setModalState({
@@ -126,9 +140,7 @@ const YearlyBudgetManager = () => {
        data["total"] = parseInt(amount);
        data["year"]  = parseInt(new Date().getFullYear())
        data["used"] = parseInt(0)
-       console.log("data: ",data)
        const response = await createYearlyBudget(data)
-       console.log(response)
     }catch(err){
        console.log(err.response?.detail)
     }
@@ -206,6 +218,7 @@ const YearlyBudgetManager = () => {
     );
   }
 
+  console.log('usedc budget: ',usedBudget)
   return (
     <div className={styles.container}>
       {/* Yearly Budget Overview */}
@@ -213,6 +226,7 @@ const YearlyBudgetManager = () => {
         yearlyBudget={yearlyBudget}
         remaining={remaining}
         onEdit={() => openModal('edit-yearly')}
+        used = {usedBudget}
       />
 
       {/* Trip Budgets List */}
