@@ -12,13 +12,33 @@ const BudgetSummary = ({ budget, onEditBudget, onAddExpense }) => {
   const controls = useAnimation();
 
   const totalBudget = budget?.amount || 0;
-  const confirmedSpent = budget?.confirmedSpent || 0;
-  const plannedSpent = budget?.plannedSpent || 0;
-  const remaining = calculateRemaining(totalBudget, confirmedSpent);
-  const spentPercent = percent(confirmedSpent, totalBudget);
-  const insight = getBudgetInsight(budget || {});
-
+  const [confirmedSpent,setConfirmedSpent] = useState(0);
+  const [plannedSpent,setPlannedSpent] = useState(0)
+  const [remaining, setRemaining ] =  useState(totalBudget)
+  const spentPercent = percent(confirmedSpent , totalBudget);
+  const insight = getBudgetInsight(budget || {}); 
+ 
   useEffect(() => {
+  
+     const getPlannedSpent = ()=>{
+         if(budget.allocatedBreakdown.length > 0){
+           var plan = 0;
+           budget.allocatedBreakdown.forEach( alloc => plan  += alloc.planned_spend)
+           return plan 
+         }
+     }  
+      
+    setPlannedSpent(getPlannedSpent())
+    
+    // get remaining 
+    
+    const remaining = getRemaining();    
+    remaining && setRemaining(remaining)
+    
+    // set spent 
+    let spent  = getSpent()
+    budget.allocatedBreakdown.length > 0 && setConfirmedSpent(spent)
+    
     // Animate percentage counter on mount
     const animatePercent = async () => {
       await new Promise(resolve => setTimeout(resolve, 300)); // Wait for component mount
@@ -47,7 +67,30 @@ const BudgetSummary = ({ budget, onEditBudget, onAddExpense }) => {
     });
 
     animatePercent();
-  }, [spentPercent, controls]);
+  }, [spentPercent, controls, budget]);
+    
+   
+  const getSpent = value =>{     
+      if (budget.allocatedBreakdown.length > 0){
+           var spent =  0; 
+           budget.allocatedBreakdown.forEach(alloc => spent += alloc.spent)
+           return spent;
+       }
+       return null
+   }
+   
+   
+  
+   const getRemaining = ()=>{ 
+       var spent  = getSpent();
+       if (spent){
+           return calculateRemaining(budget.amount,spent)   
+       }
+       return null
+   }   
+   
+
+
 
   return (
     <motion.div 

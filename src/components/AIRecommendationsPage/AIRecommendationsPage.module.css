@@ -4,8 +4,8 @@
 .pageContainer {
   background: var(--bg);
   min-height: 100vh;
-  width: 100vw;
-  max-width: 100vw;
+  width: 100%;       /* ✅ prevents scrollbar overflow */
+  max-width: 100%;   /* ✅ keeps it contained */
   margin: 0;
   padding: 1rem;
   display: flex;
@@ -14,7 +14,7 @@
   color: var(--text);
   position: relative;
   box-sizing: border-box;
-  overflow-x: hidden;
+  overflow-x: hidden; /* ✅ keeps horizontal overflow hidden */
 }
 
 /* Remove content wrapper - direct styling for mobile-first */
@@ -321,5 +321,37 @@ html {
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+}
+
+
+
+
+/* Hero text responsive shrink */
+.heroTitle {
+  font-size: clamp(1.25rem, 5vw, 2rem); /* ✅ auto-shrink between mobile and desktop */
+  word-wrap: break-word;                 /* ✅ prevent overflow */
+  text-align: center;                    /* keeps it neat on small screens */
+}
+
+/* Filters section layout */
+.filtersSection {
+  display: flex;
+  flex-wrap: wrap; /* ✅ allows wrapping */
+  gap: 0.75rem;
+}
+
+.filtersSection > * {
+  flex: 1 1 100%; /* ✅ each child (filter + search input) takes full width on mobile */
+}
+
+/* On wider screens, restore side-by-side layout */
+@media (min-width: 640px) {
+  .filtersSection {
+    flex-wrap: nowrap; /* keep in one row */
+  }
+
+  .filtersSection > * {
+    flex: 1 1 auto; /* allow them to share space again */
   }
 }

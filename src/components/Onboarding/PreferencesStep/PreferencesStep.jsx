@@ -124,7 +124,7 @@ export default function PreferencesStep() {
           </button>
           <Users className={styles.travelersIcon} size={20} />
         </div>
-        {/* --- Budget Option Section --- */}
+        {/* --- Budget Option Section --- 
         <div className={styles.budgetOptionBox}>
           <div className={styles.budgetPrompt}>
             <span>Set a Trip Budget?</span>
@@ -135,10 +135,12 @@ export default function PreferencesStep() {
                   type="button"
                   onClick={()=>(navigate("/trip_budget"))}
                 >
-                  Set Now
+                 Set Now
                 </button>
- 
+            
+              
               </>
+ 
             ) : (
               <div className={styles.budgetRow}>
                 <div className={styles.budgetInputWrap}>
@@ -170,6 +172,7 @@ export default function PreferencesStep() {
             )}
           </div>
         </div>
+       */}
       </motion.div>
 
       <motion.div variants={fadeInUp} className={styles.nextNav}>

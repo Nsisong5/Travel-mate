@@ -107,15 +107,16 @@ const CreateTripBudgetPage = () => {
         newData['trip_id'] = selectedTrip.id;
         newData['yearly_budget_id'] = userBudget[0].id;
         newData['amount'] = parseInt(mainBudget);
-        const allocationsArray = Object.entries(allocations).map(([category, allocated]) => ({
-            category,
+        const allocationsArray = Object.entries(allocations).map(([name, allocated]) => ({
+            name,
             allocated,
         }));
         newData['allocatedBreakdown'] = allocationsArray;
         console.log('new data: ',newData)
+        
         try {
             const budget = await createBudget(newData);
-            return budget;
+            return navigate(-1);
         } catch (error) {
             console.log(error.response?.data?.detail)
         }

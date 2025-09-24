@@ -185,7 +185,7 @@ const ItineraryDayCard = ({ day, tripId, isLast, onUpdateDay }) => {
         onSave={handleSaveActivity}
         initialData={editingActivity}
         tripId={tripId}
-        dayId={day.day}
+        day={day}
         mode={editingActivity ? 'edit' : 'create'}
       />
 

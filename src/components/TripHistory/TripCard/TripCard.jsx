@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect} from "react";
 import { ArrowRight, Trash2, Eye, Calendar } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import ConfirmationPopup from "../../../utils/ConfirmationPopup";
@@ -38,9 +38,23 @@ const cardVariants = {
 
 export default function TripCard({ trip, onClick, deleteTrip, trips, setTrips }) {
   const [showConfirm, setShowConfirm] = useState(false);
-  const [error, setError] = useState(null);
-
-  // Preserve existing delete functionality
+  const [error, setError] = useState(null);   
+  const [ budget, setBudget ] = useState({"amount": 0})
+ 
+   useEffect(()=>{
+   let tripBudget = null
+   const fetchAll = ()=>{
+     const userBudgets = JSON.parse(localStorage.getItem("userBudgets"))
+     if (userBudgets){
+       userBudgets.length > 0 && setBudget(userBudgets.find((budget => budget.trip_id == trip.id )) || {amount:0})
+     }
+      
+   }
+   
+   fetchAll();
+  },[])
+  
+  
   const handleDelete = async () => {
     try {
       await deleteTrip(trip.id);
@@ -55,11 +69,11 @@ export default function TripCard({ trip, onClick, deleteTrip, trips, setTrips })
   };
 
   const handleCardClick = (e) => {
-    // Prevent card click when clicking on action buttons
+ 
     if (e.target.closest(`.${styles.actionButton}`)) {
       return;
     }
-    onClick();
+    onClick(trip.id,trip.satus);
   };
 
   const costColor = getCostColor(trip.cost);
@@ -106,7 +120,7 @@ export default function TripCard({ trip, onClick, deleteTrip, trips, setTrips })
           <div className={styles.costContainer}>
             <span className={styles.costLabel}>Estimated Cost:</span>
             <span className={`${styles.costAmount} ${styles[costColor]}`}>
-              ${trip.cost?.toLocaleString() || '0'}
+              ${budget.amount?.toLocaleString() || '0'}
             </span>
             {trip.cost_estimated && (
               <span className={styles.aiEstimateLabel}>AI Estimated</span>

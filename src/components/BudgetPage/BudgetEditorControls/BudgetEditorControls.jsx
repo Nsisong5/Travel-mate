@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import * as Icons from 'lucide-react';
 import { formatCurrency, parseNumericInput, getCategoryStatus } from '../../../utils/BudgetPage/budgetEngine';
 import styles from './BudgetEditorControls.module.css';
+import { useBudgetContext } from "../../../services/BudgetServices/BudgetContextProvider" 
 
 const BudgetEditorControls = ({
   category,
@@ -13,22 +14,48 @@ const BudgetEditorControls = ({
   onAllocationChange,
   validationErrors = []
 }) => {
+  
+  //budget service 
+  const { getYearlyBudget } = useBudgetContext()
+  
   const [localValue, setLocalValue] = useState(category.allocated || 0);
   const [isEditing, setIsEditing] = useState(false);
-  
+
+  // effect 
+  const [ yearlyBudget, setYearlyBudget ] = useState(0);
+    
+ 
   const { name, allocated, spent, iconName, id } = category;
   const IconComponent = Icons[iconName] || Icons.Circle;
   
   // Sync local value with prop changes
   useEffect(() => {
+    
     setLocalValue(allocated || 0);
   }, [allocated]);
+
 
   // Calculate category status for visual indicators
   const categoryStatus = getCategoryStatus(category);
   const percentAllocated = maxBudget > 0 ? (allocated / maxBudget) * 100 : 0;
   const hasSpending = spent > 0;
 
+
+ useEffect(()=>{
+      const fetchAll = async()=>{
+      try{
+          const userYBudget = await getYearlyBudget()
+          setYearlyBudget(userYBudget.total)
+       }catch(err){
+        console.log(err)
+       }
+     }
+     
+     fetchAll();
+ },[])
+
+
+  
   const handleInputChange = (e) => {
     const value = e.target.value;
     setLocalValue(value); // Keep as string while editing

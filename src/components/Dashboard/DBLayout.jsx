@@ -17,6 +17,7 @@ import DashboardLayout from "./DashboardLayout";
 import TopDestinationsCard from "./TopDestinationsCard/TopDestinationsCard"
 import { AuthContext } from "../../AuthProvider";
 import { useTripServices } from "../../services/TripServices/TripServices";
+import { useBudgetContext } from "../../services/BudgetServices/BudgetContextProvider";
 import { useNavigate } from "react-router-dom";
 
 // Mock data for components - TODO: Replace with actual API calls
@@ -47,35 +48,75 @@ const MOCK_TOP_DESTINATIONS = [
 export default function DBLayout() {
   const { user } = useContext(AuthContext);
   const { getUserTrips } = useTripServices(); // Backend API integration
+  const { getYearlyBudgetUsedAmount, getYearlyBudget} = useBudgetContext()
   const { theme } = useTheme();
   const navigate = useNavigate();
   
   // State for planned trips only
   const [upcomingTrips, setUpcomingTrips] = useState([]);
   const [loadingTrips, setLoadingTrips] = useState(true);
-
-  // Backend API integration: Load planned trips when component mounts
+  const [ placesVisited, setPlacesVisited ] = useState(0)
+  const [ remaining, setRemaining] = useState(0)
+  const [trip, setTrip ] = useState(null) 
+ 
+   // Backend API integration: Load planned trips when component mounts
   useEffect(() => {
     if (user) {
       loadPlannedTrips();
     }
   }, [user]);
+  
+  useEffect(()=>{
+     const fetchAll = async()=>{
+         const userTrips = await getUserTrips()
+         getCompletedTrips(userTrips);
+         const latestTrip = getLatestTrip(userTrips);
+         setTrip(latestTrip)
+         // yearly 
+         const yearlyBudget = await getYearlyBudget()
+         const usedBudget = await getYearlyBudgetUsedAmount(yearlyBudget[0].id)
+         setRemaining(yearlyBudget[0].total - usedBudget)
+         
+     }
+     
+     fetchAll();
+  },[])
+ 
  
   // Backend API call: Load user's planned trips
   const loadPlannedTrips = async () => {
     setLoadingTrips(true);
     
     try {
-      console.log("Loading planned trips for user:", user?.email);
       const trips = await getUserTrips(); // API call to backend
       setUpcomingTrips(trips);
-      console.log("Planned trips:", trips.length);
     } catch (error) {
       console.error('Failed to load trips:', error);
     } finally {
       setLoadingTrips(false);
     }
   };
+  
+  
+  const getCompletedTrips = async(trips)=>{
+      let counter = 0;
+      trips.forEach(trip => trip.status == "completed" && counter ++)
+      setPlacesVisited(counter)
+      return counter
+  }
+  
+  
+  function getLatestTrip(trips) {
+     if (!Array.isArray(trips) || trips.length === 0) {
+     return null;
+    }
+
+    trips.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    return trips[0];
+   }
+  
+  
+  
 
   return (
     <DashboardLayout>
@@ -106,19 +147,19 @@ export default function DBLayout() {
           <OverviewCard
             icon={<MapPin size={28} color="var(--primary)" />}
             title="Distance Traveled"
-            value="14,580 km this year"
+            value="Coming Soon"
             index={1}
           />
           <OverviewCard
             icon={<Building size={28} color="var(--primary)" />}
             title="Places Visited"
-            value="22 Cities"
+            value={placesVisited}
             index={2}
           />
           <OverviewCard
             icon={<CreditCard size={28} color="var(--primary)" />}
             title="Budget Remaining"
-            value="$2,450 Left"
+            value={`$${remaining} Left`}
             url="/y_budget"
             index={3}
           />
@@ -131,14 +172,18 @@ export default function DBLayout() {
           initial="hidden"
           animate="show"
         >
+        
+         {/*  
           <div className={styles.widgetCard}>
             <MapWidget />
           </div>
+         */}
+         
           <div className={styles.widgetCard}>
             <AIRecommendations recommendations={MOCK_AI_RECOMMENDATIONS} />
           </div>
           <div className={styles.widgetCard}>
-            <TripProgress progress={65} />
+            <TripProgress progress={65} trip={trip}/>
           </div>
         </motion.section>
 

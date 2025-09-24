@@ -7,8 +7,9 @@ import { X } from 'lucide-react';
 import { MOCK_CATEGORIES } from '../mockData';
 import { validateExpense } from '../utils';
 import styles from './AddExpenseModal.module.css';
+import {useExpenses } from "../../../services/ExpensesServices/ExpensesServices" 
 
-const AddExpenseModal = ({ isOpen, onClose, onSave, tripId }) => {
+const AddExpenseModal = ({ isOpen, onClose, onSave, tripId, budget,updateAllocation}) => {
   const [formData, setFormData] = useState({
     amount: '',
     category: '',
@@ -18,7 +19,7 @@ const AddExpenseModal = ({ isOpen, onClose, onSave, tripId }) => {
   });
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+  const { addExpense } = useExpenses();
   // Focus management refs
   const modalRef = useRef(null);
   const firstFocusableRef = useRef(null);
@@ -120,25 +121,40 @@ const AddExpenseModal = ({ isOpen, onClose, onSave, tripId }) => {
       setErrors(validation.errors);
       return;
     }
-
     setIsSubmitting(true);
-
     try {
       // Prepare expense data for API
       const expensePayload = {
         ...formData,
         trip_id: tripId,
-        categoryName: MOCK_CATEGORIES.find(cat => cat.id === formData.category)?.name || 'Unknown'
+        category_name: MOCK_CATEGORIES.find(cat => cat.id === formData.category)?.name || 'Unknown'
       };
-
-      // TODO: Replace with real API call
-      // await api.post('/user/expenses', expensePayload, {
-      //   headers: { 
-      //     Authorization: `Bearer ${authToken}`,
-      //     'Content-Type': 'application/json'
-      //   }
-      // });
-
+      
+      // check for category budget
+      if (expensePayload){
+            console.log("expense payload:",expensePayload)
+            var spent = 0
+            var alloc  = budget.allocatedBreakdown.filter(allocated => allocated.name == expensePayload.category)[0]            
+            if (alloc && !expensePayload.is_planned){           
+                 spent = alloc.spent + expensePayload.amount               
+            }
+            if (alloc && spent){
+              if (alloc.allocated <= spent){
+               setErrors({budget: "sorry! allocation exceeded"})
+               throw errors
+              }
+             
+            }
+          if(!expensePayload.is_planned){
+          alloc["spent"] = spent }else{
+          spent = 0;
+          spent = alloc.planned_spend + expensePayload.amount  
+          alloc["planned_spend"] = spent;
+          }
+          const res = await updateAllocation(alloc)
+      }       
+      
+      const response = await addExpense(expensePayload)
       await onSave(expensePayload);
     } catch (error) {
       console.error('Failed to save expense:', error);

@@ -9,6 +9,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, RefreshCw, AlertTriangle } from 'lucide-react';
+import { useBudgetContext } from "../../../services/BudgetServices/BudgetContextProvider" 
 import BudgetEditorControls from '../BudgetEditorControls/BudgetEditorControls';
 import {
   calculateBudgetSummary,
@@ -21,13 +22,16 @@ import {
 import styles from './EditBudgetModal.module.css';
 
 const EditBudgetModal = ({ isOpen, onClose, budget, onSaved }) => {
+  const { getYearlyBudget,getYearlyBudgetUsedAmount, updateBudget,updateAllocation} = useBudgetContext()
   const [mainBudget, setMainBudget] = useState(0);
   const [allocations, setAllocations] = useState([]);
   const [errors, setErrors] = useState({});
   const [warnings, setWarnings] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-  
+  const [ yearlyBudget, setYearlyBudget ] = useState(0);
+  const [yearlyBudgetUsed, setYearlyBudgetUsed] = useState(0)
+ 
   // Original values for reset functionality
   const [originalBudget, setOriginalBudget] = useState(0);
   const [originalAllocations, setOriginalAllocations] = useState([]);
@@ -51,6 +55,28 @@ const EditBudgetModal = ({ isOpen, onClose, budget, onSaved }) => {
       setWarnings([]);
     }
   }, [isOpen, budget]);
+  
+
+
+   useEffect(()=>{
+      const fetchAll = async()=>{
+      try{
+          const userYBudget = await getYearlyBudget()
+          console.log("budgets: ",userYBudget[0].total)
+          setYearlyBudget(userYBudget[0].total)
+          const usedYearlyBudget = await getYearlyBudgetUsedAmount(userYBudget[0].id) 
+          console.log("budges: ",usedYearlyBudget)
+          setYearlyBudgetUsed(usedYearlyBudget);
+       }catch(err){
+        console.log(err)
+       }
+      
+      
+     }
+     
+     fetchAll();
+   },[])   
+         
 
   // Real-time validation and summary calculation
   const budgetSummary = calculateBudgetSummary(
@@ -94,16 +120,30 @@ const EditBudgetModal = ({ isOpen, onClose, budget, onSaved }) => {
   }, [isOpen, onClose]);
 
   const handleMainBudgetChange = (value) => {
+    if(!budgetAccept(value)){   
+      setErrors({mainBudget: "yearly budget exceeded!"})    
+    } else{
+        setErrors({mainBudget: ""})   
+    }
     const newAmount = parseNumericInput(value, 0);
     setMainBudget(newAmount);
     setHasUnsavedChanges(true);
     
     // Clear main budget errors
-    if (errors.mainBudget) {
-      setErrors(prev => ({ ...prev, mainBudget: '' }));
-    }
   };
 
+
+
+  const updateCategory =  async(category)=>{     
+      try{
+         const res = await updateAllocation(category)
+         return res
+      } catch(err){
+        throw Error(err.message)
+      }
+  }
+  
+  
   const handleCategoryAllocationChange = (categoryId, newAmount) => {
     const parsedAmount = parseNumericInput(newAmount, 0);
     
@@ -116,6 +156,12 @@ const EditBudgetModal = ({ isOpen, onClose, budget, onSaved }) => {
     );
     setHasUnsavedChanges(true);
   };
+  
+  const budgetAccept = (budgetAmount)=>{
+      let used = yearlyBudgetUsed - budget.amount
+      return (used + budgetAmount) < yearlyBudget
+  
+  }
 
   const handleAutoAdjust = (categoryId, newAmount) => {
     const adjustedAllocations = autoAdjustAllocations(
@@ -163,20 +209,26 @@ const EditBudgetModal = ({ isOpen, onClose, budget, onSaved }) => {
       const payload = {
         amount: mainBudget,
         allocatedBreakdown: allocations.map(cat => ({
-          category: cat.id,
+          id: cat.id,
+          name: cat.name,
           allocated: cat.allocated
         }))
       };
-
-      // TODO: Replace with real API call
-      // const response = await api.patch(`/user/budgets/${budget.id}`, payload, {
-      //   headers: { 
-      //     Authorization: `Bearer ${token}`,
-      //     'Content-Type': 'application/json'
-      //   }
-      // });
-      // const updatedBudget = response.data;
-
+      
+      const verifyBudget = budgetAccept(payload.amount)
+      if (verifyBudget){
+         const { amount }= payload;
+         const data = { amount }
+         const res = await updateBudget(budget.id, data)
+         console.log(res)
+      } else{
+        throw Error("yearly budget amount exceeded!")            
+      }
+      
+      payload.allocatedBreakdown.forEach(allocation => {
+         return updateCategory(allocation)
+      })
+    
       // Simulate successful API response
       const updatedBudget = {
         ...budget,
@@ -186,9 +238,8 @@ const EditBudgetModal = ({ isOpen, onClose, budget, onSaved }) => {
 
       await onSaved(updatedBudget);
       setHasUnsavedChanges(false);
-    } catch (error) {
-      console.error('Failed to update budget:', error);
-      setErrors({ submit: 'Failed to update budget. Please try again.' });
+    } catch(error) {
+      setErrors({ submit: error.message});
     } finally {
       setIsSubmitting(false);
     }

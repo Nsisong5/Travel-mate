@@ -4,10 +4,18 @@ import { MapPin, CheckCircle2 } from 'lucide-react';
 import styles from '../YearlyTripBudgetPage.module.css';
 import { formatBudgetAmount } from '../../../utils/BudgetPage/getBudgetFeedback';
 
-const TripCard = ({ trip, index }) => {
+const TripCard = ({trip, index }) => {
   const spentPercentage = (trip.spent / trip.allocated) * 100;
   const isCompleted = trip.status === 'completed';
-
+  const indexList = []
+  
+  if (indexList.includes(trip.id)){
+    return (<>pga</>)
+  }
+  indexList.push(trip.id) 
+  
+  console.log(indexList)
+  console.log(trip.id)
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -68,6 +76,8 @@ const TripCard = ({ trip, index }) => {
 };
 
 const TripBudgetsList = ({ tripBudgets }) => {
+   
+  
   if (!tripBudgets || tripBudgets.length === 0) {
     return (
       <div className={styles.tripsSection}>
@@ -79,12 +89,13 @@ const TripBudgetsList = ({ tripBudgets }) => {
     );
   }
 
+
   return (
     <div className={styles.tripsSection}>
       <h2 className={styles.sectionTitle}>Trip Budgets</h2>
       <div className={styles.tripsGrid}>
-        {tripBudgets.map((trip, index) => (
-          <TripCard key={trip.id} trip={trip} index={index} />
+        {tripBudgets.map((trip, index) => (         
+         <TripCard key={trip.id} trip={trip} index={index}/>           
         ))}
       </div>
     </div>

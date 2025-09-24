@@ -7,6 +7,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Type, MapPin, Clock } from 'lucide-react';
 import { modal } from '../../variants';
 import styles from './ActivityForm.module.css';
+import { useItineraryServices }  from "../../../../services/TripServices/ItineraryServices" 
+
 
 const ActivityForm = ({
   isOpen,
@@ -14,7 +16,7 @@ const ActivityForm = ({
   onSave,
   initialData = null,
   tripId,
-  dayId,
+  day,
   mode = 'create' // 'create' | 'edit'
 }) => {
   const [formData, setFormData] = useState({
@@ -24,7 +26,8 @@ const ActivityForm = ({
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
-
+  const { updateItinerary } = useItineraryServices();
+     
   // Populate form when editing
   useEffect(() => {
     if (isOpen) {
@@ -94,15 +97,15 @@ const ActivityForm = ({
       // TODO: Replace with actual API calls
       if (mode === 'create') {
         // POST /trips/${tripId}/itinerary/${dayId}/activities
-        // const response = await api.post(`/trips/${tripId}/itinerary/${dayId}/activities`, formData);
+        day.items.push(formData)
+        const response = await updateItinerary(day)
       } else {
         // PATCH /trips/${tripId}/itinerary/${dayId}/activities/${initialData.id}
         // const response = await api.patch(`/trips/${tripId}/itinerary/${dayId}/activities/${initialData.id}`, formData);
+      
       }
 
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 600));
-      
+      console.log("form data: ",formData)
       onSave(formData);
       onClose();
     } catch (error) {

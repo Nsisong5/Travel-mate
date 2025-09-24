@@ -53,7 +53,7 @@ const Header = ({ trip, onShare }) => {
           </button>
           
           <div className={styles.tripInfo}>
-            <h1 className={styles.title}>{trip.title}</h1>
+            <h1 className={styles.title}>{trip.title || "Paris — Summer Getaway"}</h1>
             <p className={styles.dates}>
               {formatDateRange(trip.start_date, trip.end_date)}
             </p>

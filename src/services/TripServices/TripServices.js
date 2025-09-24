@@ -136,13 +136,10 @@ export const useTripServices = () => {
     const getUserTrips = async () => {
     
     try {
-      console.log("Fetching upcoming trips for user:", user?.email);
-
       const response = await api.get('/trips', {
         headers: getAuthHeaders()
       });
 
-      console.log("Upcoming trips fetched successfully:", response.data);
       localStorage.setItem("trips", response.data)
       return response.data;
       
@@ -164,13 +161,10 @@ export const useTripServices = () => {
     const getTrip = async (id) => {
     
     try {
-      console.log("Fetching current trip for user:", user?.email);
-
       const response = await api.get(`/trips/${id}`, {
         headers: getAuthHeaders()
       });
 
-      console.log("Upcoming current trip fetch successfully:", response.data);
       localStorage.setItem("current_trip", response.data)
       return response.data;
       
@@ -186,17 +180,55 @@ export const useTripServices = () => {
     }
   }; 
    
+
    
+    const updateTrip = async (payload,id) => {
+    console.log("trip update payload: ",payload)
+    const data = {
+       status: payload.status,
+       style: payload.style,
+       start_date: payload.startDate,
+       end_date: payload.endDate,
+       local_gov: payload.city,
+       cost: payload.cost,
+       country: payload.country,
+       cost_estimated: payload.aiEstimated,
+       destination: payload.destination,
+       state: payload.state,
+       means: payload.meansOfTravel,
+       budget_range: payload.budgetRange,
+       origin: payload.origin,
+       rating: payload.rating,
+       title: payload.title
+    } 
+   
+    try {
+      const response = await api.patch(`/trips/${id}`, data,{
+        headers: getAuthHeaders()
+      });
+
+      localStorage.setItem("current_trip", response.data)
+      return response.data;
+      
+    } catch (error) {
+      console.error("Error fetching current trip:", error);
+      
+      if (error.response?.status === 401) {
+        localStorage.removeItem('access_token');
+        throw new Error('Session expired. Please login again.');
+      }
+      
+      throw new Error(error.response?.data?.detail || error.message || 'Failed to fetch upcoming trips');
+    }
+  }; 
+            
          
          
                
    
   const getAllTrips = async () => {
     try {
-      console.log("Fetching all trips for user:", user?.email);
-
-      // Make both requests in parallel for better performance
-      const [historyResponse, upcomingResponse] = await Promise.all([
+        const [historyResponse, upcomingResponse] = await Promise.all([
         api.get('/trips/history', { headers: getAuthHeaders() }),
         api.get('/trips/upcoming', { headers: getAuthHeaders() })
       ]);
@@ -207,7 +239,6 @@ export const useTripServices = () => {
         total: historyResponse.data.length + upcomingResponse.data.length
       };
 
-      console.log("All trips fetched successfully:", allTrips);
       return allTrips;
       
     } catch (error) {
@@ -228,8 +259,6 @@ export const useTripServices = () => {
    */
   const getTripStats = async () => {
     try {
-      console.log("Calculating trip statistics for user:", user?.email);
-
       const allTrips = await getAllTrips();
       
       const stats = {
@@ -245,7 +274,6 @@ export const useTripServices = () => {
         }, 0)
       };
 
-      console.log("Trip statistics calculated:", stats);
       return stats;
       
     } catch (error) {
@@ -266,7 +294,8 @@ export const useTripServices = () => {
     getUserTrips,
     // Trip analytics
     getTripStats,
-    getTrip     // TODO: Replace with actual API call
+    getTrip,
+    updateTrip    // TODO: Replace with actual API call
       //   headers: { Authorization: `Bearer ${authToken}` }
       // });
       // Expected response: { id, title, start_date, end_date, cover_image, images, itinerary, budget, cost_estimated, progress_percent, days_left }
@@ -275,34 +304,3 @@ export const useTripServices = () => {
   };
 };
 
-/*
-USAGE EXAMPLES:
-
-// 1. Create a trip
-const { createTrip } = useTripServices();
-const newTrip = await createTrip({
-  destination: "Paris, France",
-  startDate: "2025-09-01",
-  endDate: "2025-09-07", 
-  status: "planned",
-  budget: "medium",
-  style: "romantic"
-});
-
-// 2. Get trip history
-const { getTripHistory } = useTripServices();
-const completedTrips = await getTripHistory();
-
-// 3. Get upcoming trips
-const { getUpcomingTrips } = useTripServices();
-const plannedTrips = await getUpcomingTrips();
-
-// 4. Get all trips at once
-const { getAllTrips } = useTripServices();
-const { history, upcoming, total } = await getAllTrips();
-
-// 5. Get trip statistics
-const { getTripStats } = useTripServices();
-const stats = await getTripStats();
-console.log(`You've visited ${stats.countries_visited} countries!`);
-*/

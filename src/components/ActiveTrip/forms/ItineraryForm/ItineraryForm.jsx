@@ -31,7 +31,8 @@ const ItineraryForm = ({
         setFormData({
           date: initialData.date || '',
           day: initialData.day || '',
-          title: initialData.title || ''
+          title: initialData.title || '',
+          id: initialData.id
         });
       } else {
         // Reset for create mode
@@ -89,20 +90,9 @@ const ItineraryForm = ({
 
     setIsSubmitting(true);
 
-    try {
-      // TODO: Replace with actual API calls
-      if (mode === 'create') {
-        // POST /trips/${tripId}/itinerary
-        // const response = await api.post(`/trips/${tripId}/itinerary`, formData);
-      } else {
-        // PATCH /trips/${tripId}/itinerary/${initialData.id}
-        // const response = await api.patch(`/trips/${tripId}/itinerary/${initialData.id}`, formData);
-      }
-
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 800));
-      
-      onSave(formData);
+    try {   
+      console.log("form data: ", formData)   
+      await onSave(formData);
       onClose();
     } catch (error) {
       console.error('Failed to save itinerary:', error);

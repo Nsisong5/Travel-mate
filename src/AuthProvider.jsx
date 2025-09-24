@@ -8,11 +8,6 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(null); // Don't initialize from localStorage here
   const [isLoading, setIsLoading] = useState(true);
   const [isInitialized, setIsInitialized] = useState(false);
-  
-  console.log("AuthProvider mounted - Current token:", token);
-  console.log("Current user state:", user);
-  console.log("Loading state:", isLoading);
-  console.log("Initialized state:", isInitialized);
 
   // Auto-login on app start if valid token exists
   useEffect(() => {
@@ -20,27 +15,24 @@ export const AuthProvider = ({ children }) => {
     
     const initializeAuth = async () => {
       const savedToken = localStorage.getItem("access_token");
-      console.log("💾 Saved token from localStorage:", savedToken ? `${savedToken.substring(0, 20)}...` : 'null');
-      
+   
       if (savedToken) {
-        console.log("✅ Token found, verifying with backend");
         try {
-          console.log("🔍 Making request to /user/profile");
-          
+        
           // Verify token by fetching user profile
           const res = await api.get("/user/profile", {
             headers: { Authorization: `Bearer ${savedToken}` },
           });
           
-          console.log("✅ Profile request successful:", res.data);
           setUser(res.data);
           setToken(savedToken); // Set token AFTER successful verification
         } catch (error) {
           console.error("❌ Profile request failed:", error);
           console.error("Error details:", error.response?.data || error.message);
-          
+                 
           // Token is invalid, clean up
           console.log("🧹 Cleaning up invalid token");
+          
           localStorage.removeItem("access_token");
           setToken(null);
           setUser(null);
@@ -48,8 +40,6 @@ export const AuthProvider = ({ children }) => {
       } else {
         console.log("❌ No token found in localStorage");
       }
-      
-      console.log("🏁 Auth initialization complete");
       setIsLoading(false);
       setIsInitialized(true);
     };

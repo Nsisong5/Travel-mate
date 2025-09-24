@@ -4,12 +4,15 @@ import { Calendar, MapPin, Clock, DollarSign, Eye, MoreHorizontal } from "lucide
 import styles from "./RecentTripsTable.module.css";
 import { useTripServices } from "../../../services/TripServices/TripServices";
 import { useNavigate } from "react-router-dom";
+import { useBudgetContext } from '../../../services/BudgetServices/BudgetContextProvider'
 
 export default function RecentTripsTable({ trips }) {
+  const { getTripBudget,getYearlyBudgetBudgets, getYearlyBudget } = useBudgetContext()
   const [recentTrips, setRecentTrips] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { getUserTrips } = useTripServices();
+  const [ budgets, setBudgets ] = useState([])
   const navigate = useNavigate();
   
   useEffect(() => {
@@ -17,10 +20,8 @@ export default function RecentTripsTable({ trips }) {
       try {
         setLoading(true);
         const trips = await getUserTrips();
-        setRecentTrips(trips);
-        console.log("recent trips fetched successfully");
-      } catch (error) {
-        console.log("couldn't fetch recent trips:", error);
+        setRecentTrips(trips.slice(0,3));
+        } catch (error) {
         setError("Failed to load recent trips");
       } finally {
         setLoading(false);
@@ -28,6 +29,35 @@ export default function RecentTripsTable({ trips }) {
     };   
     getRecentTrips();
   }, []);
+  
+  
+
+ useEffect(()=>{
+     let yearlyBudget = null
+     let userBudgets  = null
+     const fetchAll = async ()=>{
+       try{ 
+          yearlyBudget = JSON.parse(localStorage.getItem("lcBudget"))
+          if (!yearlyBudget){
+             yearlyBudget = await getYearlyBudget()
+             
+          }
+          
+          if(yearlyBudget){
+             userBudgets = await getYearlyBudgetBudgets(yearlyBudget[0].id)
+          }
+          
+          userBudgets && setBudgets(userBudgets.data)
+       
+       }catch(err){
+        console.log(err)
+       }
+     }
+     
+     fetchAll();
+   },[])
+    
+  
   
   const formatDate = (dateString) => {
     if (!dateString) return 'N/A';
@@ -43,10 +73,19 @@ export default function RecentTripsTable({ trips }) {
     }
   };
 
+  const getBudget = (id)=>{
+      let tripBudget  = null
+      if (budgets.length > 0){
+         tripBudget = budgets.filter(budget => budget.trip_id == id)[0]
+         if(tripBudget){
+         return tripBudget.amount}
+      }else{return null}
+  }
+
   const formatCost = (cost) => {
     if (!cost || cost === 0) return 'N/A';
     if (typeof cost === 'number') {
-      return `$${cost.toLocaleString()}`;
+      return `${cost.toLocaleString()}`;
     }
     return cost;
   };
@@ -70,6 +109,7 @@ export default function RecentTripsTable({ trips }) {
       </span>
     );
   };
+
 
   const handleTripClick = (tripId, event) => {
     if (event.target.closest(`.${styles.actionButton}`)) return;
@@ -226,7 +266,7 @@ export default function RecentTripsTable({ trips }) {
                     {trip.duration}
                   </div>
                   <div className={styles.costCell}>
-                    {formatCost(trip.cost)}
+                   formatCost({getBudget(trip.id)})                
                   </div>
                   <div className={styles.statusCell}>
                     {getStatusBadge(trip.status)}
@@ -281,7 +321,7 @@ export default function RecentTripsTable({ trips }) {
                   </div>
                   <div className={styles.cardDetail}>
                     <DollarSign size={14} />
-                    <span>{formatCost(trip.cost)}</span>
+                    <span>{formatCost(getBudget(trip.id))}</span>
                   </div>
                 </div>
 

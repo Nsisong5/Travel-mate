@@ -9,6 +9,9 @@ import ToggleField from './ToggleField/ToggleField';
 import RatingField from './RatingField/RatingField';
 import Footer from './Footer/Footer';
 import styles from './TripEditPage.module.css';
+import { useTripServices } from "../../services/TripServices/TripServices"
+import { useBudgetContext } from "../../services/BudgetServices/BudgetContextProvider"
+
 
 // Mock trip data - TODO: Replace with API integration
 const MOCK_TRIP_DATA = {
@@ -64,7 +67,10 @@ const TripEditPage = () => {
   const [saving, setSaving] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
   const [errors, setErrors] = useState({});
-
+  const [ budget, setBudget ] = useState({ amount: 0});
+  const { getTrip } = useTripServices();
+  const { getTripBudget }  = useBudgetContext();
+  const { updateTrip } =  useTripServices();
   // Page animation variants
   const pageVariants = {
     initial: { 
@@ -76,7 +82,7 @@ const TripEditPage = () => {
       y: 0,
       transition: {
         duration: 0.4,
-        ease: [0.22, 1, 0.36, 1],
+        ease: [0.22, 1, 0.36,1],
         staggerChildren: 0.1
       }
     },
@@ -101,21 +107,44 @@ const TripEditPage = () => {
     }
   };
 
+
   useEffect(() => {
-    fetchTripData();
+   const fetchAll = async ()=>{
+      const tripBudget = await getTripBudget(tripId);            
+      fetchTripData(tripBudget);
+      setBudget(tripBudget);
+   }
+   
+   fetchAll();
   }, [tripId]);
 
-  const fetchTripData = async () => {
+  const fetchTripData = async (budget) => {
     setLoading(true);
     try {
-      // TODO: Replace with actual API call
-      // const response = await fetch(`/api/trips/${tripId}`);
-      // const data = await response.json();
-      // setTripData(data);
-      
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 500));
-      setTripData(MOCK_TRIP_DATA);
+    const trip = await getTrip(tripId);
+    console.log("trip data: ",trip)
+    trip ? 
+    setTripData({
+    startDate: trip.start_date,
+    endDate: trip.end_date,
+    meansOfTravel: trip.means,
+    cost: budget.amount,
+    aiEstimated: trip.cost_estimated,
+    status: trip.status,
+    style: trip.style,
+    budgetRange: trip.budget_range,
+    rating: trip.rating, 
+    country: trip.country,
+    state: trip.state,
+    city: trip.local_gov,
+    origin: trip.origin,
+    destination: trip.destination ,
+    rating: trip.rating,
+    title: trip.title
+             
+    })
+       
+    :setTripData(MOCK_TRIP_DATA);
     } catch (error) {
       console.error('Failed to fetch trip data:', error);
     } finally {
@@ -190,23 +219,12 @@ const TripEditPage = () => {
   };
 
   const handleSave = async () => {
-    if (!validateForm()) return;
-    
+    if (!validateForm()) return;   
     setSaving(true);
     try {
-      // TODO: Replace with actual API call
-      // const response = await fetch(`/api/trips/${tripId}`, {
-      //   method: 'PUT',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(tripData)
-      // });
-      // const updatedTrip = await response.json();
-      
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      const response = await updateTrip(tripData,tripId);
       setHasChanges(false);
-      navigate(`/trips/${tripId}`, { 
+      navigate(-1, { 
         state: { message: 'Trip updated successfully!' }
       });
     } catch (error) {
@@ -268,6 +286,19 @@ const TripEditPage = () => {
               readonly
             />
           </motion.div>
+
+        {/*  title */} 
+         <motion.div variants={fieldVariants}>
+            <FormField
+              label="Trip Title"
+              value={tripData.title}
+              onChange={(value) => updateField('title', value)}     
+              placeholder="enter your trip title....."
+              error={errors.title}
+              required
+            />
+          </motion.div>      
+
 
           {/* Origin */}
           <motion.div variants={fieldVariants}>

@@ -15,7 +15,7 @@ export const BudgetContext = createContext();
     }
     
     const createYearlyBudget = async(budgetData)=>{
-          console.log("BudgetData: ", budgetData)
+          
           try{
               const response = await api.post("/yearly/budgets", budgetData,{
                  headers: getHeaders()
@@ -46,8 +46,7 @@ export const BudgetContext = createContext();
             
 
     const updateYearlyBudget = async(data)=>{
-        console.log('data to update yearly budget: ',data)
-          try{
+         try{
               const response = await api.patch("/yearly/budgets", data,{
                 headers: getHeaders()
               })
@@ -61,6 +60,7 @@ export const BudgetContext = createContext();
              
 
   const createBudget = async (budgetData) => {
+  console.log("budget data: ", budgetData)
   try {
     const response = await api.post(`/user/budgets`, budgetData, {
       headers: getHeaders(),
@@ -73,12 +73,18 @@ export const BudgetContext = createContext();
  };                
       
  const getUsedAmount = (budgets) => {
-  return budgets.reduce((total, budget) => total + (budget.amount || 0), 0);
-};    
+  const amount = 0;
+  if (budgets.length > 0){
+   console.log(budgets)
+   budgets.forEach(budget => amount += budget.amount )
+   console.log("amount used: ",amount)}
+  return amount
+ };    
       
  const updateBudget = async (budgetId, updateData) => {
+  console.log("update data: ",budgetId, updateData)
   try {
-    const response = await api.patch(`/user/budgets/${budgetId}`, updateData, {
+    const response = await api.patch(`/user/budgets/${parseInt(budgetId)}`, updateData, {
       headers: getHeaders(),
     });
     return response.data;
@@ -101,17 +107,74 @@ export const BudgetContext = createContext();
   }
  };
                                                                             
- const getYearlyBudgetUsedAmount = async (budgetId)=>{
+  const getYearlyBudgetUsedAmount = async (budgetId)=>{
     const id = parseInt(budgetId)
-     try{
-        const res = await api.get(`/user/budgets/yearly/${id}`,{ headers: getHeaders()})
-        console.log("yearly used budget from context provider: ",res.data)
-        return getUsedAmount(res.data)
+    try{
+        const res = await api.get(`/user/budgets/yearly/${id}`,{ headers: getHeaders()})      
+        var amount = 0;
+        res.data.forEach( budget =>{
+           amount += budget.amount
+        })
+        return amount
      }catch(err){
       console.log(err.response?.data?.detail)
      }   
- }                                                                                                                                     
-                                                                                                          
+  }                                                                                                                                     
+  
+                                                                            
+ const getYearlyBudgetBudgets = async (budgetId)=>{
+     
+     try{
+        const res = await api.get(`/user/budgets/yearly/${parseInt(budgetId)}`,{ headers: getHeaders()})
+        localStorage.setItem("userBudgets",JSON.stringify(res.data))
+        return res
+     }catch(err){
+      console.log(err.response?.data?.detail)
+     }   
+ }                                                                                                              
+
+ const getTripBudget = async (tripId)=>{
+     const id = parseInt(tripId);
+     try{
+        const res = await api.get(`/user/budgets/trip/${id}`,{ headers: getHeaders()})
+        return res.data
+     }catch(err){
+      console.log(err.response?.data?.detail)
+     }   
+ }                                                                                                              
+        
+        
+                
+ const getAllocations = async (budgetId)=>{
+     var res = [];
+     try{
+        if (budgetId){
+         const response = await api.get(`/user/allocations/${budgetId}`)
+         return response.data
+        } else{
+            const res = await api.get(`/user/allocations`)      
+            return res.data 
+        }
+     }catch(err){
+      console.log(err.response?.data?.detail)
+     }   
+ }                                                                                                                                                                                                                                                                                                                             
+ 
+ 
+
+
+
+  const updateAllocation = async (payload)=>{
+ 
+     const allocId = payload.id;
+     try{
+         const response = await api.patch(`/user/allocations/${allocId}`, payload)
+         return response 
+     }catch(err){
+      console.log(err.response?.data)
+     }   
+ }     
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
   const contextValue = {
     createYearlyBudget,
     getYearlyBudget,
@@ -119,7 +182,11 @@ export const BudgetContext = createContext();
     createBudget,
     updateBudget,
     getYBudgets,
-    getYearlyBudgetUsedAmount
+    getYearlyBudgetUsedAmount,
+    getYearlyBudgetBudgets,
+    getAllocations,
+    getTripBudget,
+    updateAllocation,
   };
 
   return (

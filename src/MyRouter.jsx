@@ -84,7 +84,7 @@ function InnerAnimatedRoutes() {
           />
           
           <Route 
-            path="/trip-edit" 
+            path="/trip-edit/:tripId" 
             element={
               <ProtectedRoute>
                 <TripEditPage />
@@ -112,7 +112,7 @@ function InnerAnimatedRoutes() {
    
                     
           <Route 
-            path="/budget" 
+            path="/budget/:tripId" 
             element={
               <ProtectedRoute>
                 <BudgetPage />

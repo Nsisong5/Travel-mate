@@ -1,7 +1,7 @@
 // src/pages/TripDetailPage/Itinerary/ItineraryList.jsx
 // Enhanced itinerary list with edit/delete functionality and form integration
 
-import React, { useState } from 'react';
+import React, { useState, useEffect} from 'react';
 import { motion } from 'framer-motion';
 import { Calendar, Plus, Edit, Trash2 } from 'lucide-react';
 import ItineraryDayCard from './ItineraryDayCard/ItineraryDayCard';
@@ -10,30 +10,45 @@ import ConfirmModal from '../ConfirmModal';
 import { fadeInUp, staggerContainer } from '../variants';
 import styles from './ItineraryList.module.css';
 
-const ItineraryList = ({ trip }) => {
-  const [itinerary, setItinerary] = useState(trip.itinerary || []);
+const ItineraryList = ({ trip,
+      createItinerary,getTripItineraries,
+      deleteItinerary
+  }) => {
+  const [itinerary, setItinerary] = useState([]);
   const [showItineraryForm, setShowItineraryForm] = useState(false);
   const [editingItinerary, setEditingItinerary] = useState(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deletingItinerary, setDeletingItinerary] = useState(null);
-
+  
+  useEffect(()=>{
+    const fetchAll = async ()=>{
+       const itineraries = await getTripItineraries(trip.id);
+       setItinerary(itineraries)
+    }
+    fetchAll();
+  },[])
+  
   const handleAddDay = () => {
     setEditingItinerary(null);
     setShowItineraryForm(true);
   };
 
-  const handleEditItinerary = (dayData) => {
+  const handleEditItinerary = async (dayData) => {
+    console.log("edit data: ",dayData)
     setEditingItinerary(dayData);
     setShowItineraryForm(true);
   };
 
-  const handleDeleteItinerary = (dayData) => {
+  const handleDeleteItinerary = async (dayData) => {
     setDeletingItinerary(dayData);
     setShowDeleteConfirm(true);
   };
 
-  const handleSaveItinerary = (formData) => {
+  const handleSaveItinerary = async (formData) => {
     // TODO: API call to save itinerary
+    formData["trip_id"] = trip.id;
+    formData["items"] = [];
+    const response = await createItinerary(formData)
     if (editingItinerary) {
       // Update existing
       setItinerary(prev =>
@@ -56,10 +71,8 @@ const ItineraryList = ({ trip }) => {
     setEditingItinerary(null);
   };
 
-  const handleConfirmDelete = () => {
-    // TODO: API call to delete itinerary day
-    // DELETE /trips/${trip.id}/itinerary/${deletingItinerary.day}
-    
+  const handleConfirmDelete = async () => {
+    const response = await deleteItinerary(deletingItinerary.id)
     setItinerary(prev =>
       prev.filter(day => day.day !== deletingItinerary.day)
     );

@@ -5,9 +5,8 @@ import styles from '../YearlyTripBudgetPage.module.css';
 import { formatBudgetAmount } from '../../../utils/BudgetPage/getBudgetFeedback';
 
 const YearlyBudgetCard = ({ yearlyBudget, remaining, onEdit,used }) => {
-  const usedPercentage = (used / yearlyBudget.total) * 100;
-  console.log("yearly budget from card: ", yearlyBudget)
-  
+  const usedPercentage = (used || 0 / yearlyBudget.total) * 100;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}

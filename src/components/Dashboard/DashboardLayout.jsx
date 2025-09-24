@@ -5,13 +5,17 @@ import styles from "./DashboardLayout.module.css";
 import "./theme-vars.css";
 import Sidebar from "./Sidebar/Sidebar";
 import { AuthContext } from "../../AuthProvider"; // Backend API integration point
+import { useNavigate } from "react-router-dom"
 import { Helmet } from "react-helmet"
+
+
 export default function DashboardLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const sidebarRef = useRef(null);
   const { theme } = useTheme();
   const { user } = useContext(AuthContext) || { user: null }; // Backend user data integration
-
+  const navigate = useNavigate()
+  
   useEffect(() => {
     document.body.classList.toggle("sidebar-open", sidebarOpen);
     if (sidebarOpen) {
@@ -44,7 +48,11 @@ export default function DashboardLayout({ children }) {
   // Backend integration: Navigation handlers
   const handleGoOnboarding = () => window.location.href = "/onboarding";
   const handleGoProfile = () => window.location.href = "/settings";
-
+  const handleDashboardTextClick = ()=>{
+         console.log("function call")
+         navigate("/dashboard")
+  };
+  
   return (
     <div data-theme={theme} className={styles.page}>      
      <Helmet> 
@@ -80,7 +88,7 @@ export default function DashboardLayout({ children }) {
             </button>
           )}
 
-          <h1 className={styles.title}>Dashboard</h1>
+          <h1 className={styles.title} onClick ={handleDashboardTextClick}>Dashboard</h1>
 
           {/* Theme-aware right side container with fixed positioning */}
           <div className={styles.headerRight}>

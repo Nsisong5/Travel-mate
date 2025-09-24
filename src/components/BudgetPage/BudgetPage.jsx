@@ -12,7 +12,7 @@
 // 4. Requires AuthContext for API headers: useAuth() -> { token, user }
 
 import React, { useState, useEffect, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams} from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronDown } from 'lucide-react';
 // TODO: Import ThemeContext - adjust path based on your project structure
@@ -24,8 +24,11 @@ import CategoryCard from './CategoryCard/CategoryCard';
 import RecentExpenses from './RecentExpenses/RecentExpenses';
 import AddExpenseModal from './AddExpenseModal/AddExpenseModal';
 import EditBudgetModal from './EditBudgetModal/EditBudgetModal';
-import { MOCK_BUDGET, MOCK_EXPENSES } from './mockData';
+import { MOCK_BUDGET, MOCK_EXPENSES,MOCK_CATEGORIES } from './mockData';
 import styles from './BudgetPage.module.css';
+import { useBudgetContext} from "../../services/BudgetServices/BudgetContextProvider"
+import {useExpenses } from "../../services/ExpensesServices/ExpensesServices" 
+import { useTripServices } from "../../services/TripServices/TripServices" 
 
 // Framer Motion variants
 const pageVariants = {
@@ -50,33 +53,54 @@ const BudgetPage = () => {
   // const { user, token } = useAuth();
   
   // State management
-  const [budget, setBudget] = useState(null);
+  const { tripId } = useParams();
+  const [budget, setBudget] = useState({
+    "allocatedBreakdown": []
+  });
   const [expenses, setExpenses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showAddExpenseModal, setShowAddExpenseModal] = useState(false);
   const [showEditBudgetModal, setShowEditBudgetModal] = useState(false);
   const [editingExpense, setEditingExpense] = useState(null);
-  const [selectedTrip, setSelectedTrip] = useState('Paris Adventure');
-
+  const [selectedTrip, setSelectedTrip] = useState();
+  const { getTripBudget , getAllocations,updateAllocation} = useBudgetContext();
+  const [allocations, setAllocations ] = useState([])
+  const { addExpense,editExpenses,getExpenses,deleteExpense } = useExpenses();
+  const { getTrip } = useTripServices()
   useEffect(() => {
-    fetchBudgetData();
-    fetchRecentExpenses();
+    
+    const fetchAll = async()=>{
+      const budgetData = await fetchBudgetData();
+      const exp = await fetchRecentExpenses();     
+      if (budgetData){ 
+        const alloc = await getAllocations(budgetData.id)
+        setBudget(prev=> (
+         {
+           ...prev,
+           allocatedBreakdown: alloc
+         }
+       ))
+       setAllocations(alloc)
+     }else{setError("no budget found for this trip!")}
+    
+      const trip = await getTrip(tripId);
+     trip && setSelectedTrip(trip.title)
+   }
+    
+    fetchAll();
   }, []);
 
-  const fetchBudgetData = async () => {
+
+
+ const fetchBudgetData = async () => {
     setLoading(true);
     try {
-      // TODO: Replace with real API call
-      // const response = await api.get('/user/budgets', {
-      //   headers: { Authorization: `Bearer ${token}` }
-      // });
-      // setBudget(response.data.current);
-
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 600));
-      setBudget(MOCK_BUDGET);
-    } catch (err) {
+      const fetchedBudget = await getTripBudget(tripId);
+      fetchedBudget ? setBudget(prev => ({...prev,...fetchedBudget}))
+     :setBudget(MOCK_BUDGET)
+      return fetchedBudget    
+      } catch (err) {
       console.error('Failed to fetch budget data:', err);
       setError('Failed to load budget information');
     } finally {
@@ -86,15 +110,10 @@ const BudgetPage = () => {
 
   const fetchRecentExpenses = async () => {
     try {
-      // TODO: Replace with real API call
-      // const response = await api.get(`/user/expenses?trip_id=${budget.trip_id}`, {
-      //   headers: { Authorization: `Bearer ${token}` }
-      // });
-      // setExpenses(response.data.expenses);
-
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 400));
-      setExpenses(MOCK_EXPENSES);
+      const response = await getExpenses(tripId);
+      response ? setExpenses(response)
+      :setExpenses(MOCK_EXPENSES);
+      return response
     } catch (err) {
       console.error('Failed to fetch expenses:', err);
     }
@@ -102,22 +121,14 @@ const BudgetPage = () => {
 
   const handleAddExpense = async (expenseData) => {
     try {
-      // TODO: Replace with real API call
-      // const response = await api.post('/user/expenses', expenseData, {
-      //   headers: { 
-      //     Authorization: `Bearer ${token}`,
-      //     'Content-Type': 'application/json'
-      //   }
-      // });
-      // const newExpense = response.data;
-
+    
       // Simulate API response
       const newExpense = {
         id: expenseData.id || Date.now(),
         ...expenseData,
         created_at: new Date().toISOString()
       };
-
+       
       if (expenseData.id) {
         // Update existing expense
         setExpenses(prev => prev.map(exp => 
@@ -133,7 +144,7 @@ const BudgetPage = () => {
         ...prev,
         confirmedSpent: prev.confirmedSpent + (expenseData.is_planned ? 0 : expenseData.amount),
         plannedSpent: prev.plannedSpent + (expenseData.is_planned ? expenseData.amount : 0),
-        allocatedBreakdown: prev.allocatedBreakdown.map(cat => 
+        allocatedBreakdown: budget.allocatedBreakdown.map(cat => 
           cat.id === expenseData.category 
             ? { ...cat, spent: cat.spent + expenseData.amount }
             : cat
@@ -164,11 +175,7 @@ const BudgetPage = () => {
 
   const handleDeleteExpense = async (expenseId) => {
     try {
-      // TODO: Replace with real API call
-      // await api.delete(`/user/expenses/${expenseId}`, {
-      //   headers: { Authorization: `Bearer ${token}` }
-      // });
-
+      const response = await deleteExpense(expenseId);
       const expenseToDelete = expenses.find(exp => exp.id === expenseId);
       if (expenseToDelete) {
         // Update local state
@@ -179,7 +186,7 @@ const BudgetPage = () => {
           ...prev,
           confirmedSpent: prev.confirmedSpent - (expenseToDelete.is_planned ? 0 : expenseToDelete.amount),
           plannedSpent: prev.plannedSpent - (expenseToDelete.is_planned ? expenseToDelete.amount : 0),
-          allocatedBreakdown: prev.allocatedBreakdown.map(cat => 
+          allocatedBreakdown: budget.allocatedBreakdown.map(cat => 
             cat.id === expenseToDelete.category 
               ? { ...cat, spent: Math.max(0, cat.spent - expenseToDelete.amount) }
               : cat
@@ -190,6 +197,8 @@ const BudgetPage = () => {
       console.error('Failed to delete expense:', err);
     }
   };
+  
+
 
   if (loading) {
     return (
@@ -204,8 +213,8 @@ const BudgetPage = () => {
       <div className={styles.errorContainer}>
         <h2>Unable to load budget</h2>
         <p>{error}</p>
-        <button onClick={() => navigate(-1)} className={styles.backButton}>
-          Go back
+        <button onClick={() => navigate("/trip_budget")} className={styles.backButton}>
+          Create Budget
         </button>
       </div>
     );
@@ -255,7 +264,7 @@ const BudgetPage = () => {
       <motion.section className={styles.categoriesSection} variants={pageVariants}>
         <h2 className={styles.sectionTitle}>Categories</h2>
         <div className={styles.categoryGrid}>
-          {budget?.allocatedBreakdown?.map((category, index) => (
+          {budget.allocatedBreakdown.map((category, index) => (
             <motion.div
               key={category.id}
               variants={pageVariants}
@@ -280,6 +289,8 @@ const BudgetPage = () => {
       {/* Add/Edit Expense Modal */}
       <AddExpenseModal
         isOpen={showAddExpenseModal}
+        budget= {budget}
+        updateAllocation={updateAllocation}
         onClose={() => {
           setShowAddExpenseModal(false);
           setEditingExpense(null);

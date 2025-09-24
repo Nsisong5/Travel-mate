@@ -13,7 +13,7 @@ export default function SummaryStep() {
 
  
   const handleConfirm = async() => {
-    
+    console.log(state)
     const tripData = {
     destination: state.destination.name,
     start_date:state.startDate,
@@ -26,16 +26,14 @@ export default function SummaryStep() {
     local_gov: state.destination.localGov || null,
     country: state.destination.country || null,
     state: state.destination.state || null , 
- 
+    travelers: state.travelers
     }
     
     if (allowSkip) {
       navigate("/auth/signup");
     } else {
       try {
-        console.log("state:", tripData);
         const result = await createTrip(tripData);
-        console.log("Trip created successfully:", result);
         navigate("/dashboard");
       } catch (error) {
         console.error("Trip creation failed:", error);
@@ -182,7 +180,7 @@ export default function SummaryStep() {
     },
     { 
       label: 'Number of People', 
-      value: state.numberOfPeople ? `${state.numberOfPeople} ${state.numberOfPeople === 1 ? 'person' : 'people'}` : '2 people' 
+      value: state.travelers ? `${state.travelers} ${state.travelers === 1 ? 'person' : 'people'}` : '2 people' 
     },
     { 
       label: 'Budget', 

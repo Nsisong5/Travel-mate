@@ -17,6 +17,11 @@ import styles from './TripDetailPage.module.css';
 import TravelTips from './TravelTips/TravelTips';
 import TripMemories from './TripMemories/TripMemories';
 import { useTripServices }  from "../../services/TripServices/TripServices" 
+import { useItineraryServices }  from "../../services/TripServices/ItineraryServices" 
+
+import { useBudgetContext } from "../../services/BudgetServices/BudgetContextProvider"
+
+
 
 // Mock trip data for development
 const MOCK_TRIP = {
@@ -64,32 +69,31 @@ const TripDetailPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [showEndTripModal, setShowEndTripModal] = useState(false);
-    // const { theme } = useTheme();
+    const { getTrip } = useTripServices()
+    const { getTripBudget } = useBudgetContext();
+    const [tripBudget, setTripBudget] = useState(0)
+    const {getItinerary, updateItinerary,getTripItineraries,deleteItinerary,createItinerary} = useItineraryServices();
+     // const { theme } = useTheme();
     
 
   useEffect(() => {
-    fetchTripDetails();
+   const fetchAll =async()=>{
+      fetchTripDetails();
+      const fetchBudget = await getTripBudget(tripId);
+      fetchBudget && setTripBudget(fetchBudget)
+   }
+    
+    fetchAll();
   }, [tripId]);
 
   const fetchTripDetails = async () => {
     setLoading(true);
     setError(null);
 
-    try {
-      // TODO: Replace with actual API call
-      // const response = await api.get(`/trips/${tripId}`, {
-      //   headers: { Authorization: `Bearer ${authToken}` }
-      // });
-      // Expected response: { id, title, start_date, end_date, cover_image, images, itinerary, budget, cost_estimated, progress_percent, days_left }
-        
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 800));
-      setTrip(MOCK_TRIP);
-    
+    try {    
       const response = await getTrip(tripId);
-      console.log("user current trip fetch: ",response)
-      response && setTrip(response);
-      setTrip(MOCK_TRIP)
+      response ? setTrip(response)
+      :setTrip(MOCK_TRIP)
     } catch (err) {
       console.error('Failed to fetch trip details:', err);
       setError('Failed to load trip details');
@@ -97,10 +101,18 @@ const TripDetailPage = () => {
       setLoading(false);
     }
   };
+ 
+  const handleItinerarySave = async (data) =>{
+      console.log("data to be save: ",data)
+      try{
+          const response = createItinerary(data)
+      }catch(err){
+      console.log(err)
+      }
+  }
 
   const handleEditTrip = () => {
-    // TODO: Navigate to edit page or open edit modal
-    navigate(`/trips/${tripId}/edit`);
+     navigate(`/trip-edit/${tripId}`);
   };
 
   const handleShareTrip = async () => {
@@ -123,7 +135,7 @@ const TripDetailPage = () => {
   };
   
   const handleBudget = ()=>{
-     navigate("/budget")
+      tripId && navigate(`/budget/${tripId}`)
   }
 
   const handleEndTrip = async () => {
@@ -155,7 +167,7 @@ const TripDetailPage = () => {
       <div className={styles.errorContainer}>
         <h2>Trip not found</h2>
         <p>{error || 'This trip could not be loaded.'}</p>
-        <button onClick={() => navigate('/trips')} className={styles.backButton}>
+        <button onClick={() => navigate(-1)} className={styles.backButton}>
           Back to trips
         </button>
       </div>
@@ -179,8 +191,13 @@ const TripDetailPage = () => {
         
         <div className={styles.content}>
           <div className={styles.leftColumn}>
-            <TripProgressPanel trip={trip} />
-            <ItineraryList trip={trip} />
+            <TripProgressPanel trip={trip} budget={tripBudget}/>
+            <ItineraryList 
+            trip={trip} 
+            createItinerary={createItinerary}
+            getTripItineraries={getTripItineraries}
+            deleteItinerary={deleteItinerary}
+            />
           </div>
           
           <div className={styles.rightColumn}>

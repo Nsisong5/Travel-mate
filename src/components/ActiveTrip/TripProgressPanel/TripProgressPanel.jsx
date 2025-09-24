@@ -7,8 +7,8 @@ import { Clock, Calendar, DollarSign, TrendingUp } from 'lucide-react';
 import { fadeInUp } from '../variants';
 import styles from './TripProgressPanel.module.css';
 
-const TripProgressPanel = ({ trip }) => {
-  const calculateDaysLeft = () => {
+const TripProgressPanel = ({ trip,budget }) => {
+   const calculateDaysLeft = () => {
     if (!trip.start_date) return null;
     
     try {
@@ -100,7 +100,7 @@ const TripProgressPanel = ({ trip }) => {
           <div className={styles.statContent}>
             <span className={styles.statLabel}>Budget</span>
             <span className={styles.statValue}>
-              {formatBudget(trip.budget)}
+              {formatBudget(budget.amount) || 0}
               {trip.cost_estimated && (
                 <span className={styles.estimated}>est.</span>
               )}

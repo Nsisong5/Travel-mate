@@ -11,9 +11,11 @@ import styles from './QuickStats.module.css';
 const QuickStats = ({ trip = {} }) => {
   const {
     travelers = 1,
-    flight_status = 'pending',
-    hotel_status = 'pending'
+    flight_status = 'coming soon',
+    hotel_status = 'coming soon'
+  
   } = trip;
+  
 
   const getStatusConfig = (status) => {
     switch (status?.toLowerCase()) {
@@ -31,8 +33,8 @@ const QuickStats = ({ trip = {} }) => {
           bgColor: 'rgba(245, 158, 11, 0.1)',
           label: 'Pending'
         };
-      case 'cancelled':
-      case 'failed':
+      case 'comming soon':
+      case 'comming soon':
         return {
           icon: XCircle,
           color: '#ef4444', // red

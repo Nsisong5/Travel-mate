@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MoreVertical, ChevronDown } from 'lucide-react';
 import styles from './TopDestinationsCard.module.css';
-
+import {useNavigate} from "react-router-dom"
 // Mock data for different time periods
 const MOCK_DATA = {
   'all-time': [
@@ -38,7 +38,7 @@ const TopDestinationsCard = () => {
   const [selectedFilter, setSelectedFilter] = useState('this-month');
   const [showDropdown, setShowDropdown] = useState(false);
   const [showOptionsMenu, setShowOptionsMenu] = useState(false);
-
+  const navigate = useNavigate();
   const currentData = MOCK_DATA[selectedFilter];
   const maxVisits = Math.max(...currentData.map(item => item.visits));
 
@@ -232,7 +232,7 @@ const TopDestinationsCard = () => {
           className={styles.viewAllButton}
           whileHover={{ scale: 1.02, y: -1 }}
           whileTap={{ scale: 0.98 }}
-          onClick={() => {/* Navigate to full destinations page */}}
+          onClick={() => {navigate('/top-destinations')}}
         >
           View All Destinations
         </motion.button>

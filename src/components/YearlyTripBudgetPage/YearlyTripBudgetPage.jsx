@@ -1,4 +1,4 @@
-import React, { useState, useEffect, use } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Plus, AlertCircle } from 'lucide-react';
 import EmptyBudgetState from './components/EmptyBudgetState';
@@ -9,6 +9,7 @@ import styles from './YearlyTripBudgetPage.module.css';
 import { useNavigate } from "react-router-dom";
 import { formatBudgetAmount } from '../../utils/BudgetPage/getBudgetFeedback';
 import { useBudgetContext } from "../../services/BudgetServices/BudgetContextProvider"
+import { useTripServices } from "../../services/TripServices/TripServices"
 
 const YearlyBudgetManager = () => {
   const navigate = useNavigate();
@@ -17,71 +18,82 @@ const YearlyBudgetManager = () => {
   const { createYearlyBudget,getYearlyBudget, updateYearlyBudget,getYBudgetst,getYearlyBudgetUsedAmount} = useBudgetContext()
   const [ usedBudget,setUsedBudegt ] = useState(0)
   const [remaining,setRemaining] = useState(0)
-  const [tripBudgets, setTripBudgets] = useState([
-    {
-      id: 1,
-      title: "Summer in Japan",
-      destination: "Tokyo & Kyoto",
-      allocated: 4500,
-      spent: 4200,
-      status: "completed",
-      dates: "Jun 2024"
-    },
-    {
-      id: 2,
-      title: "European Adventure",
-      destination: "Paris & Rome",
-      allocated: 4000,
-      spent: 2800,
-      status: "active",
-      dates: "Sep 2024"
-    }
-  ]);
+  const { getUserTrips } = useTripServices()
+  const [trips,setTrips ] = useState([])
+  const {getYearlyBudgetBudgets, getAllocations } = useBudgetContext()
+  const [tripBudgets, setTripBudgets] = useState([]);
 
   const [modalState, setModalState] = useState({
     isOpen: false,
     type: 'create', // 'create', 'edit-yearly', 'edit-trip'
     editingTrip: null
   });
-
+  
   useEffect(()=>{
-    const fetchAll = async()=>{
-        await fetchYearlyBudget();
-    }
-    fetchAll();
+   const fetchAll = async ()=>{
+     const fetchedYearlyBudget = await fetchYearlyBudget();
+     const usedAmount = await fetchUsedBudegtAMount(fetchedYearlyBudget.id) || 0;    
+     getRemaining(fetchedYearlyBudget.total, usedAmount)
+     const trips = await getUserTrips();
+     const budgets = await getYearlyBudgetBudgets(fetchedYearlyBudget.id)
+     const allocations = await getAllocations();
+     trips.map(trip=> getTripsBudgets(trip,budgets,allocations));
+   }
+   
+   fetchAll();
   },[])
   
 
-  useEffect(() => {
-    const fetchAll = async () => {
-      const yearlyBudgetRes = await fetchYearlyBudget();
-      if (!yearlyBudgetRes || !yearlyBudgetRes[0]) return;
-      const yBudget = yearlyBudgetRes[0];
-      setYearlyBudget(yBudget);
-      await fetchYBudgets();
-      const totalTripsBudgets  = await fetchYearlyBudgetTripsBudgets(yBudget.id); // Pass the id directly
-      getRemaining(yBudget.total,totalTripsBudgets); // Pass the budget directly
-    };
-    fetchAll();
-  }, []);
   
+  const getTripsBudgets = async(trip,budgets, allocations)=>{     
+       //console.log("trip: ",trip,"budgets: ", budgets,"allocations: ", allocations)
+        var matchBudget = null;
+        var allocated = 0; 
+        var data = {
+         id:trip.id,
+         title: trip.title,
+         destination: trip.destination,
+         
+        };        
+       
+        if(budgets.data.length > 0){
+          budgets.data.map(budget=>{  
+          if(budget.trip_id == trip.id){
+             allocations.map(allocation =>{
+             if (allocation.budget_id == budget.id){
+                allocated += allocation.allocated;;             
+                matchBudget  = budget.amount;
+          } 
+        })}})}
+        
+        data["allocated"] = allocated; 
+        data["spent"] = allocated;
+        data["status"] = trip.status;
+        data["dates"] = trip.created_at
+        setTripBudgets(prev =>([
+           ...prev,
+           data
+        ]))
+       
+  }
+
   
   const fetchYearlyBudget = async()=>{
        try{
            const res = await getYearlyBudget();
            setYearlyBudget(res[0]) 
-           return res
+           return res[0]
        }catch(err){
           console.log(err)
        }
   }
   
+  
 
+  const fetchUsedBudegtAMount = async(id)=>{
 
-  const fetchYearlyBudgetTripsBudgets = async(id)=>{
-    if (!id) return;
        try{
-           const res = await getYearlyBudgetUsedAmount(id);
+           const res = await getYearlyBudgetUsedAmount(parseInt(id));
            setUsedBudegt(res)
            return res
        }catch(err){
@@ -102,12 +114,10 @@ const YearlyBudgetManager = () => {
        }
   }
   
-  const getRemaining = async (budget,used)=>{
-        const rem = budget ? budget - used : budget;        
-        setRemaining(rem);
-        setUsedBudegt(used);
+  const getRemaining = (budget,used)=>{
+      const rem = budget ? budget - used || 0: 0;
+      setRemaining(rem)
   }
-
 
   const openModal = (type, trip = null) => {
     setModalState({
@@ -140,7 +150,9 @@ const YearlyBudgetManager = () => {
        data["total"] = parseInt(amount);
        data["year"]  = parseInt(new Date().getFullYear())
        data["used"] = parseInt(0)
+       console.log("data: ",data)
        const response = await createYearlyBudget(data)
+       console.log(response)
     }catch(err){
        console.log(err.response?.detail)
     }
@@ -187,6 +199,8 @@ const YearlyBudgetManager = () => {
     closeModal();
   };
 
+
+
   const getBudgetStatus = (allocated) => {
     if (!yearlyBudget) return 'safe';
     const remainingAfterAllocation = remaining - allocated;
@@ -195,8 +209,7 @@ const YearlyBudgetManager = () => {
     return 'safe';
   };
   
-  console.log("y_budget:",yearlyBudget)
-  // If no yearly budget exists, show empty state
+  
   if (!yearlyBudget) {
     return (
       <div className={styles.container}>
@@ -218,19 +231,18 @@ const YearlyBudgetManager = () => {
     );
   }
 
-  console.log('usedc budget: ',usedBudget)
   return (
     <div className={styles.container}>
       {/* Yearly Budget Overview */}
       <YearlyBudgetCard
         yearlyBudget={yearlyBudget}
         remaining={remaining}
+        used={usedBudget}
         onEdit={() => openModal('edit-yearly')}
-        used = {usedBudget}
       />
 
       {/* Trip Budgets List */}
-      <TripBudgetsList tripBudgets={tripBudgets} />
+      <TripBudgetsList tripBudgets={tripBudgets}/>
 
       {/* Add New Budget Button */}
       <motion.button

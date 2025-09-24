@@ -15,8 +15,7 @@ export const useExpenses = () => {
   
   const getExpenses = async (tripId) => {
   try {
-    const response = await api.get(`/user/expenses`, {
-      params: { trip_id: tripId },
+    const response = await api.get(`/user/expenses/${tripId}`, {
       headers: getHeaders(),
     });
     return response.data;
@@ -27,6 +26,8 @@ export const useExpenses = () => {
   }; 
   
   const addExpense = async (expenseData) => {
+  console.log("expense data: ",expenseData)
+  
   try {
     const response = await api.post(`/user/expenses`, expenseData, {
       headers: getHeaders(),
@@ -43,6 +44,7 @@ export const useExpenses = () => {
     const response = await api.delete(`/user/expenses/${expenseId}`, {
       headers: getHeaders(),
     });
+    console.log("expenses deleted succ")
     return response.data;
   } catch (error) {
     console.error("Error deleting expense:", error);

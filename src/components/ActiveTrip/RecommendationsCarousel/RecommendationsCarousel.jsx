@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Heart, Star, MapPin, ExternalLink } from 'lucide-react';
 import { fadeInUp, slideLeft } from '../variants';
+import { useNavigate } from "react-router-dom"
 import styles from './RecommendationsCarousel.module.css';
 
 // Mock recommendations data - complete array
@@ -45,7 +46,7 @@ const RecommendationsCarousel = ({ tripId }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [recommendations, setRecommendations] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const navigate = useNavigate();
   useEffect(() => {
     fetchRecommendations();
   }, [tripId]);
@@ -219,7 +220,7 @@ const RecommendationsCarousel = ({ tripId }) => {
                   ))}
                 </div>
 
-                <button className={styles.viewMoreButton} type="button">
+                <button className={styles.viewMoreButton} type="button" onClick={()=>{navigate(`/AIRecDetail/${currentRec.id}`)}}>
                   <ExternalLink size={16} />
                   View Details
                 </button>

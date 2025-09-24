@@ -11,7 +11,7 @@ import RecommendationsCarousel from './RecommendationsCarousel/RecommendationsCa
 import { fadeInUp } from './variants';
 import styles from './TripProgress.module.css';
 import { useNavigate } from "react-router-dom"
-
+import { useTripServices }  from "../../../services/TripServices/TripServices"
 // Example trip data structure for reference
 const MOCK_TRIP = {
   id: 123,
@@ -59,7 +59,9 @@ const TripProgress = ({
   editRoute,
   discoverRoute = '/discover',
   className = ''
+
 }) => {
+  const { getTrip } = useTripServices()
   const [activeTrip, setActiveTrip] = useState(trip || null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -89,6 +91,11 @@ const TripProgress = ({
       setActiveTrip(MOCK_TRIP);
     }
   }, [trip, getActiveTrip]);
+  
+  
+  
+  
+
 
   if (loading) {
     return (
@@ -97,7 +104,9 @@ const TripProgress = ({
       </div>
     );
   }
-
+ 
+  
+  
   const currentTrip = activeTrip || {};
 
   return (
@@ -132,13 +141,13 @@ const TripProgress = ({
 
       <div className={styles.actions}>
         <motion.a
-          href={"/active"}
+         
           className={`${styles.actionButton} ${styles.primary}`}
           variants={fadeInUp}
           whileHover="hover"
           whileTap="tap"
           aria-label="View full trip itinerary"
- 
+          onClick={()=>(navigate(`/active/${trip.id}`))}
         >
           View Full Itinerary
         </motion.a>

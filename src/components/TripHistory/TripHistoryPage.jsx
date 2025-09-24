@@ -49,6 +49,12 @@ export default function TripHistoryPage() {
   );
 
 
+  const handleCardClick = (id, status)=>{
+      console.log(id, status )
+      status != "completed" ? navigate(`/active/${id}`)
+      :navigate(`/trips/${id}`)
+  }
+
   const filteredTrips = filteredTripsUnpaged.slice(0, visible);
 
   // Show Load More only if we have more trips available after current visible count
@@ -83,7 +89,7 @@ export default function TripHistoryPage() {
           <>
             <div className={styles.tripList}>
               {filteredTrips.map(trip => (
-                <TripCard key={trip.id} trip={trip} onClick={() => navigate(`/trips/${trip.id}`)} deleteTrip={deleteTrip} trips={trips} setTrips={setTrips}/>
+                <TripCard key={trip.id} trip={trip} onClick={(id, status)=>handleCardClick(id, status)} deleteTrip={deleteTrip} trips={trips} setTrips={setTrips}/>
               ))}
             </div>
             {showLoadMore && <LoadMoreButton onClick={loadMore} />}
