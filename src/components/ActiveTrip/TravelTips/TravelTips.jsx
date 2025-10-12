@@ -29,7 +29,7 @@ const MOCK_TIPS = {
   ]
 };
 
-const TravelTips = ({ destination = "Paris, France", className = "" }) => {
+const TravelTips = ({ destination = "Paris, France", className = "", travelTips}) => {
   return (
     <motion.section 
       className={`${styles.container} ${className}`}
@@ -52,7 +52,7 @@ const TravelTips = ({ destination = "Paris, France", className = "" }) => {
             <h4 className={styles.cardTitle}>Safety Tips</h4>
           </div>
           <ul className={styles.tipsList}>
-            {MOCK_TIPS.safety.map((tip, index) => (
+            {travelTips.safetyTips.map((tip, index) => (
               <li key={index} className={styles.tipItem}>{tip}</li>
             ))}
           </ul>
@@ -67,7 +67,7 @@ const TravelTips = ({ destination = "Paris, France", className = "" }) => {
             <h4 className={styles.cardTitle}>Local Culture</h4>
           </div>
           <ul className={styles.tipsList}>
-            {MOCK_TIPS.culture.map((tip, index) => (
+            {travelTips.localCulture.map((tip, index) => (
               <li key={index} className={styles.tipItem}>{tip}</li>
             ))}
           </ul>
@@ -82,10 +82,10 @@ const TravelTips = ({ destination = "Paris, France", className = "" }) => {
             <h4 className={styles.cardTitle}>Language</h4>
           </div>
           <div className={styles.languageList}>
-            {MOCK_TIPS.language.map((item, index) => (
+            {travelTips.language.map((item, index) => (
               <div key={index} className={styles.phraseItem}>
-                <span className={styles.phrase}>{item.phrase}</span>
-                <span className={styles.translation}>{item.translation}</span>
+                <span className={styles.phrase}>{item.localWord}</span>
+                <span className={styles.translation}>{item.englishTranslation}</span>
               </div>
             ))}
           </div>

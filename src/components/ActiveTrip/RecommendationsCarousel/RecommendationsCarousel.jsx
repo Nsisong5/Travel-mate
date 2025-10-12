@@ -7,8 +7,8 @@ import { ChevronLeft, ChevronRight, Heart, Star, MapPin, ExternalLink } from 'lu
 import { fadeInUp, slideLeft } from '../variants';
 import { useNavigate } from "react-router-dom"
 import styles from './RecommendationsCarousel.module.css';
+import { useAIRecommendations } from '../../../services/AIRecommendationsServices/AIRecommendations'
 
-// Mock recommendations data - complete array
 const MOCK_RECOMMENDATIONS = [
   {
     id: 1,
@@ -47,19 +47,19 @@ const RecommendationsCarousel = ({ tripId }) => {
   const [recommendations, setRecommendations] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const { getTripAIRecommendations } =  useAIRecommendations()
+  
   useEffect(() => {
     fetchRecommendations();
   }, [tripId]);
 
   const fetchRecommendations = async () => {
-    try {
-      // TODO: Replace with actual API call
-      // const response = await api.get(`/trips/${tripId}/recommendations`);
-      // Expected response: array of { id, title, description, image, category, rating, saved, tags }
-      
+    try {   
+      const response = await getTripAIRecommendations(tripId);    
       setLoading(true);
-      await new Promise(resolve => setTimeout(resolve, 500)); // Simulate API call
-      setRecommendations(MOCK_RECOMMENDATIONS);
+      console.log("fetch recommendations: ",response)
+      setRecommendations(response);
+      localStorage.setItem("AIActiveRecs",JSON.stringify(response))
     } catch (error) {
       console.error('Failed to fetch recommendations:', error);
       setRecommendations([]);
@@ -188,7 +188,7 @@ const RecommendationsCarousel = ({ tripId }) => {
             >
               <div className={styles.cardImage}>
                 <img 
-                  src={currentRec.image} 
+                  src={currentRec.cover_image} 
                   alt={currentRec.title}
                   loading="lazy"
                 />

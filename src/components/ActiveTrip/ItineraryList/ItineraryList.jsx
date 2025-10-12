@@ -7,7 +7,7 @@ import { Calendar, Plus, Edit, Trash2 } from 'lucide-react';
 import ItineraryDayCard from './ItineraryDayCard/ItineraryDayCard';
 import ItineraryForm from '../forms/ItineraryForm/ItineraryForm';
 import ConfirmModal from '../ConfirmModal';
-import { fadeInUp, staggerContainer } from '../variants';
+import { fadeInUp, staggerContainer,fadeInUpCustom } from '../variants';
 import styles from './ItineraryList.module.css';
 
 const ItineraryList = ({ trip,
@@ -20,14 +20,17 @@ const ItineraryList = ({ trip,
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deletingItinerary, setDeletingItinerary] = useState(null);
   
-  useEffect(()=>{
-    const fetchAll = async ()=>{
-       const itineraries = await getTripItineraries(trip.id);
-       setItinerary(itineraries)
-    }
+useEffect(() => {
+  const fetchAll = async () => {
+    if (!trip?.id) {
+     return <div>Loading trip details...</div>;
+   };
+    const itineraries = await getTripItineraries(trip.id);
+    setItinerary(itineraries);
+     };
     fetchAll();
-  },[])
-  
+ }, [trip?.id,getTripItineraries]);
+
   const handleAddDay = () => {
     setEditingItinerary(null);
     setShowItineraryForm(true);
@@ -117,13 +120,12 @@ const ItineraryList = ({ trip,
 
   return (
     <>
-      <motion.div 
-        className={styles.container}
-        variants={staggerContainer}
-        initial="initial"
-        animate="animate"
-      >
-        <div className={styles.header}>
+     <motion.div 
+     variants={fadeInUpCustom(0.3)}
+      initial="initial"
+      animate="animate" >  
+          
+       <div className={styles.header}>
           <h3 className={styles.title}>
             <Calendar size={20} />
             Itinerary

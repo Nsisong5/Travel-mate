@@ -159,9 +159,9 @@ const RecommendationsCarousel = ({ recommendations = [], discoverRoute = '/disco
               exit="exit"
             >
               <div className={styles.cardImage}>
-                {currentRecommendation.image ? (
+                {currentRecommendation.cover_image ? (
                   <img 
-                    src={currentRecommendation.image} 
+                    src={currentRecommendation.cover_image} 
                     alt={currentRecommendation.title}
                     loading="lazy"
                   />

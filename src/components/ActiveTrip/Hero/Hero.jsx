@@ -7,7 +7,7 @@ import { MapPin, Calendar, Heart, Share2 } from 'lucide-react';
 import { fadeInUp } from '../variants';
 import styles from './Hero.module.css';
 
-const Hero = ({ trip }) => {
+const Hero = ({ trip, images}) => {
   const getStatusColor = (status) => {
     switch (status?.toLowerCase()) {
       case 'active':
@@ -31,6 +31,14 @@ const Hero = ({ trip }) => {
         return 'Planned';
     }
   };
+
+  function getRandomArrayIndex(arrayLength) {
+    if (arrayLength <= 0) {
+        return 0;
+    }
+    return Math.floor(Math.random() * arrayLength);
+    }
+    
 
   const formatDateRange = (startDate, endDate) => {
     if (!startDate || !endDate) return 'Dates TBD';
@@ -77,9 +85,9 @@ const Hero = ({ trip }) => {
       variants={fadeInUp}
     >
       <div className={styles.imageContainer}>
-        {trip.cover_image ? (
+        {images ? (
           <img 
-            src={trip.cover_image}
+            src={images[getRandomArrayIndex(images.length)]}
             alt={`${trip.destination} trip cover`}
             className={styles.coverImage}
             loading="eager"

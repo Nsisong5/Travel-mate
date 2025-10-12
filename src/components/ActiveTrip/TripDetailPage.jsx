@@ -12,11 +12,13 @@ import ItineraryList from './ItineraryList/ItineraryList';
 import RecommendationsCarousel from './RecommendationsCarousel/RecommendationsCarousel';
 import ActionBar from './ActionBar/ActionBar';
 import ConfirmModal from './ConfirmModal';
-import { fadeInUp, staggerContainer } from './variants';
+import { fadeInUp, staggerContainer} from './variants';
 import styles from './TripDetailPage.module.css';
 import TravelTips from './TravelTips/TravelTips';
 import TripMemories from './TripMemories/TripMemories';
 import { useTripServices }  from "../../services/TripServices/TripServices" 
+import { useAIRecommendations } from "../../services/AIRecommendationsServices/AIRecommendations"
+import { formatTravelTipsData }  from "../../services/TripServices/utils" 
 import { useItineraryServices }  from "../../services/TripServices/ItineraryServices" 
 
 import { useBudgetContext } from "../../services/BudgetServices/BudgetContextProvider"
@@ -69,18 +71,30 @@ const TripDetailPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [showEndTripModal, setShowEndTripModal] = useState(false);
-    const { getTrip } = useTripServices()
+    const { getTrip, getTravelTips } = useTripServices()
     const { getTripBudget } = useBudgetContext();
+    const { getTripAIRecommendations } = useAIRecommendations()
     const [tripBudget, setTripBudget] = useState(0)
     const {getItinerary, updateItinerary,getTripItineraries,deleteItinerary,createItinerary} = useItineraryServices();
-     // const { theme } = useTheme();
-    
+    const [recsImages,setRecsImages] = useState([])      
+    const [travelTips, setTravelTips ] = useState({
+       safetyTips: [],
+       localCulture: [],
+       language: []
+    })
+       // const { theme } = useTheme();
+     
 
   useEffect(() => {
    const fetchAll =async()=>{
       fetchTripDetails();
       const fetchBudget = await getTripBudget(tripId);
       fetchBudget && setTripBudget(fetchBudget)
+      const travelTips = await getTravelTips(tripId);
+      console.log("travel tips formated:",formatTravelTipsData(travelTips))
+      setTravelTips(formatTravelTipsData(travelTips));
+      const activeTripRecommendations = await getTripAIRecommendations(tripId)       
+      getRecsImages(activeTripRecommendations)
    }
     
     fetchAll();
@@ -138,6 +152,17 @@ const TripDetailPage = () => {
       tripId && navigate(`/budget/${tripId}`)
   }
 
+
+  const getRecsImages = (recs)=>{
+          recs.forEach(rec => {
+          setRecsImages(prev => [
+             ...prev,
+             rec.cover_image
+         ])
+      })
+  }  
+  
+
   const handleEndTrip = async () => {
     try {
       // TODO: API call to end/complete trip
@@ -187,12 +212,13 @@ const TripDetailPage = () => {
       />
       
       <motion.main variants={fadeInUp}>
-        <Hero trip={trip} />
+        <Hero trip={trip} images={recsImages}/>
         
         <div className={styles.content}>
           <div className={styles.leftColumn}>
             <TripProgressPanel trip={trip} budget={tripBudget}/>
             <ItineraryList 
+            key={trip.id}
             trip={trip} 
             createItinerary={createItinerary}
             getTripItineraries={getTripItineraries}
@@ -208,7 +234,7 @@ const TripDetailPage = () => {
 
         {/* Travel Tips Section - positioned after main content */}
         <div className={styles.fullWidthSection}>
-          <TravelTips destination={trip.destination} />
+          <TravelTips destination={trip.destination}  travelTips={travelTips}/>
         </div>
       </motion.main>
 

@@ -51,15 +51,15 @@ export default function DBLayout() {
   const { getYearlyBudgetUsedAmount, getYearlyBudget} = useBudgetContext()
   const { theme } = useTheme();
   const navigate = useNavigate();
-  
   // State for planned trips only
   const [upcomingTrips, setUpcomingTrips] = useState([]);
   const [loadingTrips, setLoadingTrips] = useState(true);
   const [ placesVisited, setPlacesVisited ] = useState(0)
+  const [ yearlyBudget,setYearlyBudget] = useState(0)  
   const [ remaining, setRemaining] = useState(0)
   const [trip, setTrip ] = useState(null) 
- 
-   // Backend API integration: Load planned trips when component mounts
+  
+  
   useEffect(() => {
     if (user) {
       loadPlannedTrips();
@@ -72,11 +72,11 @@ export default function DBLayout() {
          getCompletedTrips(userTrips);
          const latestTrip = getLatestTrip(userTrips);
          setTrip(latestTrip)
-         // yearly 
+         // yearly          
          const yearlyBudget = await getYearlyBudget()
          const usedBudget = await getYearlyBudgetUsedAmount(yearlyBudget[0].id)
          setRemaining(yearlyBudget[0].total - usedBudget)
-         
+         setYearlyBudget(yearlyBudget[0].total)
      }
      
      fetchAll();
@@ -159,7 +159,7 @@ export default function DBLayout() {
           <OverviewCard
             icon={<CreditCard size={28} color="var(--primary)" />}
             title="Budget Remaining"
-            value={`$${remaining} Left`}
+            value={`$${remaining || yearlyBudget} Left`}
             url="/y_budget"
             index={3}
           />

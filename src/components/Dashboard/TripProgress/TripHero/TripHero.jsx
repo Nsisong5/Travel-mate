@@ -8,17 +8,18 @@ import { MapPin, Calendar, ExternalLink } from 'lucide-react';
 import { fadeInUp } from '../variants';
 import styles from './TripHero.module.css';
 
-const TripHero = ({ trip = {}, tripDetailRoute }) => {
+const TripHero = ({ trip = {}, tripDetailRoute, images}) => {
   const {
     id,
     destination = 'Destination coming soon',
     start_date,
     end_date,
-    images = [],
     title = 'Trip Planning'
   } = trip;
-
-  // Format date range
+  if (!images){
+     images = []
+  }
+ 
   const formatDateRange = (start, end) => {
     if (!start || !end) return 'Dates coming soon';
     
@@ -45,10 +46,19 @@ const TripHero = ({ trip = {}, tripDetailRoute }) => {
     }
   };
 
+  function getRandomArrayIndex(arrayLength) {
+    if (arrayLength <= 0) {
+        return 0;
+    }
+    return Math.floor(Math.random() * arrayLength);
+    }
+
+
   const dateRange = formatDateRange(start_date, end_date);
 
   // Get primary image or show placeholder
-  const primaryImage = images?.[0];
+  
+  const primaryImage = images?.[getRandomArrayIndex(images.length)];
   const detailHref = tripDetailRoute ? 
     tripDetailRoute.replace(':id', id || 'new') : 
     `/trips/${id || 'new'}`;

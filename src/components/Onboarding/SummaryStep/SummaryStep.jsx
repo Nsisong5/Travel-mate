@@ -13,7 +13,6 @@ export default function SummaryStep() {
 
  
   const handleConfirm = async() => {
-    console.log(state)
     const tripData = {
     destination: state.destination.name,
     start_date:state.startDate,

@@ -12,6 +12,9 @@ import { fadeInUp } from './variants';
 import styles from './TripProgress.module.css';
 import { useNavigate } from "react-router-dom"
 import { useTripServices }  from "../../../services/TripServices/TripServices"
+import { useAIRecommendations } from "../../../services/AIRecommendationsServices/AIRecommendations"
+
+
 // Example trip data structure for reference
 const MOCK_TRIP = {
   id: 123,
@@ -65,37 +68,58 @@ const TripProgress = ({
   const [activeTrip, setActiveTrip] = useState(trip || null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [recommendations, setRecommendations] = useState([])
+  const { getTripAIRecommendations } = useAIRecommendations()
+  const [recsImages,setRecsImages] = useState([])
   
   useEffect(() => {
     // If no trip prop provided, attempt to get active trip via callback
+    const getRecommendations = async ()=>{
+        const activeTripRecommendations = await getTripAIRecommendations(trip.id)
+        setRecommendations(activeTripRecommendations)
+        getRecsImages(activeTripRecommendations);
+    }
+    
+    
+    
     if (!trip && getActiveTrip && typeof getActiveTrip === 'function') {
       setLoading(true);
       try {
-        const fetchedTrip = getActiveTrip();
+         const fetchedTrip = getActiveTrip();
         // Handle both sync and async results
         if (fetchedTrip && typeof fetchedTrip.then === 'function') {
           fetchedTrip.then(setActiveTrip).finally(() => setLoading(false));
         } else {
           setActiveTrip(fetchedTrip || MOCK_TRIP);
           setLoading(false);
-        }
-      } catch (error) {
+        }  
+       } catch (error) {
         console.warn('Failed to fetch active trip:', error);
         setActiveTrip(MOCK_TRIP); // Fallback to mock for demo
         setLoading(false);
-      }
+      }    
     } else if (trip) {
       setActiveTrip(trip);
     } else {
       // No trip data available, use mock for demo purposes
       setActiveTrip(MOCK_TRIP);
-    }
+    }   
+    
+    trip && getRecommendations();
+    
   }, [trip, getActiveTrip]);
   
-  
-  
-  
 
+  const getRecsImages = (recs)=>{
+          recs.forEach(rec => {
+          setRecsImages(prev => [
+             ...prev,
+             rec.cover_image
+         ])
+      })
+  }  
+  
+  
 
   if (loading) {
     return (
@@ -105,6 +129,7 @@ const TripProgress = ({
     );
   }
  
+  
   
   
   const currentTrip = activeTrip || {};
@@ -126,6 +151,7 @@ const TripProgress = ({
           <TripHero 
             trip={currentTrip}
             tripDetailRoute={tripDetailRoute}
+            images = {recsImages}
           />
           <ProgressBar trip={currentTrip} />
           <QuickStats trip={currentTrip} />
@@ -133,7 +159,7 @@ const TripProgress = ({
 
         <div className={styles.rightColumn}>
           <RecommendationsCarousel 
-            recommendations={currentTrip.recommendations}
+            recommendations={recommendations}
             discoverRoute={discoverRoute}
           />
         </div>

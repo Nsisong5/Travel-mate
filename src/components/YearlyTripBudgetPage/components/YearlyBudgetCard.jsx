@@ -4,9 +4,10 @@ import { Calendar, Edit3 } from 'lucide-react';
 import styles from '../YearlyTripBudgetPage.module.css';
 import { formatBudgetAmount } from '../../../utils/BudgetPage/getBudgetFeedback';
 
-const YearlyBudgetCard = ({ yearlyBudget, remaining, onEdit,used }) => {
-  const usedPercentage = (used || 0 / yearlyBudget.total) * 100;
-
+const YearlyBudgetCard = ({ yearlyBudget, remaining, onEdit,used}) => {
+    
+  const usedPercentage = (used / yearlyBudget.total) * 100;
+  
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -45,7 +46,7 @@ const YearlyBudgetCard = ({ yearlyBudget, remaining, onEdit,used }) => {
         </div>
         <div className={styles.statItem}>
           <span className={styles.statLabel}>Used</span>
-          <span className={styles.statValue}>{used}</span>
+          <span className={styles.statValue}>{used || 0}</span>
         </div>
       </div>
 

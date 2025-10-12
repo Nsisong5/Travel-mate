@@ -1,11 +1,13 @@
 import api from "../api/axios";
 import { useContext } from "react";
 import { AuthContext } from "../../AuthProvider";
+import { createActiveTripRecommendations }from "./createActiveTripRecommendations"
+
 
 export const useTripServices = () => {
   // Get user and token from AuthContext for authentication
   const { user, token } = useContext(AuthContext);
-  
+  const { createTripRecommendations,createTravelTips }  = createActiveTripRecommendations()
   /**
    * Get authentication headers for API requests
    * Uses token from AuthContext as preferred method
@@ -44,14 +46,13 @@ export const useTripServices = () => {
   const createTrip = async (tripData) => {
     tripData["cost_estimated"] = true
     tripData.origin = tripData.origin || "Not set!"
-    console.log("tripData",tripData)
     try {
         const response = await api.post('/trips', tripData, {
         headers: getAuthHeaders()
       });
 
-      console.log("Trip created successfully:", response.data);
-      return response.data;
+      await createTripRecommendations(response.data);
+      await createTravelTips(response.data);
       
     } catch (error) {
       console.error("Error creating trip:", error);
@@ -126,7 +127,34 @@ export const useTripServices = () => {
     }
   };
   
+
  
+  const getTravelTips = async (tripId) => {
+    try {
+
+      const response = await api.get(`/travel-tips/by-trip/${tripId}`, {
+        headers: getAuthHeaders()
+      });
+      
+        console.log("Travel tips fetched:", response.data);
+        return response.data;
+      
+    } catch (error){
+      console.error("Error fetching travel tips:", error);
+      
+      if (error.response?.status === 401) {
+        localStorage.removeItem('access_token');
+        throw new Error('Session expired. Please login again.');
+      }
+      
+      throw new Error(error.response?.data?.detail || error.message || 'Failed to fetch upcoming trips');
+   }
+   
+  };
+ 
+  
+   
+    
 
   /**
    * Get all user's trips (both history and upcoming)
@@ -287,6 +315,7 @@ export const useTripServices = () => {
     // Trip creation
     createTrip,
     deleteTrip,
+     getTravelTips,
     // Trip retrieval
     getTripHistory,
     getUpcomingTrips,

@@ -14,23 +14,33 @@ import { useAIRecommendations } from "../../services/AIRecommendationsServices/A
 export default function AIRecommendationDetail() {
   const { theme } = useTheme();
   const { recId } = useParams();
-  
+ 
   // Fix 1: Proper destructuring with parentheses
-  const { recommendations, getUserAIRecommendations, loading: contextLoading } = useAIRecommendations();
+  const { recommendations, getUserAIRecommendations, loading: contextLoading,getActiveTripRecDetail } = useAIRecommendations();
   
   const [loading, setLoading] = useState(false);
   const [recommendation, setRecommendation] = useState(null);
   const [error, setError] = useState(null);
   
+  const getActiveRec = ()=>{
+     const recs = JSON.parse(localStorage.getItem("AIActiveRecs"));
+     const array = recs.filter(rec => rec.id == recId)
+     return array[0]
+  }
+  
   useEffect(() => {
-    console.log("useEffect access");
-    const loadRecommendations = async () => {
+     const loadRecommendations = async () => {
       setLoading(true);
       setError(null);
-      
+      const recommendation = getActiveRec()
       try {
-        // Fix 2: Call the function to load recommendations
-        await getUserAIRecommendations({ limit: 50 });
+        if (!recommendation){
+          const recommendation = await getActiveTripRecDetail(recId);
+          setRecommendation(recommendation)
+         }else{
+           console.log("recommendations gotten from local storage: ", recommendation)
+           setRecommendation(recommendation)
+        }
       } catch (err) {
         console.error('Failed to load AI recommendations:', err);
         setError('Failed to load recommendations');
@@ -83,10 +93,10 @@ export default function AIRecommendationDetail() {
   return (
     <div data-theme={theme} className={styles.page}>
       <HeroSection
-        image={recommendation.image}
+        image={recommendation.cover_image}
         title={recommendation.title}
-        location={recommendation.location}
-        settlement_type={recommendation.settlement_type}
+        location={recommendation.location.name}
+        settlement_type={recommendation.settlement_type || null}
       />
       <div className={styles.mainContent}>
         <div className={styles.leftCol}>

@@ -7,15 +7,12 @@ export const AIRecommendationsContext = createContext();
 
 export const AIRecommendationsProvider = ({ children }) => {
   const { user, token } = useContext(AuthContext);
-   
-  // State management
+
   const [recommendations, setRecommendations] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  
-  /**
-   * Get authentication headers for API requests
-   */
+
+
   const getAIRec = ()=>{
     const lcRecommendations = JSON.parse(localStorage.getItem("ai-recs"))
     console.log(lcRecommendations)
@@ -41,18 +38,12 @@ export const AIRecommendationsProvider = ({ children }) => {
     };
   };
 
-  /**
-   * Clear any existing errors
-   */
+ 
   const clearError = () => {
     setError(null);
   };
 
-  /**
-   * Get user AI recommendations from backend
-   * @param {Object} filters - Optional filters for recommendations
-   * @returns {Promise<Array>} Array of AI recommendations
-   */
+
   const getUserAIRecommendations = async (filters = {}) => {
     if (!user) {
       throw new Error('User must be logged in to fetch recommendations');
@@ -110,59 +101,114 @@ export const AIRecommendationsProvider = ({ children }) => {
     }
   };
 
-  /**
-   * Get recommendations by type
-   * @param {string} type - Type (Destinations, Hotels, Activities, Tips)
-   * @param {number} limit - Number to return
-   */
+
+  const getTripAIRecommendations = async (tripId) => {
+    if (!user) {
+      throw new Error('User must be logged in to fetch recommendations');
+    }
+
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const url = `/active_ai-recommendations/current_trip/${tripId}`;
+      const response = await api.get(url, {
+        headers: getAuthHeaders()
+      });
+      console.log("Active Trip AI recommendations loaded successfully:", response.data.length);
+      return response.data;
+
+    } catch (err) {
+      console.error("Error fetching AI recommendations:", err);    
+      let errorMessage = 'Failed to fetch AI recommendations';
+      
+      if (err.response?.status === 401) {
+        localStorage.removeItem('access_token');
+        errorMessage = 'Session expired. Please login again.';
+      } else if (err.response?.status === 404) {
+        errorMessage = 'AI recommendations service not available.';
+      } else if (err.response?.data?.detail) {
+        errorMessage = err.response.data.detail;
+      }
+      
+      setError(errorMessage);
+      throw new Error(errorMessage);
+      
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+  const  getActiveTripRecDetail = async (recId) => {
+    if (!user) {
+      throw new Error('User must be logged in to fetch recommendations');
+    }
+
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const url = `/active_ai-recommendations/ai_rec_detail/${recId}`;
+      const response = await api.get(url, {
+        headers: getAuthHeaders()
+      });
+      console.log("Active Trip AI recommendation loaded successfully:", response.data.length);
+      return response.data;
+
+    } catch (err) {
+      console.error("Error fetching AI recommendation:", err);    
+      let errorMessage = 'Failed to fetch AI recommendation';
+      
+      if (err.response?.status === 401) {
+        localStorage.removeItem('access_token');
+        errorMessage = 'Session expired. Please login again.';
+      } else if (err.response?.status === 404) {
+        errorMessage = 'AI recommendations service not available.';
+      } else if (err.response?.data?.detail) {
+        errorMessage = err.response.data.detail;
+      }
+      
+      setError(errorMessage);
+      throw new Error(errorMessage);
+      
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+
   const getByType = async (type, limit = 10) => {
     return getUserAIRecommendations({ type, limit });
   };
 
-  /**
-   * Get recommendations by category
-   * @param {string} category - Category to filter by
-   * @param {number} limit - Number to return
-   */
   const getByCategory = async (category, limit = 10) => {
     return getUserAIRecommendations({ category, limit });
   };
 
-  /**
-   * Get high-rated recommendations
-   * @param {number} minRating - Minimum rating (default: 4.0)
-   * @param {number} limit - Number to return
-   */
+
   const getHighRated = async (minRating = 4.0, limit = 10) => {
     return getUserAIRecommendations({ min_rating: minRating, limit });
   };
 
-  /**
-   * Get budget-friendly recommendations
-   * @param {number} maxBudgetScore - Maximum budget score
-   * @param {number} limit - Number to return
-   */
+
   const getBudgetFriendly = async (maxBudgetScore = 70, limit = 10) => {
     return getUserAIRecommendations({ max_budget_score: maxBudgetScore, limit });
   };
 
-  /**
-   * Search recommendations by location
-   * @param {string} location - Location to search
-   * @param {number} limit - Number to return
-   */
   const searchByLocation = async (location, limit = 10) => {
     return getUserAIRecommendations({ location, limit });
   };
 
-  /**
-   * Refresh current recommendations
-   */
+ 
   const refreshRecommendations = async (filters = {}) => {
     return getUserAIRecommendations(filters);
   };
+  
+  
+  
 
-  // Context value
+
   const contextValue = {
     // State
     recommendations,
@@ -175,7 +221,8 @@ export const AIRecommendationsProvider = ({ children }) => {
     // Main functions
     getUserAIRecommendations,
     refreshRecommendations,
-    
+    getTripAIRecommendations,
+    getActiveTripRecDetail,
     // Filter functions
     getByType,
     getByCategory,
