@@ -6,11 +6,17 @@ import ProgressBar from "./ProgressBar/ProgressBar";
 import StepNav from "./StepNav/StepNav";
 import styles from "./Onboarding.module.css";
 import { pageVariants } from "./motion";
-import { Helmet } from "react-helmet"
+import { Helmet } from "react-helmet";
+
 const STEPS = ["welcome", "destination", "dates", "preferences", "summary"];
 
 const initialState = {
-  destination: "",
+  destination: {
+    name: "",
+    country: "",
+    state: null,
+    localGov: null
+  },
   startDate: "",
   endDate: "",
   budget: "medium",
@@ -28,7 +34,7 @@ function reducer(state, action) {
   }
 }
 
-export default function OnboardingShell({ allowSkip }) {
+export default function OnboardingShell({ allowSkip, preselected }) {
   const { theme } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
@@ -43,6 +49,23 @@ export default function OnboardingShell({ allowSkip }) {
     }
   });
 
+  // Handle preselected destination from location state or props
+  useEffect(() => {
+    const preselectedData = preselected || location.state?.preselected;
+    
+    if (preselectedData && preselectedData.name && preselectedData.country) {
+      const destinationData = {
+        name: preselectedData.name,
+        country: preselectedData.country,
+        state: preselectedData.state || null,
+        localGov: preselectedData.localGov || null
+      };
+      
+      dispatch({ type: "setField", field: "destination", value: destinationData });
+      console.log("Preselected destination set:", destinationData);
+    }
+  }, [preselected, location.state]);
+
   useEffect(() => {
     sessionStorage.setItem("travelmate.onboarding", JSON.stringify(state));
   }, [state]);
@@ -50,42 +73,42 @@ export default function OnboardingShell({ allowSkip }) {
   const stepPaths = STEPS;
 
   return (
-  <>      
-   <Helmet> 
-       <meta  
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"/>
-    </Helmet>
-    <motion.div
-      className={styles.onboardingShell}
-      data-theme={theme}
-      key={location.pathname}
-      initial="initial"
-      animate="animate"
-      exit="exit"
-      variants={pageVariants}
-    >
-      <ProgressBar totalSteps={STEPS.length} currentStep={currentStepIndex + 1} />
-      <Outlet
-        context={{ state, dispatch, currentStepIndex, allowSkip }}
-      />
-      <StepNav
-        currentStep={currentStepIndex}
-        totalSteps={STEPS.length}
-        onBack={() => {
-          if (currentStepIndex > 0) navigate(`/onboarding/${stepPaths[currentStepIndex - 1]}`);
-        }}
-        onNext={() => {
-          if (currentStepIndex + 1 < STEPS.length) {
-            navigate(`/onboarding/${stepPaths[currentStepIndex + 1]}`);
-          }
-        }}
-        allowSkip={allowSkip}
-        onSkip={() => {
-          navigate("/auth/signup");
-        }}
-      />
-    </motion.div>
-   </>
+    <>      
+      <Helmet> 
+        <meta  
+          name="viewport"
+          content="width=device-width, initial-scale=1.0"/>
+      </Helmet>
+      <motion.div
+        className={styles.onboardingShell}
+        data-theme={theme}
+        key={location.pathname}
+        initial="initial"
+        animate="animate"
+        exit="exit"
+        variants={pageVariants}
+      >
+        <ProgressBar totalSteps={STEPS.length} currentStep={currentStepIndex + 1} />
+        <Outlet
+          context={{ state, dispatch, currentStepIndex, allowSkip }}
+        />
+        <StepNav
+          currentStep={currentStepIndex}
+          totalSteps={STEPS.length}
+          onBack={() => {
+            if (currentStepIndex > 0) navigate(`/onboarding/${stepPaths[currentStepIndex - 1]}`);
+          }}
+          onNext={() => {
+            if (currentStepIndex + 1 < STEPS.length) {
+              navigate(`/onboarding/${stepPaths[currentStepIndex + 1]}`);
+            }
+          }}
+          allowSkip={allowSkip}
+          onSkip={() => {
+            navigate("/auth/signup");
+          }}
+        />
+      </motion.div>
+    </>
   );
 }

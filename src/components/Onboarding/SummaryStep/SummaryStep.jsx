@@ -1,43 +1,50 @@
-import React,{ useContext} from "react";
-import { motion } from "framer-motion";
+import React, { useContext, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useOutletContext, useNavigate } from "react-router-dom";
 import styles from "./SummaryStep.module.css";
-import { AuthContext } from "../../../AuthProvider"
+import { AuthContext } from "../../../AuthProvider";
 import { useTripServices } from "../../../services/TripServices/TripServices";
+import LoadingSpinner from "../../../PagesAuth/LoadingSpinner";
 
 export default function SummaryStep() {
   const { state, allowSkip } = useOutletContext();
   const navigate = useNavigate();
   const { createTrip } = useTripServices();
-  const { user } = useContext(AuthContext)
+  const { user } = useContext(AuthContext);
+  const [isLoading, setIsLoading] = useState(false);
 
- 
-  const handleConfirm = async() => {
-    const tripData = {
-    destination: state.destination.name,
-    start_date:state.startDate,
-    end_date:state.endDate,
-    status: "planned",
-    budget_range: state.budget, 
-    style: state.style,
-    origin: user.country || null,
-    means : state.means || "car",   
-    local_gov: state.destination.localGov || null,
-    country: state.destination.country || null,
-    state: state.destination.state || null , 
-    travelers: state.travelers
-    }
-    
+  console.log("state country: ", state.destination.country);
+
+  const handleConfirm = async () => {
     if (allowSkip) {
       navigate("/auth/signup");
-    } else {
-      try {
-        const result = await createTrip(tripData);
-        navigate("/dashboard");
-      } catch (error) {
-        console.error("Trip creation failed:", error);
-      }
+      return;
+    }
+
+    setIsLoading(true);
+
+    const tripData = {
+      destination: state.destination.name || "None",
+      start_date: state.startDate,
+      end_date: state.endDate,
+      status: "planned",
+      budget_range: state.budget,
+      style: state.style,
+      origin: user.country || null,
+      means: state.means || "car",
+      local_gov: state.destination.localGov || null,
+      country: state.destination.country || null,
+      state: state.destination.state || null,
+      travelers: state.travelers
+    };
+
+    try {
+      const result = await createTrip(tripData);
       console.log("Trip Confirmed:", state);
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Trip creation failed:", error);
+      setIsLoading(false); // Re-enable button on error
     }
   };
 
@@ -59,12 +66,12 @@ export default function SummaryStep() {
   };
 
   const titleVariants = {
-    hidden: { 
-      opacity: 0, 
-      y: -20 
+    hidden: {
+      opacity: 0,
+      y: -20
     },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       y: 0,
       transition: {
         duration: 0.6,
@@ -74,13 +81,13 @@ export default function SummaryStep() {
   };
 
   const cardVariants = {
-    hidden: { 
-      opacity: 0, 
+    hidden: {
+      opacity: 0,
       y: 30,
-      scale: 0.95 
+      scale: 0.95
     },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       y: 0,
       scale: 1,
       transition: {
@@ -93,13 +100,13 @@ export default function SummaryStep() {
   };
 
   const itemVariants = {
-    hidden: { 
-      opacity: 0, 
+    hidden: {
+      opacity: 0,
       y: 20,
       x: -10
     },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       y: 0,
       x: 0,
       transition: {
@@ -110,13 +117,13 @@ export default function SummaryStep() {
   };
 
   const buttonVariants = {
-    hidden: { 
-      opacity: 0, 
+    hidden: {
+      opacity: 0,
       y: 20,
       scale: 0.95
     },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       y: 0,
       scale: 1,
       transition: {
@@ -145,45 +152,45 @@ export default function SummaryStep() {
     if (!dateString) return 'Not specified';
     try {
       const date = new Date(dateString);
-      return date.toLocaleDateString('en-US', { 
-        month: 'short', 
-        day: 'numeric', 
-        year: 'numeric' 
+      return date.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric'
       });
     } catch {
       return dateString;
     }
   };
-  
+
   // Summary data with proper fallbacks
   const summaryData = [
-    { 
-      label: 'Travel Style', 
-      value: state.style || 'Not specified' 
+    {
+      label: 'Travel Style',
+      value: state.style || 'Not specified'
     },
-    { 
-      label: 'Start Date', 
-      value: formatDate(state.startDate) 
+    {
+      label: 'Start Date',
+      value: formatDate(state.startDate)
     },
-    { 
-      label: 'End Date', 
-      value: formatDate(state.endDate) 
+    {
+      label: 'End Date',
+      value: formatDate(state.endDate)
     },
-    { 
-      label: 'Destination', 
-      value: state.destination.country || 'Not specified' 
+    {
+      label: 'Destination',
+      value: state.destination.country || 'Not specified'
     },
-    { 
-      label: 'Budget Type', 
-      value: state.budgetType || state.budget || 'Not specified' 
+    {
+      label: 'Budget Type',
+      value: state.budgetType || state.budget || 'Not specified'
     },
-    { 
-      label: 'Number of People', 
-      value: state.travelers ? `${state.travelers} ${state.travelers === 1 ? 'person' : 'people'}` : '2 people' 
+    {
+      label: 'Number of People',
+      value: state.travelers ? `${state.travelers} ${state.travelers === 1 ? 'person' : 'people'}` : '2 people'
     },
-    { 
-      label: 'Budget', 
-      value: state.totalBudget ? `$${state.totalBudget.toLocaleString()}` : state.budget || '$3,500' 
+    {
+      label: 'Budget',
+      value: state.totalBudget ? `$${state.totalBudget.toLocaleString()}` : state.budget || '$3,500'
     }
   ];
 
@@ -196,14 +203,29 @@ export default function SummaryStep() {
       exit="exit"
       aria-label="Trip onboarding summary"
     >
-      <motion.h1 
+      <AnimatePresence>
+        {isLoading && (
+          <motion.div
+            className={styles.loadingOverlay}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <LoadingSpinner />
+            <p className={styles.loadingText}>Creating your trip...</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <motion.h1
         variants={titleVariants}
         className={styles.title}
       >
         Onboarding Summary
       </motion.h1>
 
-      <motion.div 
+      <motion.div
         variants={cardVariants}
         className={styles.summaryCard}
       >
@@ -221,7 +243,7 @@ export default function SummaryStep() {
         </div>
       </motion.div>
 
-      <motion.div 
+      <motion.div
         variants={buttonVariants}
         className={styles.confirmSection}
       >
@@ -229,12 +251,13 @@ export default function SummaryStep() {
           className={styles.confirmBtn}
           type="button"
           onClick={handleConfirm}
+          disabled={isLoading}
           variants={buttonVariants}
-          whileHover="hover"
-          whileTap="tap"
+          whileHover={isLoading ? {} : "hover"}
+          whileTap={isLoading ? {} : "tap"}
           aria-label="Confirm trip details and continue to dashboard"
         >
-          Confirm & Continue
+          {isLoading ? "Creating Trip..." : "Confirm & Continue"}
         </motion.button>
       </motion.div>
     </motion.div>

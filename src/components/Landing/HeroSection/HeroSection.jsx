@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import styles from "./HeroSection.module.css";
-import heroImage from "../../../../public/hero2.png";
+import heroImage from "../../../../public/image-11.png";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 24 },

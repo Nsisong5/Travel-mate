@@ -1,39 +1,69 @@
-import React from "react";
-import { motion } from "framer-motion";
-import { Tag, Save, MapPin, Star } from "lucide-react";
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Tag, Save, MapPin, Star, Trash2 } from "lucide-react";
 import styles from "./RecommendationGrid.module.css";
 
-// Enhanced animation variants for smoother performance
 const fadeStagger = {
-  hidden: {}, 
-  visible: { 
-    transition: { 
+  hidden: {},
+  visible: {
+    transition: {
       staggerChildren: 0.08,
-      delayChildren: 0.1 
-    } 
+      delayChildren: 0.1
+    }
   }
 };
 
 const fadeUpVariant = {
-  hidden: { 
-    opacity: 0, 
+  hidden: {
+    opacity: 0,
     y: 20,
     scale: 0.95
-  }, 
-  visible: { 
-    opacity: 1, 
+  },
+  visible: {
+    opacity: 1,
     y: 0,
     scale: 1,
     transition: {
       duration: 0.4,
       ease: [0.25, 0.46, 0.45, 0.94]
     }
+  },
+  exit: {
+    opacity: 0,
+    y: -20,
+    scale: 0.9,
+    transition: { duration: 0.3, ease: "easeInOut" }
   }
 };
 
-export default function RecommendationGrid({ recommendations, loading, onSave, viewDetail }) {
-  
-  // Enhanced loading skeleton with proper responsive structure
+export default function RecommendationGrid({
+  recommendations,
+  loading,
+  onSave,
+  viewDetail,
+  onDelete
+}) {
+  const [localRecs, setLocalRecs] = useState(recommendations);
+
+  // Sync local state with parent prop changes
+  React.useEffect(() => {
+    setLocalRecs(recommendations);
+  }, [recommendations]);
+
+  const handleRemove = async (id) => {
+    // Instantly remove from screen (no refresh)
+    setLocalRecs((prev) => prev.filter((rec) => rec.id !== id));
+
+    try {
+      // Trigger backend delete (non-blocking)
+      await onDelete(id);
+    } catch (error) {
+      console.error("Error deleting recommendation:", error);
+      // Optional: revert if delete fails
+      setLocalRecs((prev) => [...prev, recommendations.find(r => r.id === id)]);
+    }
+  };
+
   if (loading) {
     return (
       <div className={styles.gridContainer}>
@@ -56,8 +86,7 @@ export default function RecommendationGrid({ recommendations, loading, onSave, v
     );
   }
 
-  // Enhanced empty state with better visual hierarchy
-  if (!recommendations.length) {
+  if (!localRecs.length) {
     return (
       <div className={styles.gridContainer}>
         <section className={styles.emptyState}>
@@ -75,117 +104,126 @@ export default function RecommendationGrid({ recommendations, loading, onSave, v
 
   return (
     <div className={styles.gridContainer}>
-      <motion.section 
-        className={styles.grid} 
-        initial="hidden" 
-        animate="visible" 
+      <motion.section
+        className={styles.grid}
+        initial="hidden"
+        animate="visible"
         variants={fadeStagger}
         aria-label="AI Recommendations"
       >
-        {recommendations.map((recommendation) => {
-          const { id, title, description, image, tags, location, rating } = recommendation;
-          
-          return (
-            <motion.article 
-              key={id} 
-              className={styles.card} 
-              variants={fadeUpVariant}
-              whileHover={{ 
-                y: -4,
-                transition: { duration: 0.2 }
-              }}
-              whileTap={{ 
-                scale: 0.98,
-                transition: { duration: 0.1 }
-              }}
-              tabIndex={0}
-              role="button"
-              aria-label={`View details for ${title} in ${location}`}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  viewDetail(id);
-                }
-              }}
-            >
-              {/* Enhanced image container with fallback and loading states */}
-              <div className={styles.imageContainer}>
-                <img 
-                  src={image} 
-                  alt={`${title} in ${location}`}
-                  className={styles.image}
-                  loading="lazy"
-                  onError={(e) => {
-                    e.target.src = '/placeholder-destination.jpg'; // Fallback image
-                  }}
-                />
-                {/* Location badge overlay */}
-                <div className={styles.locationBadge}>
-                  <MapPin size={14} />
-                  <span>{location}</span>
-                </div>
-                {/* Rating badge if available */}
-                {rating && (
-                  <div className={styles.ratingBadge}>
-                    <Star size={14} fill="currentColor" />
-                    <span>{rating}</span>
-                  </div>
-                )}
-              </div>
+        <AnimatePresence>
+          {localRecs.map((recommendation) => {
+            const { id, title, description, image, tags, location, rating } = recommendation;
 
-              {/* Enhanced card content with better spacing */}
-              <div className={styles.cardContent}>
-                <h3 className={styles.title}>{title}</h3>
-                <p className={styles.description}>
-                  {description.length > 120 ? `${description.slice(0, 120)}...` : description}
-                </p>
-
-                {/* Enhanced tags section with save button */}
-                <div className={styles.tagsSection}>
-                  <div className={styles.tagsContainer}>
-                    {tags?.slice(0, 3).map(tag => (
-                      <span key={tag} className={styles.tag}>
-                        {tag}
-                      </span>
-                    ))}
-                    {tags?.length > 3 && (
-                      <span className={styles.moreTagsIndicator}>
-                        +{tags.length - 3}
-                      </span>
-                    )}
-                  </div>
-                  
-                  <button 
-                    type="button" 
-                    className={styles.saveBtn} 
-                    aria-label={`Save ${title} to favorites`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onSave(id);
-                    }}
-                    onKeyDown={(e) => e.stopPropagation()}
-                  >
-                    <Save size={16} />
-                  </button>
-                </div>
-              </div>
-
-              {/* Enhanced view details button */}
-              <button 
-                className={styles.viewBtn} 
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  viewDetail(id);
+            return (
+              <motion.article
+                key={id}
+                className={styles.card}
+                variants={fadeUpVariant}
+                exit="exit"
+                whileHover={{
+                  y: -4,
+                  transition: { duration: 0.2 }
                 }}
-                onKeyDown={(e) => e.stopPropagation()}
-                aria-label={`View full details for ${title}`}
+                whileTap={{
+                  scale: 0.98,
+                  transition: { duration: 0.1 }
+                }}
+                tabIndex={0}
+                role="button"
+                aria-label={`View details for ${title} in ${location}`}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    viewDetail(id);
+                  }
+                }}
               >
-                View Details
-              </button>
-            </motion.article>
-          );
-        })}
+                <div className={styles.imageContainer}>
+                  <img
+                    src={image}
+                    alt={`${title} in ${location}`}
+                    className={styles.image}
+                    loading="lazy"
+                    onError={(e) => {
+                      e.target.src = "/placeholder-destination.jpg";
+                    }}
+                  />
+                  <div className={styles.locationBadge}>
+                    <MapPin size={14} />
+                    <span>{location}</span>
+                  </div>
+                  {rating && (
+                    <div className={styles.ratingBadge}>
+                      <Star size={14} fill="currentColor" />
+                      <span>{rating}</span>
+                    </div>
+                  )}
+                </div>
+
+                <div className={styles.cardContent}>
+                  <h3 className={styles.title}>{title}</h3>
+                  <p className={styles.description}>
+                    {description.length > 120
+                      ? `${description.slice(0, 120)}...`
+                      : description}
+                  </p>
+
+                  <div className={styles.tagsSection}>
+                    <div className={styles.tagsContainer}>
+                      {tags?.slice(0, 3).map((tag) => (
+                        <span key={tag} className={styles.tag}>
+                          {tag}
+                        </span>
+                      ))}
+                      {tags?.length > 3 && (
+                        <span className={styles.moreTagsIndicator}>
+                          +{tags.length - 3}
+                        </span>
+                      )}
+                    </div>
+
+                    <button
+                      type="button"
+                      className={styles.saveBtn}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onSave(id);
+                      }}
+                      onKeyDown={(e) => e.stopPropagation()}
+                    >
+                      <Save size={16} />
+                    </button>
+
+                    <button
+                      type="button"
+                      className={styles.saveBtn}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRemove(id);
+                      }}
+                      onKeyDown={(e) => e.stopPropagation()}
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                </div>
+
+                <button
+                  className={styles.viewBtn}
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    viewDetail(id);
+                  }}
+                  onKeyDown={(e) => e.stopPropagation()}
+                >
+                  View Details
+                </button>
+              </motion.article>
+            );
+          })}
+        </AnimatePresence>
       </motion.section>
     </div>
   );

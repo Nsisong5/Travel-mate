@@ -1,5 +1,5 @@
-import React from "react";
-import { Helmet } from "react-helmet"
+import React, { useEffect } from "react";
+import { Helmet } from "react-helmet";
 import { useTheme } from "../../ThemeContext";
 import styles from "./LandingPage.module.css";
 import HeroSection from "./HeroSection/HeroSection";
@@ -15,9 +15,30 @@ import Navbar from "../LandingPage/Navbar/Navbar";
 export default function LandingP() {
   const { theme } = useTheme();
 
+  // Cleanup function to reset viewport when leaving the page
+  useEffect(() => {
+    return () => {
+      // Reset viewport to mobile-responsive when component unmounts
+      const metaViewport = document.querySelector('meta[name="viewport"]');
+      if (metaViewport) {
+        metaViewport.setAttribute(
+          "content",
+          "width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes"
+        );
+      }
+    };
+  }, []);
+
   return (
     <div className={styles.landingWrapper} data-theme={theme}>
-    
+      {/* Desktop viewport - only active on this page */}
+      <Helmet>
+        <meta
+          name="viewport"
+          content="width=1024, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        />
+      </Helmet>
+
       <header className={styles.header}>
         <Navbar />
       </header>
@@ -59,7 +80,7 @@ export default function LandingP() {
           <ContactForm />
         </section>
       </main>
-          
+
       <footer className={styles.footerContainer}>
         <Footer />
       </footer>

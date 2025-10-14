@@ -24,7 +24,9 @@ export default function AIRecommendationsPage() {
     recommendations, 
     loading: contextLoading, 
     error, 
-    getUserAIRecommendations 
+    getUserAIRecommendations,
+    generateAiRecs,
+    deleteRecommendation,
   } = useAIRecommendations();
 
   // Backend API integration: Load recommendations when component mounts
@@ -32,7 +34,7 @@ export default function AIRecommendationsPage() {
     const loadRecommendations = async () => {
       setLoading(true);
       try {
-        await getUserAIRecommendations({ limit: 50 }); // API call to get recommendations
+        await getUserAIRecommendations({ limit: 5 }); // API call to get recommendations
       } catch (err) {
         console.error('Failed to load AI recommendations:', err);
       } finally {
@@ -54,6 +56,29 @@ export default function AIRecommendationsPage() {
       console.log("error setting saveplace:", err);
     }
   };
+  
+  
+  const handleAskAi = async ()=>{
+     console.log("ai re generate access")
+     try{
+         const response = await generateAiRecs()      
+         window.location.reload(); 
+     } catch(err){
+        console.log("error getting user ai recommendations: ",err)
+        throw Error(err)
+     }
+  }
+  
+  const handleDelete = async (id)=>{
+     console.log("about to delete recommendation with id: ",id)
+     try{
+         const response = await deleteRecommendation(id)      
+     } catch(err){
+        console.log("Error deleting recommendation: ",err)
+        throw Error(err)
+     }
+  }  
+  
   
   // Use context loading state alongside local loading
   const isLoading = loading || contextLoading;
@@ -166,13 +191,14 @@ export default function AIRecommendationsPage() {
               loading={isLoading} 
               onSave={handleSave} 
               viewDetail={handleViewDetail}
+              onDelete={handleDelete}
             />
           </div>
         </main>
 
         {/* Footer section */}
         <footer className={styles.footerSection}>
-          <Footer />
+          <Footer  regenerate={handleAskAi}/>
         </footer>
 
       </div>

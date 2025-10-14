@@ -67,7 +67,7 @@ const DestinationDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isWishlisted, setIsWishlisted] = useState(false);
-
+ 
   // Page animation variants
   const pageVariants = {
     initial: { opacity: 0 },
@@ -140,6 +140,21 @@ const DestinationDetailPage = () => {
       }
     });
   };
+  
+  
+    
+  const saveToLocal = () => {
+  try {
+    localStorage.setItem("preselected", JSON.stringify(destination));
+    console.log("✅ handlePlanTrip access: Destination:", destination.name);
+
+   setTimeout(() => {
+      handlePlanTrip();
+    }, 0);
+    } catch (error) {
+    console.error("❌ Failed to save destination:", error);
+  }
+ };
 
   const handleAddToWishlist = async () => {
     try {
@@ -268,7 +283,7 @@ const DestinationDetailPage = () => {
 
         <motion.section variants={sectionVariants}>
           <ActionButtons 
-            onPlanTrip={handlePlanTrip}
+            onPlanTrip={saveToLocal}
             onAddToWishlist={handleAddToWishlist}
             isWishlisted={isWishlisted}
           />

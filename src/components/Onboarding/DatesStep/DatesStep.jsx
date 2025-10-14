@@ -7,7 +7,7 @@ import { fadeInUp, staggerContainer } from "../motion";
 export default function DatesStep() {
   const { state, dispatch } = useOutletContext();
   const navigate = useNavigate();
-  
+
   const [touched, setTouched] = useState(false);
 
   const startDate = state.startDate;

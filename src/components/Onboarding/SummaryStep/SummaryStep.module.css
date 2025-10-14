@@ -338,3 +338,32 @@ body[data-theme="dark"] .confirmBtn:hover {
   background: rgba(100, 116, 139, 0.1);
   color: var(--muted);
 }
+
+
+.loadingOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  z-index: 9999;
+}
+
+.loadingText {
+  color: white;
+  font-size: 1.125rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+.confirmBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

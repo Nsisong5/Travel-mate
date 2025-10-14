@@ -13,20 +13,8 @@ export const AIRecommendationsProvider = ({ children }) => {
   const [error, setError] = useState(null);
 
 
-  const getAIRec = ()=>{
-    const lcRecommendations = JSON.parse(localStorage.getItem("ai-recs"))
-    console.log(lcRecommendations)
-    return lcRecommendations 
-  }
-  
-  const saveToLocalStorage = (data)=>{
-    const lcRecommendations  = JSON.parse(localStorage.getItem("ai-recs"))
-    lcRecommendations  && localStorage.removeItem("ai-recs")
-    localStorage.setItem("ai-recs", JSON.stringify(data))
-  }
-  
-   
-  
+
+
   const getAuthHeaders = () => {
     const authToken = token || localStorage.getItem('access_token');
     if (!authToken) {
@@ -37,8 +25,45 @@ export const AIRecommendationsProvider = ({ children }) => {
       'Content-Type': 'application/json'
     };
   };
+  
 
- 
+  const getAIRec = ()=>{
+    const lcRecommendations = JSON.parse(localStorage.getItem("ai-recs"))
+    console.log(lcRecommendations)
+    return lcRecommendations 
+  }
+
+  const saveToLocalStorage = (data)=>{
+    const lcRecommendations  = JSON.parse(localStorage.getItem("ai-recs"))
+    lcRecommendations  && localStorage.removeItem("ai-recs")
+    localStorage.setItem("ai-recs", JSON.stringify(data))
+  }
+
+
+
+
+  const deleteRecommendation = async (id)=>{
+      try{
+         const res = api.delete(`/user/ai-recommendations/${id}/`, {headers: getAuthHeaders()})
+         return res.data
+      }catch(err){
+        console.log(err)
+        throw Error(err)
+      }
+  }
+
+
+  const generateAiRecs = async ()=>{
+      try{
+         const res = api.get(`/control/trigger-recommendations/`, {headers: getAuthHeaders()})
+         return res.data
+      }catch(err){
+        console.log(err)
+        throw Error(err)
+      }
+  }
+  
+
   const clearError = () => {
     setError(null);
   };
@@ -51,10 +76,10 @@ export const AIRecommendationsProvider = ({ children }) => {
 
     setLoading(true);
     setError(null);
-    
+
     try {
       console.log("Fetching AI recommendations for user:", user.email);
-      
+
       // Build query parameters
       const params = new URLSearchParams();
       if (filters.category) params.append('category', filters.category);
@@ -81,9 +106,9 @@ export const AIRecommendationsProvider = ({ children }) => {
 
     } catch (err) {
       console.error("Error fetching AI recommendations:", err);
-      
+
       let errorMessage = 'Failed to fetch AI recommendations';
-      
+
       if (err.response?.status === 401) {
         localStorage.removeItem('access_token');
         errorMessage = 'Session expired. Please login again.';
@@ -92,10 +117,10 @@ export const AIRecommendationsProvider = ({ children }) => {
       } else if (err.response?.data?.detail) {
         errorMessage = err.response.data.detail;
       }
-      
+
       setError(errorMessage);
       throw new Error(errorMessage);
-      
+
     } finally {
       setLoading(false);
     }
@@ -109,7 +134,7 @@ export const AIRecommendationsProvider = ({ children }) => {
 
     setLoading(true);
     setError(null);
-    
+
     try {
       const url = `/active_ai-recommendations/current_trip/${tripId}`;
       const response = await api.get(url, {
@@ -121,7 +146,7 @@ export const AIRecommendationsProvider = ({ children }) => {
     } catch (err) {
       console.error("Error fetching AI recommendations:", err);    
       let errorMessage = 'Failed to fetch AI recommendations';
-      
+
       if (err.response?.status === 401) {
         localStorage.removeItem('access_token');
         errorMessage = 'Session expired. Please login again.';
@@ -130,10 +155,10 @@ export const AIRecommendationsProvider = ({ children }) => {
       } else if (err.response?.data?.detail) {
         errorMessage = err.response.data.detail;
       }
-      
+
       setError(errorMessage);
       throw new Error(errorMessage);
-      
+
     } finally {
       setLoading(false);
     }
@@ -147,7 +172,7 @@ export const AIRecommendationsProvider = ({ children }) => {
 
     setLoading(true);
     setError(null);
-    
+
     try {
       const url = `/active_ai-recommendations/ai_rec_detail/${recId}`;
       const response = await api.get(url, {
@@ -159,7 +184,7 @@ export const AIRecommendationsProvider = ({ children }) => {
     } catch (err) {
       console.error("Error fetching AI recommendation:", err);    
       let errorMessage = 'Failed to fetch AI recommendation';
-      
+
       if (err.response?.status === 401) {
         localStorage.removeItem('access_token');
         errorMessage = 'Session expired. Please login again.';
@@ -168,15 +193,15 @@ export const AIRecommendationsProvider = ({ children }) => {
       } else if (err.response?.data?.detail) {
         errorMessage = err.response.data.detail;
       }
-      
+
       setError(errorMessage);
       throw new Error(errorMessage);
-      
+
     } finally {
       setLoading(false);
     }
   };
-  
+
 
   const getByType = async (type, limit = 10) => {
     return getUserAIRecommendations({ type, limit });
@@ -200,13 +225,13 @@ export const AIRecommendationsProvider = ({ children }) => {
     return getUserAIRecommendations({ location, limit });
   };
 
- 
+
   const refreshRecommendations = async (filters = {}) => {
     return getUserAIRecommendations(filters);
   };
-  
-  
-  
+
+
+
 
 
   const contextValue = {
@@ -217,7 +242,8 @@ export const AIRecommendationsProvider = ({ children }) => {
     error,
     user,
     getAIRec,
-    
+    generateAiRecs,
+    deleteRecommendation,
     // Main functions
     getUserAIRecommendations,
     refreshRecommendations,
@@ -229,7 +255,7 @@ export const AIRecommendationsProvider = ({ children }) => {
     getHighRated,
     getBudgetFriendly,
     searchByLocation,
-    
+
     // Utility functions
     clearError,
   };
