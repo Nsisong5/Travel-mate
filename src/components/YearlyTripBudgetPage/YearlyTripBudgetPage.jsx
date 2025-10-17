@@ -14,7 +14,7 @@ import { useTripServices } from "../../services/TripServices/TripServices"
 const YearlyBudgetManager = () => {
   const navigate = useNavigate();
   const [yearlyBudget, setYearlyBudget] = useState(null);
-  const handleTripCreate =()=>navigate("/trip_budget");
+  const handleTripCreate = ()=>navigate("/trip_budget", { state: { previous: "y_budget" }});
   const { createYearlyBudget,getYearlyBudget, updateYearlyBudget,getYBudgetst,getYearlyBudgetUsedAmount} = useBudgetContext()
   const [ usedBudget,setUsedBudegt ] = useState(0)
   const [remaining,setRemaining] = useState(0)

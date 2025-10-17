@@ -213,7 +213,7 @@ const BudgetPage = () => {
       <div className={styles.errorContainer}>
         <h2>Unable to load budget</h2>
         <p>{error}</p>
-        <button onClick={() => navigate("/trip_budget")} className={styles.backButton}>
+        <button onClick={() => navigate("/trip_budget",{ state: { previous : "active" }})} className={styles.backButton}>
           Create Budget
         </button>
       </div>

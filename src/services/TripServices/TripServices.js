@@ -15,11 +15,11 @@ export const useTripServices = () => {
   const getAuthHeaders = () => {
     // Primary: Use token from AuthContext if available
     const authToken = token || localStorage.getItem('access_token');
-    
+
     if (!authToken) {
       throw new Error('No authentication token found. Please login again.');
     }
-    
+
     return {
       'Authorization': `Bearer ${authToken}`,
       'Content-Type': 'application/json'
@@ -45,30 +45,32 @@ export const useTripServices = () => {
    */
   const createTrip = async (tripData) => {
     tripData["cost_estimated"] = true
+    tripData["has_budget"] = false
     tripData.origin = tripData.origin || "Not set!"
+    console.log("trip data to be save: ",tripData)
     try {
         const response = await api.post('/trips', tripData, {
         headers: getAuthHeaders()
       });
-
+      console.log("trip created: ", response.data)       
       await createTripRecommendations(response.data);
       await createTravelTips(response.data);
-      
+
     } catch (error) {
       console.error("Error creating trip:", error);
       console.error("Error response:", error.response?.data);
-      
+
       // Handle specific error types
       if (error.response?.status === 401) {
         localStorage.removeItem('access_token');
         throw new Error('Session expired. Please login again.');
       }
-      
+
       if (error.response?.status === 422) {
         console.error("422 Validation Error Details:", error.response?.data?.detail);
         throw new Error(`Validation error: ${JSON.stringify(error.response?.data?.detail)}`);
       }
-      
+
       throw new Error(error.response?.data?.detail || error.message || 'Failed to create trip');
     }
   };
@@ -87,15 +89,15 @@ export const useTripServices = () => {
 
       console.log("Trip history fetched successfully:", response.data);
       return response.data;
-      
+
     } catch (error) {
       console.error("Error fetching trip history:", error);
-      
+
       if (error.response?.status === 401) {
         localStorage.removeItem('access_token');
         throw new Error('Session expired. Please login again.');
       }
-      
+
       throw new Error(error.response?.data?.detail || error.message || 'Failed to fetch trip history');
     }
   };
@@ -114,55 +116,55 @@ export const useTripServices = () => {
 
       console.log("Upcoming trips fetched successfully:", response.data);
       return response.data;
-      
+
     } catch (error) {
       console.error("Error fetching upcoming trips:", error);
-      
+
       if (error.response?.status === 401) {
         localStorage.removeItem('access_token');
         throw new Error('Session expired. Please login again.');
       }
-      
+
       throw new Error(error.response?.data?.detail || error.message || 'Failed to fetch upcoming trips');
     }
   };
-  
 
- 
+
+
   const getTravelTips = async (tripId) => {
     try {
 
       const response = await api.get(`/travel-tips/by-trip/${tripId}`, {
         headers: getAuthHeaders()
       });
-      
+
         console.log("Travel tips fetched:", response.data);
         return response.data;
-      
+
     } catch (error){
       console.error("Error fetching travel tips:", error);
-      
+
       if (error.response?.status === 401) {
         localStorage.removeItem('access_token');
         throw new Error('Session expired. Please login again.');
       }
-      
+
       throw new Error(error.response?.data?.detail || error.message || 'Failed to fetch upcoming trips');
    }
-   
+
   };
- 
-  
-   
-    
+
+
+
+
 
   /**
    * Get all user's trips (both history and upcoming)
    * @returns {Promise<Object>} - Object containing history and upcoming arrays
    */
-   
+
     const getUserTrips = async () => {
-    
+
     try {
       const response = await api.get('/trips', {
         headers: getAuthHeaders()
@@ -170,24 +172,24 @@ export const useTripServices = () => {
 
       localStorage.setItem("trips", response.data)
       return response.data;
-      
+
     } catch (error) {
       console.error("Error fetching upcoming trips:", error);
-      
+
       if (error.response?.status === 401) {
         localStorage.removeItem('access_token');
         throw new Error('Session expired. Please login again.');
       }
-      
+
       throw new Error(error.response?.data?.detail || error.message || 'Failed to fetch upcoming trips');
     }
   }; 
-   
 
-   
-   
+
+
+
     const getTrip = async (id) => {
-    
+
     try {
       const response = await api.get(`/trips/${id}`, {
         headers: getAuthHeaders()
@@ -195,21 +197,21 @@ export const useTripServices = () => {
 
       localStorage.setItem("current_trip", response.data)
       return response.data;
-      
+
     } catch (error) {
       console.error("Error fetching current trip:", error);
-      
+
       if (error.response?.status === 401) {
         localStorage.removeItem('access_token');
         throw new Error('Session expired. Please login again.');
       }
-      
+
       throw new Error(error.response?.data?.detail || error.message || 'Failed to fetch upcoming trips');
     }
   }; 
-   
 
-   
+
+
     const updateTrip = async (payload,id) => {
     console.log("trip update payload: ",payload)
     const data = {
@@ -229,7 +231,7 @@ export const useTripServices = () => {
        rating: payload.rating,
        title: payload.title
     } 
-   
+
     try {
       const response = await api.patch(`/trips/${id}`, data,{
         headers: getAuthHeaders()
@@ -237,23 +239,23 @@ export const useTripServices = () => {
 
       localStorage.setItem("current_trip", response.data)
       return response.data;
-      
+
     } catch (error) {
       console.error("Error fetching current trip:", error);
-      
+
       if (error.response?.status === 401) {
         localStorage.removeItem('access_token');
         throw new Error('Session expired. Please login again.');
       }
-      
+
       throw new Error(error.response?.data?.detail || error.message || 'Failed to fetch upcoming trips');
     }
   }; 
-            
-         
-         
-               
-   
+
+
+
+
+
   const getAllTrips = async () => {
     try {
         const [historyResponse, upcomingResponse] = await Promise.all([
@@ -268,15 +270,15 @@ export const useTripServices = () => {
       };
 
       return allTrips;
-      
+
     } catch (error) {
       console.error("Error fetching all trips:", error);
-      
+
       if (error.response?.status === 401) {
         localStorage.removeItem('access_token');
         throw new Error('Session expired. Please login again.');
       }
-      
+
       throw new Error(error.response?.data?.detail || error.message || 'Failed to fetch trips');
     }
   };
@@ -288,7 +290,7 @@ export const useTripServices = () => {
   const getTripStats = async () => {
     try {
       const allTrips = await getAllTrips();
-      
+
       const stats = {
         total_trips: allTrips.total,
         completed_trips: allTrips.history.length,
@@ -303,7 +305,7 @@ export const useTripServices = () => {
       };
 
       return stats;
-      
+
     } catch (error) {
       console.error("Error calculating trip stats:", error);
       throw new Error('Failed to calculate trip statistics');
@@ -328,8 +330,7 @@ export const useTripServices = () => {
       //   headers: { Authorization: `Bearer ${authToken}` }
       // });
       // Expected response: { id, title, start_date, end_date, cover_image, images, itinerary, budget, cost_estimated, progress_percent, days_left }
-      
+
       // Simulate API call
   };
 };
-

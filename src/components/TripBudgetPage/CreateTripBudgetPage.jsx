@@ -10,7 +10,7 @@
 // - Route integration: Add <Route path="/budget/create" element={<CreateTripBudgetPage />} />
 
 import React, { useState, useEffect, useContext } from 'react';
-import { data, useNavigate } from 'react-router-dom';
+import { data, useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useTripServices } from "../../services/TripServices/TripServices"
 import { useBudgetContext } from '../../services/BudgetServices/BudgetContextProvider';
@@ -72,13 +72,16 @@ const CreateTripBudgetPage = () => {
     const [availableTrips, setAvailableTrips] = useState([]);
     const [loading, setLoading] = useState(true);
     const {user } = useContext(AuthContext)
-
+    const { state } = useLocation()
+    
     // ADDED: Yearly budget state with mock data
     const [yearlyBudget, setYearlyBudget] = useState({
         amount: 15000, // Mock yearly budget of $15,000
         spent: 8500,   // Mock amount already spent on other trips
         remaining: 6500 // Mock remaining amount (amount - spent)
     });
+    
+    console.log("location object: ", state.previous )
 
     useEffect(() => {
         fetchAvailableTrips();
@@ -91,7 +94,9 @@ const CreateTripBudgetPage = () => {
         setLoading(true);
         try {
             const trips = await getUserTrips();
-            const tripsWithoutBudgets = trips.filter(trip => !trip.hasBudget);
+           
+            const tripsWithoutBudgets = trips.filter(trip => !trip.has_budget);
+            console.log("tripsWithoutBudgets: ", tripsWithoutBudgets)
             setAvailableTrips(tripsWithoutBudgets);
         } catch (error) {
             console.error('Failed to fetch trips:', error);
@@ -116,7 +121,17 @@ const CreateTripBudgetPage = () => {
         
         try {
             const budget = await createBudget(newData);
-            return navigate(-1);
+            if (state.previous == "trip_budget"){
+                 console.log('navigated to previous:', state.previous)
+                 return navigate(-1);
+            }else if (state.previous == "active"){
+               console.log('navigate to active path:', state.previous ,selectedTrip.id)
+               return navigate(`/active/${selectedTrip.id}`);
+            } else{
+               console.log('navigated back to login:',state.previous )
+              return navigate("/login");
+            }
+                       
         } catch (error) {
             console.log(error.response?.data?.detail)
         }
@@ -400,7 +415,7 @@ const CreateTripBudgetPage = () => {
                                 {selectedTrip ? (
                                     <>
                                         <div className={styles.tripInfo}>
-                                            <span className={styles.tripTitle}>{selectedTrip.title || selectedTrip.country}</span>
+                                            <span className={styles.tripTitle}>{selectedTrip.title || selectedTrip.destination }</span>
                                             <span className={styles.tripDates}>
                                                 {new Date(selectedTrip.start_date).toLocaleDateString()} -
                                                 {new Date(selectedTrip.end_date).toLocaleDateString()}
@@ -430,7 +445,7 @@ const CreateTripBudgetPage = () => {
                                             className={styles.tripOption}
                                         >
                                             <div className={styles.tripInfo}>
-                                                <span className={styles.tripTitle}>{trip.title || trip.country}</span>
+                                                <span className={styles.tripTitle}>{trip.title || trip.destination }</span>
                                                 <span className={styles.tripDates}>
                                                     {new Date(trip.start_date).toLocaleDateString()} -
                                                     {new Date(trip.end_date).toLocaleDateString()}
